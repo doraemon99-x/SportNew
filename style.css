@@ -1,0 +1,102 @@
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0;
+    background-color: #000; /* Mengubah warna latar belakang menjadi hitam */
+  }
+  #nav-logo {
+    width: 100%;
+    background-color: #333;
+    text-align: center;
+    padding: 10px 0;
+  }
+  #nav-logo img {
+    width: 186px;
+    height: 57px;
+  }
+  #content-frame {
+    width: 100%; /* Mengubah lebar iframe menjadi 80% dari lebar layar */
+    height: 50vh; /* Mengubah tinggi iframe menjadi 50% dari tinggi layar */
+    
+  }
+  #text-container {
+    text-align: center;
+    color: #fff; /* Mengubah warna teks menjadi putih */
+    margin-top: 20px; /* Menambahkan jarak antara container iframe dan container teks */
+    background-color: #1a200f; /* Mengubah warna latar belakang container teks menjadi abu-abu */
+    width: 100%; /* Mengatur lebar container teks menjadi 100% */
+    padding: 20px 0; /* Menambahkan padding atas dan bawah pada container teks */
+  }
+  #button-container {
+    display: ruby;
+    /*flex-direction: row; /* Mengubah arah urutan tombol ke samping kanan */
+    /*justify-content: space-around; */
+    width: 100%;
+    
+    background-color: #385c1a; /* Mengubah warna latar belakang container tombol menjadi merah */
+  }
+  .bottom-button {
+    background-color: #700474;
+    color: white;
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+    border-radius: 15px;
+    margin: 2px;
+    margin-top: 8px;
+    margin-bottom: 5px;
+  }
+  .bottom-button:hover {
+    background-color: #f3820f;
+  }
+  #cbox-frame {
+    width: 100%; /* Mengatur lebar iframe menjadi 100% dari lebar layar */
+    height: 50vh; /* Mengubah tinggi iframe menjadi 50% dari tinggi layar */
+    margin-top: 8px; /* Membuat iframe berada di tengah */
+  }
+  #info-container {
+    display: flex;
+    flex-direction: row; /* Menempatkan elemen secara horizontal */
+    align-items: center; /* Menyelaraskan item secara vertikal */
+}
+
+#clock-container {
+    padding: 10px;
+    background-color: #f50808;
+    color: #fff; /* Mengubah warna teks menjadi putih */
+    text-align: center;
+}
+
+#marquee-container {
+    flex: 1; /* Mengambil sisa ruang setelah clock */
+    background-color: #2d797e; /* Mengubah warna latar belakang container teks berjalan menjadi abu-abu */
+    color: #fff; /* Mengubah warna teks menjadi putih */
+    overflow: hidden;
+    white-space: nowrap;
+    box-sizing: border-box;
+    padding: 10px 0;
+    text-align: center;
+}
+
+#marquee-text {
+    animation: marquee 30s linear infinite;
+}
+
+@keyframes marquee {
+    from { transform: translateX(100%); }
+    to { transform: translateX(-100%); }
+}
+  #trakteer-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%; /* Mengatur lebar container menjadi 100% dari lebar layar */
+    padding: 20px 0; /* Menambahkan padding atas dan bawah pada container */
+    background-color: #888; /* Mengubah warna latar belakang container menjadi abu-abu */
+    color: #fff; /* Mengubah warna teks menjadi putih */
+  }
+  
