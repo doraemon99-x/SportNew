@@ -1,90 +1,52 @@
 <!DOCTYPE html>
+<html lang="en">
 <head>
-    <title>LIVE EVENT STREAMING</title>
-    <!-- Defult metatags -->
-    <!-- Defult metatags -->
-    <meta content='TipiStream' property='og:title'/>
-    <meta content='Free Live Sports Match Day, Social Media Free Live Sports Today, Streamarts Indonesia Free Live Sports Football Everyday, Link Streaming Football All Match Worldwide League, Live Streaming Gratis Seluruh Liga Hari ini, Ongoing Match Free Live Sports , Siaran Langsung Gratis Seluruh  Pertandingan Bola Hari Ini' property='og:description'/>
-    <!-- Required -->
-    <meta content='Free Live Sports Match Day, Social Media Free Live Sports Today, Streamarts Indonesia Free Live Sports Football Everyday, Link Streaming Football All Match Worldwide League, Live Streaming Gratis Seluruh Liga Hari ini, Ongoing Match Free Live Sports , Siaran Langsung Gratis Seluruh  Pertandingan Bola Hari Ini' name='keywords'/>
-    <meta content='Gratis Live Streaming BRI Liga 1 Indonesia, Italy Serie A Free Live Match Day, England Premier League Free Live Match Day, Bundesliga Free Live Match Day, French Ligue 1 Free Live Match Day, Spanish La Liga Free Live Match Day, Free Streaming All Channel TV Worldwide, Free Streaming All Channe Radio Worldwide, Free Live Soccer Highlights Full Match Today, Free Live Sports Match Day, Ongoing Match Free Live Streaming, Free Live Sports Social Media' property='article:tag'/>
-    <meta content='Free Watch Online TV' name='description'/>
-    <script src='https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js'></script>
-    <script src='//ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js'></script>
-    </head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DASH Web Player with License Refresh</title>
+    <script src="https://cdn.dashjs.org/latest/dash.all.min.js"></script>
+</head>
 <body>
-    <script src="https://ssl.p.jwpcdn.com/player/v/8.25.1/jwplayer.js"></script>
-    <script> jwplayer.key = 'Mh/98M9sROX0uXhFlJwXZYeCxbJD5E1+e2goFcRZ07cI/FTu';
-</script>
-<style type="text/css">
-    html, body {
-        width:100%;
-        height: 100%;
-        font-family: Poppins;
-        display:block;
-        position: absolute;
-        padding: 0px;
-        margin: 0px;
-        background: #000;
-        overflow: hidden;
-    }
-    .player {
-        width:100%;
-        height: 100%;
-        display:inline-block;
-        -webkit-user-select:none;
-        -moz-user-select:none;
-        -ms-user-select:none;
-        user-select:none;
-    }
-</style>
-<div id="player"></div>
-<script>
+    <h1>DASH Web Player</h1>
+    <video id="videoPlayer" controls width="640" height="360"></video>
 
-    var playerInstance = jwplayer("player");
+    <script>
+        // URL MPD file DASH
+        var mpdUrl = 'https://d2xz2v5wuvgur6.cloudfront.net/out/v1/997ce8767b604fae9fce05379b3b8b3a/index.mpd';  // Ganti dengan URL file MPD Anda
 
-    playerInstance.setup({
+        // Fungsi untuk mengambil URL lisensi terbaru (token)
+        function fetchLicenseUrl() {
+            // Gunakan logika Anda untuk mendapatkan token lisensi terbaru
+            var licenseToken = "eyJhbGciOiJIUzI1NiIsImtpZCI6IjE5NThjYTMxLWMzNGMtNDAxNC04ZGM1LTVkY2MwMDBjMTU5OCIsInR5cCI6IkpXVCJ9.eyJjaWQiOiIwMDAwMDAwMDAwMDAwMDAwMDAwMSIsImNvdW50IjowLCJjdHAiOiJMVFYiLCJkc2giOnRydWUsImV4cCI6MTcyNjg1MjkwNCwiZnBzIjpmYWxzZSwiaWF0IjoxNzI2ODQ3NTA0LCJpc3MiOiJhZGkiLCJqaWQiOiJkODlmYzFmYS1mMzgzLTQxN2YtODdhNi01MTM3ODI1MGJhZjIiLCJzdWIiOiJhbm9ueW1vdXMiLCJ2ZXIiOjF9.ImNPFudDRqPLiuo61ZKh8svMvoMfyBm7M90hU9sSu6Y";
+            var licenseUrl = "https://adi.visionplus.id/v1/play/refresh-drm?token=" + licenseToken;
+            return licenseUrl;
+        }
 
-        playlist: [{
-            "title": "TipiStream",
-            "image": 'https://i.postimg.cc/3NLwz2zj/banntipistream.png',
-            "sources": [
-                {
-                    "default": false,
-                    "type": "dash",
-                    "file": 'https://curly-scene-3ffc.tipikuy.workers.dev/dassdvr/133/beib1/manifest.mpd',
-                    "drm": {
-                        "clearkey": {
-                            "keyId": "69646b755f3130303030303030303030",
-                            "key": "e4a2359b05563399f1d9adfce641724a"
-                        }
-                    },
-                }]
-        }],
-        width: "100%",
-        height: "100%",
-        
-        autostart: false,
-        "mute": false,
-        "volume": 25,
-        logo: {
-                file: 'https://i.postimg.cc/XqfdKwqF/tipistreamnew.png',
-                link: '',
-                hide: 'false',
-                margin: '55',
-                over: '15',
-                out: '79.5',
-                position: 'bottom-left'
+        // Inisialisasi dash.js player
+        var player = dashjs.MediaPlayer().create();
+        player.initialize(document.querySelector("#videoPlayer"), mpdUrl, true);
+
+        // Menambahkan metode akuisisi lisensi
+        player.setProtectionData({
+            "com.widevine.alpha": {
+                serverURL: fetchLicenseUrl()
             },
-            skin: {
-            url: 'https://cdn.jsdelivr.net/gh/kiprox/cf-gdplay@master/skins/netplex.css',
-            name: 'Netflix',
-            },
-            pipIcon:{},
-			cast:{}
+            "com.microsoft.playready": {
+                serverURL: fetchLicenseUrl()
+            }
         });
-</script>
 
-
+        // Setel interval untuk memperbarui URL lisensi setiap 10 menit
+        setInterval(() => {
+            player.setProtectionData({
+                "com.widevine.alpha": {
+                    serverURL: fetchLicenseUrl()
+                },
+                "com.microsoft.playready": {
+                    serverURL: fetchLicenseUrl()
+                }
+            });
+        }, 600000);  // Refresh setiap 10 menit
+    </script>
 </body>
 </html>
