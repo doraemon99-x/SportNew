@@ -44,15 +44,10 @@
             border-radius: 8px;
             max-width: 75%;
         }
-        .user {
+        .system {
             background-color: #d1e7dd;
-            align-self: flex-end;
-            border: 1px solid #b5e3b5;
-        }
-        .assistant {
-            background-color: #f8d7da;
             align-self: flex-start;
-            border: 1px solid #f5c6cb;
+            border: 1px solid #b5e3b5;
         }
         .code {
             background-color: #f8f9fa;
@@ -114,7 +109,6 @@
         if (!userMessage) return;
 
         // Menampilkan pesan pengguna
-        appendMessage(userMessage, 'user');
         userMessageInput.value = '';
 
         try {
@@ -131,10 +125,14 @@
             });
 
             const data = await response.json();
-            const assistantMessage = data.response; // Sesuaikan dengan format respons dari Worker Anda
             
-            // Menampilkan pesan asisten
-            appendMessage(assistantMessage, 'system');
+            // Filter hanya role 'system'
+            data.response.messages.forEach(message => {
+                if (message.role === 'system') {
+                    appendMessage(message.content, 'system');
+                }
+            });
+
         } catch (error) {
             console.error('Error:', error);
         }
