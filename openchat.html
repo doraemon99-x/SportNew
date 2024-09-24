@@ -16,7 +16,7 @@
             margin: 20px 0;
         }
         #nav-logo img {
-            max-width: 150px;
+            max-width: 150px; /* Atur ukuran logo */
             height: auto;
         }
         #chat-container {
@@ -61,7 +61,7 @@
             padding: 10px;
             overflow-x: auto;
             font-family: 'Courier New', Courier, monospace;
-            white-space: pre-wrap;
+            white-space: pre-wrap; /* Mendukung pemformatan yang lebih baik */
         }
         #user-input {
             display: flex;
@@ -131,12 +131,10 @@
             });
 
             const data = await response.json();
-            const systemMessage = data.response.messages.find(message => message.role === 'system');
+            const assistantMessage = data.response; // Sesuaikan dengan format respons dari Worker Anda
             
-            // Menampilkan pesan 'system' saja
-            if (systemMessage) {
-                appendMessage(systemMessage.content, 'system');
-            }
+            // Menampilkan pesan asisten
+            appendMessage(assistantMessage, 'system');
         } catch (error) {
             console.error('Error:', error);
         }
