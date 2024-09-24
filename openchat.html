@@ -16,7 +16,7 @@
             margin: 20px 0;
         }
         #nav-logo img {
-            max-width: 150px; /* Atur ukuran logo */
+            max-width: 150px;
             height: auto;
         }
         #chat-container {
@@ -44,10 +44,15 @@
             border-radius: 8px;
             max-width: 75%;
         }
-        .system {
+        .user {
             background-color: #d1e7dd;
-            align-self: flex-start;
+            align-self: flex-end;
             border: 1px solid #b5e3b5;
+        }
+        .system {
+            background-color: #f8d7da;
+            align-self: flex-start;
+            border: 1px solid #f5c6cb;
         }
         .code {
             background-color: #f8f9fa;
@@ -56,7 +61,7 @@
             padding: 10px;
             overflow-x: auto;
             font-family: 'Courier New', Courier, monospace;
-            white-space: pre-wrap; /* Mendukung pemformatan yang lebih baik */
+            white-space: pre-wrap;
         }
         #user-input {
             display: flex;
@@ -109,6 +114,7 @@
         if (!userMessage) return;
 
         // Menampilkan pesan pengguna
+        appendMessage(userMessage, 'user');
         userMessageInput.value = '';
 
         try {
@@ -125,14 +131,12 @@
             });
 
             const data = await response.json();
+            const systemMessage = data.response.messages.find(message => message.role === 'system');
             
-            // Filter hanya role 'system'
-            data.response.messages.forEach(message => {
-                if (message.role === 'system') {
-                    appendMessage(message.content, 'system');
-                }
-            });
-
+            // Menampilkan pesan 'system' saja
+            if (systemMessage) {
+                appendMessage(systemMessage.content, 'system');
+            }
         } catch (error) {
             console.error('Error:', error);
         }
