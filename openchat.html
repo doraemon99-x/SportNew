@@ -134,7 +134,7 @@
             const assistantMessage = data.response; // Sesuaikan dengan format respons dari Worker Anda
             
             // Menampilkan pesan asisten
-            appendMessage(assistantMessage, 'assistant');
+            appendMessage(assistantMessage, 'system');
         } catch (error) {
             console.error('Error:', error);
         }
@@ -144,7 +144,7 @@
         const messageDiv = document.createElement('div');
         messageDiv.classList.add('message', role);
 
-        if (role === 'assistant' && content.startsWith('```') && content.endsWith('```')) {
+        if (role === 'system' && content.startsWith('```') && content.endsWith('```')) {
             // Jika konten merupakan kode
             const codeBlock = document.createElement('pre');
             const codeContent = content.slice(3, -3); // Menghilangkan tanda ```
