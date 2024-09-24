@@ -54,6 +54,15 @@
             align-self: flex-start;
             border: 1px solid #f5c6cb;
         }
+        .code {
+            background-color: #f8f9fa;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            padding: 10px;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+            white-space: pre-wrap; /* Mendukung pemformatan yang lebih baik */
+        }
         #user-input {
             display: flex;
             padding: 10px;
@@ -134,7 +143,18 @@
     function appendMessage(content, role) {
         const messageDiv = document.createElement('div');
         messageDiv.classList.add('message', role);
-        messageDiv.textContent = content;
+
+        if (role === 'assistant' && content.startsWith('```') && content.endsWith('```')) {
+            // Jika konten merupakan kode
+            const codeBlock = document.createElement('pre');
+            const codeContent = content.slice(3, -3); // Menghilangkan tanda ```
+            codeBlock.classList.add('code');
+            codeBlock.textContent = codeContent;
+            messageDiv.appendChild(codeBlock);
+        } else {
+            messageDiv.textContent = content;
+        }
+
         chatLog.appendChild(messageDiv);
         chatLog.scrollTop = chatLog.scrollHeight; // Scroll ke bawah
     }
