@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Chat Interface</title>
+    <title>Chat with AI</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -12,18 +12,18 @@
             background-color: #f4f4f4;
         }
         #chat-container {
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            padding: 10px;
-            background: white;
             max-width: 600px;
-            margin: auto;
-            overflow-y: auto;
-            height: 400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
         }
         #chat-log {
-            max-height: 350px;
-            overflow-y: auto;
+            height: 400px;
+            overflow-y: scroll;
+            padding: 10px;
+            border-bottom: 1px solid #ccc;
         }
         .message {
             margin: 5px 0;
@@ -38,77 +38,94 @@
             background-color: #f8d7da;
             text-align: left;
         }
-        input[type="text"] {
-            width: 80%;
+        #user-input {
+            display: flex;
             padding: 10px;
-            margin-right: 10px;
         }
-        button {
+        #user-input input {
+            flex: 1;
             padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        #send-button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            margin-left: 10px;
+            cursor: pointer;
+        }
+        #send-button:hover {
+            background-color: #0056b3;
         }
     </style>
 </head>
 <body>
+    <div id="chat-container">
+        <div id="chat-log"></div>
+        <div id="user-input">
+            <input type="text" id="user-message" placeholder="Type your message..." />
+            <button id="send-button">Send</button>
+        </div>
+    </div>
 
-<h2>AI Chat Interface</h2>
-<div id="chat-container">
-    <div id="chat-log"></div>
-</div>
-<input type="text" id="user-input" placeholder="Type your message here...">
-<button id="send-button">Send</button>
+    <script>
+        const sendButton = document.getElementById('send-button');
+        const userInput = document.getElementById('user-message');
+        const chatLog = document.getElementById('chat-log');
+        const workerUrl = 'https://apasih.tipiku.workers.dev/'; // Ganti dengan URL Worker Anda
 
-<script>
-    const chatLog = document.getElementById('chat-log');
-    const userInput = document.getElementById('user-input');
-    const sendButton = document.getElementById('send-button');
-
-    const workerUrl = 'https://apasih.tipiku.workers.dev/'; // Ganti dengan URL Worker Anda
-
-    sendButton.addEventListener('click', async () => {
-        const message = userInput.value.trim();
-        if (!message) return;
-
-        // Tampilkan pesan pengguna di chat log
-        appendMessage(message, 'user');
-
-        // Kirim pesan ke Worker
-        const messages = [
-            { role: 'system', content: 'You are a helpful assistant.' },
-            { role: 'user', content: message }
-        ];
-
-        try {
-            const response = await fetch(workerUrl, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ messages })
-            });
-
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-
-            const data = await response.json();
-            const assistantMessage = data.choices[0].message.content;
-            appendMessage(assistantMessage, 'assistant');
-        } catch (error) {
-            appendMessage('Error: ' + error.message, 'assistant');
+        function appendMessage(content, role) {
+            const messageDiv = document.createElement('div');
+            messageDiv.classList.add('message', role);
+            messageDiv.textContent = content;
+            chatLog.appendChild(messageDiv);
+            chatLog.scrollTop = chatLog.scrollHeight; // Scroll ke bawah
         }
 
-        // Clear input
-        userInput.value = '';
-    });
+        sendButton.addEventListener('click', async () => {
+            const message = userInput.value.trim();
+            if (!message) return;
 
-    function appendMessage(content, sender) {
-        const messageDiv = document.createElement('div');
-        messageDiv.classList.add('message', sender);
-        messageDiv.textContent = content;
-        chatLog.appendChild(messageDiv);
-        chatLog.scrollTop = chatLog.scrollHeight; // Scroll ke bawah
-    }
-</script>
+            // Tampilkan pesan pengguna di chat log
+            appendMessage(message, 'user');
 
+            const messages = [
+                { role: 'system', content: 'You are a helpful assistant.' },
+                { role: 'user', content: message }
+            ];
+
+            try {
+                const response = await fetch(workerUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ messages })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+
+                const data = await response.json();
+
+                // Pastikan data memiliki struktur yang diharapkan
+                if (!data.choices || data.choices.length === 0) {
+                    throw new Error('No response from AI');
+                }
+
+                const assistantMessage = data.choices[0].message.content; // Sesuaikan jika perlu
+                appendMessage(assistantMessage, 'assistant');
+            } catch (error) {
+                appendMessage('Error: ' + error.message, 'assistant');
+            }
+
+            // Clear input
+            userInput.value = '';
+        });
+    </script>
 </body>
 </html>
