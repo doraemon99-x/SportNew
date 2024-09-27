@@ -3,3 +3,4 @@
 <div class="bottom-button" onclick="window.location.href='/fdm/fdm'">ACLE</div>
 <div class="bottom-button" onclick="window.location.href='/fdm/fdm'">ACL</div>
 <div class="bottom-button" onclick="window.location.href='/eu/eu'">UEFA</div>
+<div class="bottom-button" onclick="window.location.href='/gvid/gvid'">Liga 2</div>
