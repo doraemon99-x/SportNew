@@ -12,6 +12,7 @@
 <div class="bottom-button" onclick="window.location.href='/mas/mas'">MSL</div>
 <div class="bottom-button" onclick="window.location.href='/bri/bri'">Liga 1</div>
 <div class="bottom-button" onclick="window.location.href='/fm/fm'">Friendly Match</div>
+<div class="bottom-button" onclick="window.location.href='/af/af'">AFF</div>
 
 <div class="bottom-button" onclick="window.location.href='/ep/ep'">EPL</div>
 <div class="bottom-button" onclick="window.location.href='/sp/sp'">LaLiga</div>
