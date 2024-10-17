@@ -20,3 +20,9 @@
 <div class="bottom-button" onclick="window.location.href='/bds/bds'">Bundesliga</div>
 <div class="bottom-button" onclick="window.location.href='/motogp/mgp'">MotoGP</div>
 <div class="bottom-button" onclick="window.location.href='/kovo/kovo'">kovo</div>
+
+<div class="bottom-button" onclick="window.location.href='/ev/ev'">TIMNAS</div>
+        <div class="bottom-button" onclick="window.location.href='/af/af'">AFF</div>
+        <div class="bottom-button" onclick="window.location.href='/wc/wc'">FIFA</div>
+        <div class="bottom-button" onclick="window.location.href='/eu/eu'">UEFA</div>
+        <div class="bottom-button" onclick="window.location.href='/cn/cn'">CONMEBOL</div>
