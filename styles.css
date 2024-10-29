@@ -1,0 +1,183 @@
+/* Gaya untuk body */
+body {
+  background-color: #01181b; /* Warna latar belakang */
+  margin: 0; /* Menghilangkan margin default */
+  font-family: Arial, sans-serif; /* Menetapkan font default */
+}
+
+/* Gaya untuk navigasi */
+nav {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #333;
+  color: #fff;
+  padding: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+nav img {
+  max-height: 40px;
+  transition: transform 0.3s;
+}
+
+nav img:hover {
+  transform: scale(1.05);
+}
+
+/* Gaya untuk info bar */
+.info-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #0673b3;
+  padding: 10px;
+  font-size: 16px;
+  gap: 10px;
+  white-space: nowrap;
+}
+
+.clock {
+  font-weight: bold;
+}
+
+#clock-display {
+  color: #fff;
+  background-color: #8f0404;
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.marquee-container {
+  flex-grow: 1;
+  overflow: hidden;
+  position: relative;
+  padding-left: 10px;
+}
+
+.marquee {
+  display: inline-block;
+  white-space: nowrap;
+  animation: marquee 40s linear infinite;
+  color: #fff;
+}
+
+@keyframes marquee {
+  0% { transform: translateX(100%); }
+  100% { transform: translateX(-100%); }
+}
+
+/* Gaya untuk text-container */
+#text-container {
+  text-align: center;
+  font-size: 24px;
+  font-weight: bold;
+  color: #ffffff;
+  margin-top: 20px;
+  margin-bottom: 10px;
+  background-color: #012503; /* Latar belakang kuning untuk text-container */
+  padding: 10px; /* Memberikan padding */
+  border-radius: 5px; /* Membuat sudut membulat */
+}
+
+/* Gaya untuk button-container */
+#button-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  background-color: #01301a; /* Latar belakang hijau untuk button-container */
+  padding: 10px; /* Memberikan padding */
+  border-radius: 5px; /* Membuat sudut membulat */
+}
+
+.bottom-button {
+  background-color: #0673b3;
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  text-align: center;
+  min-width: 80px;
+  transition: background-color 0.3s ease, transform 0.2s;
+}
+
+.bottom-button:hover {
+  background-color: #005a8c;
+  transform: translateY(-2px);
+}
+
+/* Gaya untuk live chat container */
+#livechat-container {
+  margin-top: 20px;
+  text-align: center;
+}
+
+#livechat-container h2 {
+  text-align: center;
+  font-size: 24px;
+  font-weight: bold;
+  color: #ffffff;
+  margin-top: 20px;
+  margin-bottom: 10px;
+  background-color: #012503; /* Latar belakang kuning untuk text-container */
+  padding: 10px; /* Memberikan padding */
+  border-radius: 5px; /* Membuat sudut membulat */
+}
+
+/* Mengatur iframe live chat */
+#cbox-frame {
+  width: 100%;
+  height: 400px; /* Atur tinggi iframe sesuai kebutuhan */
+  border: none; /* Menghilangkan border default */
+}
+
+/* Gaya untuk trakteer container */
+#trakteer-container {
+  margin-top: 20px;
+  text-align: center;
+}
+
+#trakteer-container iframe {
+  width: 280px; /* Lebar iframe */
+  height: 200px; /* Tinggi iframe */
+  border: solid 0px #A6A6A6; /* Border iframe */
+}
+
+/* Responsif untuk layar kecil */
+@media (max-width: 768px) {
+  .bottom-button {
+    padding: 8px 16px;
+    font-size: 14px;
+  }
+
+  #clock-display {
+    font-size: 20px;
+    padding: 4px 8px;
+  }
+
+  .marquee {
+    animation: marquee 15s linear infinite;
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .bottom-button {
+    padding: 6px 12px;
+    font-size: 12px;
+  }
+
+  #clock-display {
+    font-size: 18px;
+    padding: 4px 8px;
+  }
+
+  .marquee {
+    font-size: 12px;
+    animation: marquee 20s linear infinite;
+  }
+}
