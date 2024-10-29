@@ -1,0 +1,95 @@
+body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0;
+  background-color: #000; /* Mengubah warna latar belakang menjadi hitam */
+}
+#nav-logo {
+  width: 100%;
+  background-color: #333;
+  text-align: center;
+  padding: 10px 0;
+}
+#nav-logo img {
+  width: 186px;
+  height: 57px;
+}
+#content-frame {
+  width: 100%; /* Mengubah lebar iframe menjadi 80% dari lebar layar */
+  height: 50vh; /* Mengubah tinggi iframe menjadi 50% dari tinggi layar */
+  
+}
+#text-container {
+  text-align: center;
+  color: #fff; /* Mengubah warna teks menjadi putih */
+  margin-top: 20px; /* Menambahkan jarak antara container iframe dan container teks */
+  background-color: #1a200f; /* Mengubah warna latar belakang container teks menjadi abu-abu */
+  width: 100%; /* Mengatur lebar container teks menjadi 100% */
+  padding: 20px 0; /* Menambahkan padding atas dan bawah pada container teks */
+}
+#button-container {
+  display: ruby;
+  /*flex-direction: row; /* Mengubah arah urutan tombol ke samping kanan */
+  /*justify-content: space-around; */
+  width: 100%;
+  
+  background-color: #385c1a; /* Mengubah warna latar belakang container tombol menjadi merah */
+}
+.bottom-button {
+  background-color: #700474;
+  color: white;
+  padding: 10px 20px;
+  font-size: 16px;
+  border: none;
+  cursor: pointer;
+  border-radius: 15px;
+  margin: 2px;
+  margin-top: 8px;
+  margin-bottom: 5px;
+}
+.bottom-button:hover {
+  background-color: #f3820f;
+}
+#cbox-frame {
+  width: 100%; /* Mengatur lebar iframe menjadi 100% dari lebar layar */
+  height: 50vh; /* Mengubah tinggi iframe menjadi 50% dari tinggi layar */
+  margin-top: 8px; /* Membuat iframe berada di tengah */
+}
+#info-container {
+  display: flex; /* Mengatur container jam dan teks berjalan bersebelahan */
+  width: 100%; /* Mengatur lebar container info menjadi 100% dari lebar layar */
+  justify-content: space-between;
+  padding: 3px 0;
+}
+#clock-container {
+  background-color: #FF0000; /* Mengubah warna latar belakang container jam menjadi merah */
+  color: #fff; /* Mengubah warna teks menjadi putih */
+  padding: 17px;
+  text-align: center;
+  width: 126px;
+}
+#marquee-container {
+  background-color: #2d797e; /* Mengubah warna latar belakang container teks berjalan menjadi abu-abu */
+  color: #fff; /* Mengubah warna teks menjadi putih */
+  padding: 10px;
+  width: 100%;
+}
+#marquee-text {
+  width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  position: relative;
+  font-size: x-large;
+}
+#trakteer-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%; /* Mengatur lebar container menjadi 100% dari lebar layar */
+  padding: 20px 0; /* Menambahkan padding atas dan bawah pada container */
+  background-color: #888; /* Mengubah warna latar belakang container menjadi abu-abu */
+  color: #fff; /* Mengubah warna teks menjadi putih */
+}
