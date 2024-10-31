@@ -7,13 +7,13 @@
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://sport.tipiku.my.id/motogp/mgp</loc>
+    <loc>https://sport.tipiku.my.id/motogp/mgp.html</loc>
     <lastmod>2024-10-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://sport.tipiku.my.id/ep/ep</loc>
+    <loc>https://sport.tipiku.my.id/ep/ep.html</loc>
     <lastmod>2024-10-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
