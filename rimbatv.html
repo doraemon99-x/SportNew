@@ -1,58 +1,51 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id-ID" class="theme light classic">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>RimbaTTV</title>
-  <link rel="stylesheet" href="styles.css"> <!-- Add your CSS file here -->
+    <meta charset="utf-8">
+    <title>Daftar Harga Produk AditiaCloud</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="styles/vendor.css" rel="stylesheet">
+    <link href="styles/main.css" rel="stylesheet">
+    <link rel="icon" href="images/icon.png" sizes="192x192">
+    <script>
+        // Mencegah klik kanan pada gambar atau media lainnya
+        document.addEventListener('contextmenu', function(e) {
+            if (['IMG', 'IMAGE', 'VIDEO', 'SVG', 'PICTURE'].includes(e.target.tagName)) {
+                e.preventDefault();
+            }
+        });
+    </script>
 </head>
 <body>
-  <header>
-    <div class="header-container">
-      <h1>RimbaTTV</h1>
-      <nav>
-        <ul>
-          <li><a href="#">Home</a></li>
-          <li><a href="#">About</a></li>
-          <li><a href="#">Contact</a></li>
-        </ul>
-      </nav>
-      <form>
-        <input type="search" placeholder="Search...">
-        <button type="submit">Search</button>
-      </form>
-    </div>
-  </header>
-  <main>
-    <div class="post-container">
-      <h2>Post Title</h2>
-      <img src="image-url" alt="Post Image">
-      <p>Post Text...</p>
-    </div>
-    <!-- Add more post containers here -->
-  </main>
-  <aside>
-    <h2>Categories</h2>
-    <ul>
-      <li><a href="#">Category 1</a></li>
-      <li><a href="#">Category 2</a></li>
-      <!-- Add more categories here -->
-    </ul>
-    <h2>Popular Posts</h2>
-    <ul>
-      <li><a href="#">Popular Post 1</a></li>
-      <li><a href="#">Popular Post 2</a></li>
-      <!-- Add more popular posts here -->
-    </ul>
-    <!-- Add more widgets here -->
-  </aside>
-  <footer>
-    <p>&copy; 2023 RimbaTTV</p>
-    <ul>
-      <li><a href="#" target="_blank"><i class="fa fa-facebook"></i></a></li>
-      <li><a href="#" target="_blank"><i class="fa fa-twitter"></i></a></li>
-      <!-- Add more social media links here -->
-    </ul>
-  </footer>
+    <!-- Header Halaman -->
+    <header>
+        <h1>Daftar Harga Produk AditiaCloud</h1>
+    </header>
+
+    <!-- Konten Daftar Harga -->
+    <main>
+        <section>
+            <h2>Produk Dedicated Storage</h2>
+            <ul>
+                <li>Dedicated 100GB - Rp.150.000 / Tahun</li>
+                <li>Dedicated 200GB - Rp.250.000 / Tahun</li>
+                <li>Dedicated 2TB - Rp.500.000 / Tahun</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Paket Office 365</h2>
+            <ul>
+                <li>Personal 1TB - Rp.350.000 / Tahun</li>
+                <li>Family 6TB - Rp.500.000 / Tahun</li>
+            </ul>
+        </section>
+    </main>
+
+    <!-- JavaScript untuk Pengaturan Tema -->
+    <script>
+        document.documentElement.classList.replace('light', 
+            window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    </script>
 </body>
 </html>
