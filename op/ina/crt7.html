@@ -49,13 +49,20 @@
     <script type="text/javascript">
       // Inisialisasi pemutar FLV
       let player = new window.Player({
-        id: 'mse',
-        isLive: true, // Streaming langsung
-        playsinline: true, // Mendukung mode inline pada mobile
-        url: 'https://vid.tipiku.biz.id/br2',
-        autoplay: true, // Video otomatis diputar
-        height: window.innerHeight,
-        width: window.innerWidth,
+        "id": "mse",
+          "url": "https://vid.tipiku.biz.id/br2",
+          "playsinline": true,
+          "poster": "",
+          "plugins": [],
+          "isLive": true,
+          "fluid": false,
+          "pip": true,
+          "x5-video-orientation": "landscape",
+          "autoplay": true,
+          "x5-video-player-fullscreen": "true",
+          "x5-video-player-type": "h5",
+          height: window.innerHeight,
+          width: window.innerWidth,
         plugins: [window.FlvPlayer]
       });
       player.getPlugin('fullscreen').changeFullScreen()
