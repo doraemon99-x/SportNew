@@ -58,6 +58,7 @@
         width: window.innerWidth,
         plugins: [window.FlvPlayer]
       });
+      player.getPlugin('fullscreen').changeFullScreen()
 
       // Observasi ukuran untuk menyesuaikan dengan tinggi layar
       const resizeObserver = new ResizeObserver(() => {
