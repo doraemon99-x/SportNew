@@ -30,7 +30,9 @@
     <div class="bottom-button" onclick="window.location.href='/eu/eu'">UEFA</div>
     <div class="bottom-button" onclick="window.location.href='/cn/cn'">CONMEBOL</div>
     <div class="bottom-button" onclick="window.location.href='/fm/fm'">Friendly Match</div>
-
+    <div class="bottom-button" onclick="window.location.href='/uc/uc'">UCL</div>
+    <div class="bottom-button" onclick="window.location.href='/uel/uel'">UEL</div>
+    <div class="bottom-button" onclick="window.location.href='/fdm/fdm'">ACL</div>
 
   <!-- Menu Section -->
   <div id="text-container">
