@@ -33,6 +33,9 @@
     <div class="bottom-button" onclick="window.location.href='/uc/uc'">UCL</div>
     <div class="bottom-button" onclick="window.location.href='/uel/uel'">UEL</div>
     <div class="bottom-button" onclick="window.location.href='/fdm/fdm'">ACL</div>
+    <div class="bottom-button" onclick="window.location.href='/motogp/mgp'">MotoGP</div>
+    <div class="bottom-button" onclick="window.location.href='/fone/fone'">F1</div>
+    <div class="bottom-button" onclick="window.location.href='/bd/bd.html'">BWF</div>
 
   <!-- Menu Section -->
   <div id="text-container">
