@@ -52,3 +52,5 @@
 <div class="bottom-button" onclick="loadContent('/op/wc/crt8')">CH 8</div>
 <div class="bottom-button" onclick="loadContent('/op/wc/crt9')">CH 9</div>
 </div>
+
+<div class="bottom-button" onclick="loadContent('/op/wc/rctipp')">MAIN 2 [All Device]</div>
