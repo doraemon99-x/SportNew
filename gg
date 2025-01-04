@@ -56,3 +56,4 @@
 
 <div class="bottom-button" onclick="loadContent('/op/wc/rctipp')">MAIN 2 [All Device]</div>
 <div class="bottom-button" onclick="loadContent('/op/wc/m5')">MAIN 3 [Android-PC]</div>
+<div class="bottom-button" onclick="window.location.href='/event/event'">EVENT</div>
