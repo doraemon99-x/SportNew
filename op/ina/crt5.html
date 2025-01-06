@@ -42,28 +42,23 @@
       src="https://stream.trakteer.id/running-text-default.html?rt_theme=default&rt_messages=Ayo+dukung+terus+%7Busername%7D+di+%7Btrlink%7D+dan+beri+semangat+Tim+Kebangganmu...&creator_name=tipistream&page_url=trakteer.id/Tipistream&mod=3&key=trstream-yvOAUf9Z6t5e7jt9qBUw&hash=zb8r4zrrg6v569an" 
       frameborder="0">
     </iframe>
-
-    <script src="https://unpkg.byted-static.com/xgplayer/3.0.10/dist/index.min.js" charset="utf-8"></script>
-    <script src="https://unpkg.byted-static.com/xgplayer-flv/3.0.10/dist/index.min.js" charset="utf-8"></script>
-
+    <div id="mse"></div>
+    <script src="//unpkg.byted-static.com/xgplayer/3.0.10/dist/index.min.js" charset="utf-8"></script>
+    <script src="//unpkg.byted-static.com/xgplayer-hls.js/3.0.0-alpha.1/dist/index.min.js" charset="utf-8"></script>
     <script type="text/javascript">
-      // Inisialisasi pemutar FLV
-      let player = new window.Player({
-        "id": "mse",
+      new window.Player({
+          "id": "mse",
           "url": "https://vid.tipiku.biz.id/br5",
-          "playsinline": true,
-          "poster": "",
-          "plugins": [],
-          "isLive": true,
-          "fluid": true,
-          "pip": true,
-          "autoplay": true,
-          "rotate": {
-                    "clockwise": false,
-                    "innerRotate": true},
+          "isLive": "true",
+          "autoplay": "true",
+          "fluid": "true",
+          "pip": "true",
+          "x5-video-player-fullscreen": "true",
+          "x5-video-orientation": "landscape",
+          "playsinline": "true",
           height: window.innerHeight,
           width: window.innerWidth,
-        plugins: [window.FlvPlayer]
+          plugins: [window.HlsJsPlugin]
       });
       player.getPlugin('fullscreen').changeFullScreen()
 
