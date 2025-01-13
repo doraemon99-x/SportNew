@@ -52,12 +52,6 @@
                 drm: {
                     clearKeys: clearKeyConfig.keys // Clear Key DRM configuration
                 }
-            },
-            shakaOnBeforeLoad: function(shakaPlayer) {
-                // Example of setting up a custom filter or networking behavior
-                shakaPlayer.getNetworkingEngine().registerRequestFilter((type, request) => {
-                    console.log('Custom networking filter applied', request);
-                });
             }
         });
     </script>
