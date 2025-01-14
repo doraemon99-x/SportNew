@@ -36,7 +36,9 @@
     <div class="bottom-button" onclick="window.location.href='/motogp/mgp'">MotoGP</div>
     <div class="bottom-button" onclick="window.location.href='/fone/fone'">F1</div>
     <div class="bottom-button" onclick="window.location.href='/bd/bd.html'">BWF</div>
-
+    <div class="bottom-button" onclick="loadContent('/op/ina/crt6')">Audio Viet 1</div>
+    <div class="bottom-button" onclick="loadContent('/op/ina/crt7')">Audio Viet 2</div>
+    <div class="bottom-button" onclick="loadContent('/op/ina/crt8')">Audio Viet 3</div>
   <!-- Menu Section -->
   <div id="text-container">
     UEFA Europa League 03:00 WIB
