@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>LIVE EVENT STREAMING</title>
+    <script src='https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js'></script>
+    <script src="https://ssl.p.jwpcdn.com/player/v/8.31.0/jwplayer.js"></script>
+    <script> jwplayer.key = '7MeMRClEneUmFoHRO3u3ypzAZXlVgNtBE2pKDw==';</script>
+    <style type="text/css">
+        html, body {
+            height: 100%;
+            width: 100%;
+            padding: 0;
+            margin: 0;
+            position: relative;
+        }
+        .player {
+            height: 100%;
+            width: 100%;
+            padding: 0;
+        }
+        /* Widget Overlay */
+        #widget-overlay {
+            position: absolute;
+            bottom: 70px; /* Sesuaikan posisi jika perlu */
+            left: 0;
+            width: 100%;
+            height: auto;
+            z-index: 10000; /* Pastikan berada di atas video */
+            pointer-events: none; /* Agar tidak mengganggu interaksi dengan elemen lain */
+        }
+    </style>
+</head>
+<body>
+    <div id="player" class="player"></div>
+    
+    <!-- Menyematkan Widget Overlay -->
+    <iframe id="widget-overlay" src="https://stream.trakteer.id/running-text-default.html?rt_type=top-supporters&rt_count=10&rt_theme=default&rt_interval=90&rt_messages=Ayo+dukung+terus+%7Busername%7D+di+%7Btrlink%7D+dan+beri+semangat+Tim+Kebanggaanmu...&rt_txtshadow=true&creator_name=tipistream&page_url=trakteer.id/Tipistream&mod=3&key=trstream-yvOAUf9Z6t5e7jt9qBUw&hash=zb8r4zrrg6v569an" frameborder="0"></iframe>
+
+    <script>
+        var playerInstance = jwplayer("player");
+
+        playerInstance.setup({
+            playlist: [{
+            "title": "TipiStream",
+            "image": 'https://i.postimg.cc/3NLwz2zj/banntipistream.png',
+            "sources": [
+                {
+                    "default": false,
+                    "type": "dash",
+                    "file": 'https://tipistream.my.id/drm/dash/17623_stream.mpd?hdnts=exp=1737302693~acl=/drm/dash/17623*~id=164435459~hmac=3a9bd01824a9cabcc806f011e2c560867deab1cd6545439e167abf259bb65aa3&min=react_tv_min',
+                    "drm": {
+						"widevine": {
+							"url": "https://license.vidio.com/ri/licenseManager.do?pallycon-customdata-v2=eyJkcm1fdHlwZSI6IldpZGV2aW5lIiwic2l0ZV9pZCI6Ik1RRFQiLCJ1c2VyX2lkIjoiMTY0NDM1NDU5IiwiY2lkIjoibGl2ZV8xNzc3NV8xN2U0ZjMzZTlmMzkiLCJwb2xpY3kiOiJkck1sdUt3aytxbTdPdGJUdHZtSHFRWUNweCtqM1lESm5EZWhrd0V2cGY2ZFRnZS9Jb0ZOblQ0MHVSZXRCVW9TSkUrWG5QYnZxU29hTDBTVStEZHEzbmNCV05FY3diaWdTM1RIUEVzdUlqdG9Pby9uREgwa25LbXgrUGxZb1NnK29HTEYxNC9QaTUwN1FGQk1UQnVLQW4rQjV4b3Y3OWZnZGVxR1QwTVV6OFdGMTViUk44OWpyZ1BuNVFXQXU2alN4ZURhTm9pdnY1UUduZlgza01yMVBtV0ZSMll1ZWZnWE5OZlZQQjRVZlVJNDFmN3pWN0sxTlZMVjNaemF2Rm9FRkM3MTZDcXZEeUthWlhTVzZGdjRkQkN3aVhGSzh2VmxhUlVLMUhTNzBVRDV5ZS9jQUE3andLendaZ256Q2NMaVFLb1ZQVGFnb0JUWjd1RjBRRmJiN25USmswZVdYUHJkcm9SYW9rM1ZXT2YzMHFMbXFYbCt1Y0VSOVVUSmpiNEVHMk1zOU1YcjNwWGhJenBxT2tzT2RabTh5R3Roa0hNUVBZUjRGTjJhMVA2R3RuZXBmcjZZOW9sNkV0b3g1Q0w4WXZzSXI5ZytJYXljQ25JTGFWRU9SNFF1TjVWVmtMMmlScVVrUW9pWkJQbzJQbU13eGpKRmVzQVduUGQ1dVVUQllTVFZVTE5MRmZPNWtVMStLZCtqa1p5U0FMQnNQZFRKWVU3UTFMaWFQbXRxUmdPSzlvek5wWDZWYXBUTlBCclpWV0FqbGI4bU0xVW5vK2F4dGlyOWFYNDFMWWpEUHZWN3ZjdG"
+						},
+                    },
+                    preload: "auto",
+                }]
+        }],
+            width: "100%",
+            height: "100%",
+            autostart: true,
+            mute: false,
+            volume: 100,
+            logo: {
+                file: '/img/tipistreamnew.png',
+                link: '',
+                hide: 'false',
+                margin: '35',
+                over: '15',
+                out: '79.5',
+                position: 'bottom-right'
+            },
+            skin: {
+                controlbar: {
+                    background: 'rgba(0,0,0,0)',
+                    icons: '#FFFFFF',
+                    iconsActive: '#FF0000',
+                    text: '#FFFFFF',
+                },
+                url: 'https://cdn.jsdelivr.net/gh/kiprox/cf-gdplay@master/skins/netplex.css',
+                name: 'Netflix',
+            },
+            captions: {
+                color: "#f3f368",
+                fontSize: 16,
+                backgroundOpacity: 0,
+                fontfamily: "Helvetica",
+                edgeStyle: "raised"
+            },
+            pipIcon: {},
+            cast: {}
+        });
+    </script>
+</body>
+</html>
