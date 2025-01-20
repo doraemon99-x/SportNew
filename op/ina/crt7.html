@@ -2,88 +2,58 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>LIVE EVENT STREAMING</title>
-    <script src='https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js'></script>
-    <script src="https://ssl.p.jwpcdn.com/player/v/8.31.0/jwplayer.js"></script>
-    <script> jwplayer.key = '7MeMRClEneUmFoHRO3u3ypzAZXlVgNtBE2pKDw==';</script>
-    <style type="text/css">
-        html, body {
-            height: 100%;
-            width: 100%;
-            padding: 0;
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clappr Dash Shaka Player with Widevine DRM</title>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clappr@latest/dist/clappr.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/clappr/dash-shaka-playback@latest/dist/dash-shaka-playback.js"></script>
+    <style>
+        body {
             margin: 0;
-            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: black;
         }
-        .player {
+        #player {
+            width: 100%;
             height: 100%;
-            width: 100%;
-            padding: 0;
-        }
-        /* Widget Overlay */
-        #widget-overlay {
-            position: absolute;
-            bottom: 70px; /* Sesuaikan posisi jika perlu */
-            left: 0;
-            width: 100%;
-            height: auto;
-            z-index: 10000; /* Pastikan berada di atas video */
-            pointer-events: none; /* Agar tidak mengganggu interaksi dengan elemen lain */
+            max-width: 100%;
+            max-height: 100%;
         }
     </style>
 </head>
 <body>
-    <div id="player" class="player"></div>
-    
-    <!-- Menyematkan Widget Overlay -->
-    <iframe id="widget-overlay" src="https://stream.trakteer.id/running-text-default.html?rt_theme=default&rt_messages=Ayo+dukung+terus+%7Busername%7D+di+%7Btrlink%7D+dan+beri+semangat+Tim+Kebangganmu...&creator_name=tipistream&page_url=trakteer.id/Tipistream&mod=3&key=trstream-yvOAUf9Z6t5e7jt9qBUw&hash=zb8r4zrrg6v569an" frameborder="0"></iframe>
-
+    <div id="player"></div>
     <script>
-        var playerInstance = jwplayer("player");
+        // Widevine DRM Configuration
+        var widevineConfig = {
+            licenseServerUrl: 'https://mew.tipiku.workers.dev/?id=17623', // Replace with your actual Widevine license server URL
+            // You might need to include additional headers for authentication or security
+        };
 
-        playerInstance.setup({
-            playlist: [{
-                "title": "TipiStream",
-                "image": 'https://i.postimg.cc/3NLwz2zj/banntipistream.png',
-                "sources": [{
-                    "file": 'https://vid.tipiku.biz.id/brviet2',
-                    primary: 'html5',
-                    type: 'm3u8',
-                    preload: "true",
-                }]
-            }],
-            width: "100%",
-            height: "100%",
-            autostart: true,
+        var player = new Clappr.Player({
+            source: 'https://vid.tipiku.biz.id/cpr.mpd', // DASH Manifest URL
+            parentId: '#player',
+            autoPlay: true,
             mute: false,
-            volume: 25,
-            logo: {
-                file: '/img/tipistreamnew.png',
-                link: '',
-                hide: 'false',
-                margin: '35',
-                over: '15',
-                out: '79.5',
-                position: 'bottom-right'
-            },
-            skin: {
-                controlbar: {
-                    background: 'rgba(0,0,0,0)',
-                    icons: '#FFFFFF',
-                    iconsActive: '#FF0000',
-                    text: '#FFFFFF',
+            watermark: "/img/tipistreamnew.png",
+            position: 'top-right',
+            width: '100%',
+            height: '100%',
+            plugins: [DashShakaPlayback],
+            shakaConfiguration: {
+                preferredAudioLanguage: 'en', // Preferred audio language
+                streaming: {
+                    rebufferingGoal: 15, // Rebuffering goal in seconds
                 },
-                url: 'https://cdn.jsdelivr.net/gh/kiprox/cf-gdplay@master/skins/netplex.css',
-                name: 'Netflix',
-            },
-            captions: {
-                color: "#f3f368",
-                fontSize: 16,
-                backgroundOpacity: 0,
-                fontfamily: "Helvetica",
-                edgeStyle: "raised"
-            },
-            pipIcon: {},
-            cast: {}
+                drm: {
+                    widevine: {
+                        serverURL: widevineConfig.licenseServerUrl, // Widevine license server URL
+                        // Additional configuration may be required based on the server setup
+                    }
+                }
+            }
         });
     </script>
 </body>
