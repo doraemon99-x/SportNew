@@ -59,3 +59,12 @@
 <div class="bottom-button" onclick="loadContent('/op/wc/rctipp')">MAIN 2 [All Device]</div>
 <div class="bottom-button" onclick="loadContent('/op/wc/m5')">MAIN 3 [Android-PC]</div>
 <div class="bottom-button" onclick="window.location.href='/event/event'">EVENT</div>
+
+
+<div class="bottom-button" onclick="loadContent('/op/eu/crt3')">CH 3</div>
+<div class="bottom-button" onclick="loadContent('/op/eu/crt4')">CH 4</div>
+<div class="bottom-button" onclick="loadContent('/op/eu/crt5')">CH 5</div>
+<div class="bottom-button" onclick="loadContent('/op/eu/crt6')">CH 6</div>
+<div class="bottom-button" onclick="loadContent('/op/eu/crt7')">CH 7</div>
+<div class="bottom-button" onclick="loadContent('/op/eu/crt8')">CH 8</div>
+<div class="bottom-button" onclick="loadContent('/op/eu/crt9')">CH 9</div>
