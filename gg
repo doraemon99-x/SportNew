@@ -13,6 +13,8 @@
 <div class="bottom-button" onclick="window.location.href='/bri/bri'">Liga 1</div>
 <div class="bottom-button" onclick="window.location.href='/fm/fm'">Friendly Match</div>
 <div class="bottom-button" onclick="window.location.href='/af/af'">AFF</div>
+<div class="bottom-button" onclick="window.location.href='/spl/spl'">SPL</div>
+
 
 <div class="bottom-button" onclick="window.location.href='/uc/uc'">UCL</div>
 <div class="bottom-button" onclick="window.location.href='/uel/uel'">UEL</div>
