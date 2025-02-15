@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Clappr HLS Player</title>
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clappr@latest/dist/clappr.min.js"></script>
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clappr-pip-plugin@latest/dist/clappr-pip-plugin.js"></script>
+    <title>Clappr HLS Player - Fullscreen Landscape</title>
+    <script src="https://cdn.jsdelivr.net/npm/clappr@latest/dist/clappr.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/clappr-pip-plugin@latest/dist/clappr-pip-plugin.js"></script>
     <style>
         body {
             margin: 0;
@@ -14,6 +14,7 @@
             align-items: center;
             height: 100vh;
             background: black;
+            overflow: hidden;
         }
         #player {
             width: 100%;
@@ -33,17 +34,42 @@
             parentId: '#player',
             autoPlay: true,
             mute: false,
-            watermark: "/img/tipistreamnew.png",
+            watermark: "https://example.com/img/tipistreamnew.png",
             position: 'top-right',
             height: '100%',
             width: '100%',
             playback: {
-                playInline: true, // Untuk memutar video di dalam elemen
-                hlsjsConfig: { // Konfigurasi tambahan untuk HLS.js di dalam Clappr
+                playInline: true,
+                hlsjsConfig: {
                     enableWorker: true,
                 }
             },
-            poster: 'https://i.postimg.cc/3NLwz2zj/banntipistream.png', // Tambahkan gambar jika diperlukan (opsional)
+            poster: 'https://i.postimg.cc/3NLwz2zj/banntipistream.png',
+        });
+
+        // Fungsi untuk mengunci orientasi layar ke landscape
+        function lockOrientationLandscape() {
+            if (screen.orientation && screen.orientation.lock) {
+                screen.orientation.lock('landscape').catch((err) => {
+                    console.warn('Gagal mengunci orientasi:', err);
+                });
+            }
+        }
+
+        // Fungsi untuk membuka kunci orientasi layar
+        function unlockOrientation() {
+            if (screen.orientation && screen.orientation.unlock) {
+                screen.orientation.unlock();
+            }
+        }
+
+        // Event Listener untuk fullscreen
+        player.on(Clappr.Events.PLAYER_FULLSCREEN, () => {
+            lockOrientationLandscape(); // Kunci ke landscape saat fullscreen
+        });
+
+        player.on(Clappr.Events.PLAYER_EXIT_FULLSCREEN, () => {
+            unlockOrientation(); // Buka kunci orientasi saat keluar fullscreen
         });
     </script>
 </body>
