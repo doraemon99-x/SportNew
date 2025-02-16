@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Clappr Dash Shaka Player - Fullscreen Landscape & Quality Selector</title>
+    <title>Clappr Dash Shaka Player - Fullscreen Landscape</title>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clappr@latest/dist/clappr.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/clappr/dash-shaka-playback@latest/dist/dash-shaka-playback.js"></script>
     <style>
@@ -22,18 +22,6 @@
             max-width: 100%;
             max-height: 100%;
         }
-        /* Quality Selector Style */
-        #qualitySelector {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            z-index: 9999;
-            background: rgba(0, 0, 0, 0.7);
-            color: white;
-            border: none;
-            padding: 5px;
-            border-radius: 4px;
-        }
     </style>
 </head>
 <body>
@@ -50,7 +38,7 @@
         var player = new Clappr.Player({
             source: 'https://vid.tipiku.biz.id/cpr.mpd', // DASH Manifest URL
             parentId: '#player',
-            autoPlay: true,
+            autoPlay: false,
             mute: false,
             watermark: "/img/tipistreamnew.png",
             position: 'top-right',
@@ -60,7 +48,7 @@
             shakaConfiguration: {
                 streaming: {
                     abr: {
-                        enabled: false  // Dinonaktifkan agar pengguna bisa memilih manual
+                        enabled: false
                     }
                 },
                 drm: {
@@ -92,34 +80,6 @@
 
         player.on(Clappr.Events.PLAYER_EXIT_FULLSCREEN, () => {
             unlockOrientation(); // Buka kunci orientasi saat keluar fullscreen
-        });
-
-        // Event Listener saat player siap
-        player.on(Clappr.Events.PLAYER_READY, function() {
-            var shakaPlayer = player.core.getCurrentContainer().playback.shakaPlayer;
-            if (shakaPlayer) {
-                // Mendapatkan daftar kualitas video yang tersedia
-                var videoTracks = shakaPlayer.getVariantTracks();
-                console.log('Available Qualities:', videoTracks);
-
-                // Membuat Quality Selector
-                var qualitySelector = document.createElement('select');
-                qualitySelector.id = 'qualitySelector';
-
-                videoTracks.forEach(function(track) {
-                    var option = document.createElement('option');
-                    option.value = track.id;
-                    option.textContent = `${track.height}p (${Math.round(track.bandwidth / 1000)} kbps)`;
-                    qualitySelector.appendChild(option);
-                });
-
-                qualitySelector.addEventListener('change', function(event) {
-                    var selectedTrackId = parseInt(event.target.value);
-                    shakaPlayer.selectVariantTrack(videoTracks.find(track => track.id === selectedTrackId), true);
-                });
-
-                document.body.appendChild(qualitySelector);
-            }
         });
     </script>
 </body>
