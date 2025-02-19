@@ -2,88 +2,75 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>LIVE EVENT STREAMING</title>
-    <script src='https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js'></script>
-    <script src="https://ssl.p.jwpcdn.com/player/v/8.31.0/jwplayer.js"></script>
-    <script> jwplayer.key = '7MeMRClEneUmFoHRO3u3ypzAZXlVgNtBE2pKDw==';</script>
-    <style type="text/css">
-        html, body {
-            height: 100%;
-            width: 100%;
-            padding: 0;
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clappr HLS Player - Fullscreen Landscape</title>
+    <script src="https://pub-15eb45780ee64310bef40daf186720a3.r2.dev/clappr.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/clappr-pip-plugin@latest/dist/clappr-pip-plugin.js"></script>
+    <style>
+        body {
             margin: 0;
-            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: black;
+            overflow: hidden;
         }
-        .player {
+        #player {
+            width: 100%;
             height: 100%;
-            width: 100%;
-            padding: 0;
-        }
-        /* Widget Overlay */
-        #widget-overlay {
-            position: absolute;
-            bottom: 70px; /* Sesuaikan posisi jika perlu */
-            left: 0;
-            width: 100%;
-            height: auto;
-            z-index: 10000; /* Pastikan berada di atas video */
-            pointer-events: none; /* Agar tidak mengganggu interaksi dengan elemen lain */
+            max-width: 100%;
+            max-height: 100%;
         }
     </style>
 </head>
 <body>
-    <div id="player" class="player"></div>
-    
-    <!-- Menyematkan Widget Overlay -->
-    <iframe id="widget-overlay" src="https://stream.trakteer.id/running-text-default.html?rt_theme=default&rt_messages=Ayo+dukung+terus+%7Busername%7D+di+%7Btrlink%7D+dan+beri+semangat+Tim+Kebangganmu...&creator_name=tipistream&page_url=trakteer.id/Tipistream&mod=3&key=trstream-yvOAUf9Z6t5e7jt9qBUw&hash=zb8r4zrrg6v569an" frameborder="0"></iframe>
+    <div id="player"></div>
 
     <script>
-        var playerInstance = jwplayer("player");
-
-        playerInstance.setup({
-            playlist: [{
-                "title": "TipiStream",
-                "image": 'https://i.postimg.cc/3NLwz2zj/banntipistream.png',
-                "sources": [{
-                    "file": 'https://wc.tipiku.biz.id/wc9',
-                    primary: 'html5',
-                    type: 'm3u8',
-                    preload: "auto",
-                }]
-            }],
-            width: "100%",
-            height: "100%",
-            autostart: true,
+        const player = new Clappr.Player({
+            source: 'https://wc.tipiku.biz.id/wc9.m3u8',
+            plugins: [ClapprPIPPlugin],
+            parentId: '#player',
+            autoPlay: true,
             mute: false,
-            volume: 25,
-            logo: {
-                file: '/img/tipistreamnew.png',
-                link: '',
-                hide: 'false',
-                margin: '35',
-                over: '15',
-                out: '79.5',
-                position: 'bottom-right'
+            watermark: "/img/tipistreamnew.png",
+            position: 'bottom-left',
+            height: '100%',
+            width: '100%',
+            playback: {
+                minimumDvrSize: null,
+                playInline: true,
+                hlsjsConfig: {
+                    enableWorker: true,
+                }
             },
-            skin: {
-                controlbar: {
-                    background: 'rgba(0,0,0,0)',
-                    icons: '#FFFFFF',
-                    iconsActive: '#FF0000',
-                    text: '#FFFFFF',
-                },
-                url: 'https://cdn.jsdelivr.net/gh/kiprox/cf-gdplay@master/skins/netplex.css',
-                name: 'Netflix',
-            },
-            captions: {
-                color: "#f3f368",
-                fontSize: 16,
-                backgroundOpacity: 0,
-                fontfamily: "Helvetica",
-                edgeStyle: "raised"
-            },
-            pipIcon: {},
-            cast: {}
+            poster: 'https://i.postimg.cc/3NLwz2zj/banntipistream.png',
+        });
+
+        // Fungsi untuk mengunci orientasi layar ke landscape
+        function lockOrientationLandscape() {
+            if (screen.orientation && screen.orientation.lock) {
+                screen.orientation.lock('landscape').catch((err) => {
+                    console.warn('Gagal mengunci orientasi:', err);
+                });
+            }
+        }
+
+        // Fungsi untuk membuka kunci orientasi layar
+        function unlockOrientation() {
+            if (screen.orientation && screen.orientation.unlock) {
+                screen.orientation.unlock();
+            }
+        }
+
+        // Event Listener untuk fullscreen
+        player.on(Clappr.Events.PLAYER_FULLSCREEN, () => {
+            lockOrientationLandscape(); // Kunci ke landscape saat fullscreen
+        });
+
+        player.on(Clappr.Events.PLAYER_EXIT_FULLSCREEN, () => {
+            unlockOrientation(); // Buka kunci orientasi saat keluar fullscreen
         });
     </script>
 </body>
