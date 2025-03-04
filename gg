@@ -15,6 +15,11 @@
 <div class="bottom-button" onclick="window.location.href='/af/af'">AFF</div>
 <div class="bottom-button" onclick="window.location.href='/spl/spl'">SPL</div>
 
+<div class="bottom-button" onclick="window.location.href='/nba/nba'">NBA</div>
+   <div class="bottom-button" onclick="window.location.href='/wwe/wwe'">WWE</div>
+   <div class="bottom-button" onclick="window.location.href='/pro/pro'">ProLiga</div>
+   <div class="bottom-button" onclick="window.location.href='/spl/spl'">SPL</div>
+
 
 <div class="bottom-button" onclick="window.location.href='/uc/uc'">UCL</div>
 <div class="bottom-button" onclick="window.location.href='/uel/uel'">UEL</div>
