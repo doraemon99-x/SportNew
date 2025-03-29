@@ -97,3 +97,9 @@
 <div class="bottom-button" onclick="window.location.href='/kovo/kovo'">kovo</div>
 
 <div class="bottom-button" onclick="loadContent('/op/vid/17623')">MAIN 1</div>
+
+<div class="bottom-button" onclick="window.location.href='/ev/ev'">TIMNAS</div>
+    <div class="bottom-button" onclick="window.location.href='/wc/wc'">FIFA</div>
+    <div class="bottom-button" onclick="window.location.href='/eu/eu'">UEFA</div>
+    <div class="bottom-button" onclick="window.location.href='/cn/cn'">CONMEBOL</div>
+    
