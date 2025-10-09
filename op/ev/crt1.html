@@ -19,24 +19,11 @@
             width: 100%;
             padding: 0;
         }
-        /* Widget Overlay */
-        #widget-overlay {
-            position: absolute;
-            bottom: 70px; /* Sesuaikan posisi jika perlu */
-            left: 0;
-            width: 100%;
-            height: auto;
-            z-index: 10000; /* Pastikan berada di atas video */
-            pointer-events: none; /* Agar tidak mengganggu interaksi dengan elemen lain */
-        }
+
     </style>
 </head>
 <body>
     <div id="player" class="player"></div>
-    
-    <!-- Menyematkan Widget Overlay -->
-    <iframe id="widget-overlay" src="" frameborder="0"></iframe>
-
     <script>
         var playerInstance = jwplayer("player");
 
