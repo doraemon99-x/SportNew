@@ -1,14 +1,13 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"/>
-  <title>LIVE STREAMING</title>
+  <meta charset="utf-8">
+  <title>HLS Player Embed</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <!-- Plyr CSS -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/plyr@3.7.8/dist/plyr.css" />
-
-  <!-- jQuery (optional) -->
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css">
+  <script src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 
   <style>
     html, body {
@@ -18,86 +17,64 @@
       background: #000;
       overflow: hidden;
     }
-
-    #player-wrapper {
-      position: fixed;
-      top: 0;
-      left: 0;
-      height: 100vh;
-      width: 100vw;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      background: #000;
+    .plyr {
+      width: 100%;
+      height: 100%;
     }
-
-    /* Video akan otomatis scale tanpa terpotong */
     video {
       width: 100%;
       height: 100%;
-      object-fit: contain;
+      object-fit: contain; /* ✅ Video tidak terpotong */
       background: #000;
     }
-
-    /* Overlay Widget */
-    #widget-overlay {
-      position: absolute;
-      bottom: 60px;
-      left: 0;
-      width: 100%;
-      height: auto;
-      z-index: 10000;
-      pointer-events: none;
-    }
-
-    /* Mobile Responsive Adjust */
-    @media (max-width: 768px) {
-      #widget-overlay {
-        bottom: 45px;
-      }
-    }
   </style>
-
 </head>
 <body>
 
-<div id="player-wrapper">
-  <video id="player" playsinline controls></video>
+<video id="player" playsinline></video>
 
-  <!-- Overlay Widget -->
-  <iframe id="widget-overlay" src="" frameborder="0"></iframe>
-</div>
-
-<!-- Plyr JS -->
-<script src="https://cdn.jsdelivr.net/npm/plyr@3.7.8/dist/plyr.polyfilled.js"></script>
-
-<!-- HLS.js -->
-<script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.8/dist/hls.min.js"></script>
+<script type="application/json" id="embed-config">{
+  "autoplay": true,
+  "muted": false,
+  "hidecontrols": false
+}</script>
 
 <script>
-  const video = document.getElementById("player");
-  const source = "https://vid.tipiku.biz.id/sp1.m3u8"; // GANTI STREAM KAMU
+document.addEventListener("DOMContentLoaded", () => {
 
-  // HLS Support
+  const config = JSON.parse(document.getElementById("embed-config").textContent);
+  const video = document.getElementById("player");
+  const streamURL = "https://vid.tipiku.biz.id/sp1.m3u8"; // GANTI STREAM KAMU
+
+  const plyrOptions = {
+    controls: config.hidecontrols ? [] : ['play-large','play','progress','current-time','mute','volume','fullscreen'],
+    muted: config.muted
+  };
+
+  const player = new Plyr(video, plyrOptions);
+
   if (Hls.isSupported()) {
-      const hls = new Hls({ maxBufferLength: 60 });
-      hls.loadSource(source);
-      hls.attachMedia(video);
+    const hls = new Hls();
+    hls.loadSource(streamURL);
+    hls.attachMedia(video);
   } else if (video.canPlayType("application/vnd.apple.mpegurl")) {
-      video.src = source;
+    video.src = streamURL;
   }
 
-  // Plyr Player
-  const player = new Plyr(video, {
-    controls: ['play', 'mute', 'volume', 'progress', 'current-time', 'pip', 'airplay', 'fullscreen'],
-    autoplay: true,
-    clickToPlay: true,
-    keyboard: { focused: true, global: true },
-    resetOnEnd: false,
+  // Autoplay smart (coba dengan suara → jika gagal → mute & play)
+  video.addEventListener("loadedmetadata", async () => {
+    if (config.autoplay) {
+      try {
+        await player.play();
+      } catch (e) {
+        player.muted = true;
+        video.muted = true;
+        player.play();
+      }
+    }
   });
 
-  // Isi iframe overlay di sini kalau mau
-  document.getElementById("widget-overlay").src = "";
+});
 </script>
 
 </body>
