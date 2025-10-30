@@ -142,6 +142,27 @@
       padding: 0;
       box-sizing: border-box;
       background: var(--bg-dark);
+      position: relative;
+      overflow: hidden;
+    }
+
+    #content-frame.loading::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 40px;
+      height: 40px;
+      border: 3px solid rgba(99, 102, 241, 0.2);
+      border-top-color: var(--primary);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      z-index: 10;
+    }
+
+    @keyframes spin {
+      to { transform: translate(-50%, -50%) rotate(360deg); }
     }
 
     @media (min-width: 1024px) {
@@ -225,9 +246,6 @@
       text-align: center;
       background: linear-gradient(180deg, var(--bg-dark) 0%, var(--bg-card) 100%);
       border-bottom: 1px solid var(--border);
-    }
-
-    #text-container {
       font-size: 32px;
       font-weight: 700;
       background: var(--gradient-1);
@@ -274,6 +292,11 @@
 
     .bottom-button:active {
       transform: translateY(0);
+    }
+
+    .bottom-button.active {
+      background: linear-gradient(135deg, var(--secondary) 0%, var(--accent) 100%);
+      box-shadow: 0 8px 25px rgba(236, 72, 153, 0.4);
     }
 
     /* ===== RESPONSIVE BUTTONS ===== */
@@ -449,28 +472,22 @@
   </div>
 
   <div id="button-container">
-    <div class="bottom-button" onclick="goToHome()">
+  <div class="bottom-button" onclick="goToHome()">
       <i class="fas fa-redo"></i> Refresh
     </div>
-    <div class="bottom-button" onclick="window.location.href='/op/bri/crt1'">
+    <div class="bottom-button" onclick="loadContent('/op/bri/crt1')">
       <i class="fas fa-futbol"></i> CH 1
     </div>
-    <div class="bottom-button" onclick="window.location.href='/op/bri/crt2'">
+    <div class="bottom-button" onclick="loadContent('/op/bri/crt2')">
       <i class="fas fa-futbol"></i> CH 2
     </div>
-    <div class="bottom-button" onclick="window.location.href='/op/bri/crt3'">
+    <div class="bottom-button" onclick="loadContent('/op/bri/crt3')">
       <i class="fas fa-futbol"></i> CH 3
     </div>
-    <div class="bottom-button" onclick="window.location.href='/op/bri/crt4'">
+    <div class="bottom-button" onclick="loadContent('/op/bri/crt4')">
       <i class="fas fa-futbol"></i> CH 4
     </div>
   </div>
-
-  <script>
-    function goToHome() {
-      window.location.replace("https://sport.tipiku.biz.id/");
-    }
-  </script>
 
   <!-- Live Chat Section -->
   <div id="livechat-container">
@@ -500,10 +517,35 @@
   </div>
 
   <script>
+    // Load content ke iframe tanpa membuka tab baru
     function loadContent(url) {
       var iframe = document.getElementById('content-frame');
+      var buttons = document.querySelectorAll('.bottom-button');
+      
+      // Tambah class loading untuk menampilkan spinner
+      iframe.classList.add('loading');
+      
+      // Update button active state
+      buttons.forEach(btn => btn.classList.remove('active'));
+      event.target.closest('.bottom-button').classList.add('active');
+      
+      // Set iframe src dengan URL baru
       iframe.src = url;
+      
+      // Scroll ke content frame
+      setTimeout(() => {
+        iframe.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 300);
     }
+
+    function goToHome() {
+      loadContent('https://stream.trakteer.id/running-text/index.html?rt_type=top-supporters&rt_count=10&rt_theme=default&rt_interval=90&rt_messages=Ayo+dukung+terus+%7Busername%7D+di+%7Btrlink%7D+dan+beri+semangat+Tim+Kebanggaanmu...&rt_txtshadow=true&creator_name=Tipistream&page_url=trakteer.id/Tipistream&mod=3&key=trstream-yvOAUf9Z6t5e7jt9qBUw&hash=zb8r4zrrg6v569an');
+    }
+
+    // Remove loading class ketika iframe selesai load
+    document.getElementById('content-frame').addEventListener('load', function() {
+      this.classList.remove('loading');
+    });
 
     function updateClock() {
       var now = new Date();
