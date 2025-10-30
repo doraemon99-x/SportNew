@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Streaming TV - TipiStream</title>
+    <style>
+        * { margin:0; padding:0; box-sizing: border-box; }
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #fff;
+            overflow-x: hidden;
+        }
+        
+        /* NAV BAR - MODERN DARK */
+        .navbar { 
+            background: linear-gradient(90deg, #0f3460 0%, #533483 100%);
+            padding: 12px 20px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .navbar img {
+            height: 55px;
+            width: auto;
+            object-fit: contain;
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+            transition: transform 0.3s ease;
+        }
+        .navbar img:hover {
+            transform: scale(1.05);
+        }
+        
+        /* MAIN CONTAINER */
+        .container { 
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 12px;
+            padding: 12px;
+            height: calc(100vh - 79px);
+            min-height: 600px;
+        }
+        
+        /* MAIN CONTENT */
+        .main-content { 
+            display: flex;
+            flex-direction: column;
+            background: linear-gradient(135deg, #0f3460 0%, #1a1a2e 100%);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(83, 52, 131, 0.3);
+            border: 2px solid #533483;
+        }
+        
+        /* PLAYER */
+        #player { 
+            flex: 1;
+            border: none;
+            width: 100%;
+            background: #000;
+        }
+        
+        /* RUNNING TEXT */
+        .running-trakteer {
+            height: 50px;
+            overflow: hidden;
+            border-bottom: 2px solid #533483;
+            background: rgba(83, 52, 131, 0.1);
+        }
+        .running-trakteer iframe {
+            width: 100% !important;
+            height: 50px !important;
+            border: none !important;
+            display: block !important;
+            background: transparent;
+        }
+        
+        /* FOOTER */
+        .footer { 
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 12px;
+            background: rgba(15, 52, 96, 0.5);
+            border-top: 1px solid #533483;
+        }
+        
+        .jam { 
+            background: linear-gradient(135deg, #533483 0%, #8e24aa 100%);
+            color: #fff;
+            padding: 8px 14px;
+            font-weight: bold;
+            border-radius: 6px;
+            font-size: 0.9em;
+            white-space: nowrap;
+            box-shadow: 0 4px 12px rgba(83, 52, 131, 0.4);
+        }
+        
+        .footer-running { 
+            flex: 1;
+            background: linear-gradient(90deg, #1a1a2e 0%, #0f3460 100%);
+            border-radius: 6px;
+            overflow: hidden;
+            min-height: 35px;
+            display: flex;
+            align-items: center;
+            padding: 0 10px;
+            border: 1px solid #533483;
+        }
+        
+        .running-text-content {
+            width: 100%;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            color: #fff;
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            animation: scroll 15s linear infinite;
+        }
+        
+        @keyframes scroll {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
+        
+        /* SIDEBAR */
+        .sidebar { 
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            background: linear-gradient(135deg, #0f3460 0%, #1a1a2e 100%);
+            padding: 12px;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(83, 52, 131, 0.3);
+            border: 2px solid #533483;
+            overflow: hidden;
+        }
+        
+        /* TOGGLE BUTTONS */
+        .toggle-buttons {
+            display: flex;
+            gap: 6px;
+        }
+        .toggle-btn {
+            flex: 1;
+            padding: 10px;
+            background: linear-gradient(135deg, #533483 0%, #8e24aa 100%);
+            border: 2px solid #8e24aa;
+            border-radius: 6px;
+            color: #fff;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.85em;
+        }
+        .toggle-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(141, 68, 173, 0.4);
+        }
+        .toggle-btn.active {
+            background: linear-gradient(135deg, #8e24aa 0%, #6a1b9a 100%);
+            box-shadow: 0 8px 20px rgba(141, 68, 173, 0.6);
+        }
+        
+        /* CHANNELS CONTAINER */
+        .channels-container {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            flex: 1;
+            overflow-y: auto;
+            padding-right: 6px;
+        }
+        .channels-container::-webkit-scrollbar {
+            width: 6px;
+        }
+        .channels-container::-webkit-scrollbar-track {
+            background: rgba(83, 52, 131, 0.1);
+            border-radius: 3px;
+        }
+        .channels-container::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #533483 0%, #8e24aa 100%);
+            border-radius: 3px;
+        }
+        
+        .channels-container.hidden {
+            display: none;
+        }
+        
+        /* CHAT BOX CONTAINER */
+        .chatbox-container {
+            flex: 1;
+            overflow: hidden;
+            border-radius: 8px;
+            background: #fff;
+            border: 1px solid #533483;
+        }
+        .chatbox-container.hidden {
+            display: none;
+        }
+        .chatbox-container iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        
+        /* CHANNEL CATEGORY */
+        .channel-category {
+            padding: 10px;
+            background: linear-gradient(135deg, #533483 0%, #8e24aa 100%);
+            color: #fff;
+            font-weight: 700;
+            font-size: 0.95em;
+            text-align: center;
+            border-radius: 6px;
+            cursor: default;
+            user-select: none;
+        }
+        
+        /* CHANNEL BUTTONS */
+        .channel-btn { 
+            padding: 12px;
+            background: linear-gradient(135deg, #1a1a2e 0%, #0f3460 100%);
+            border: 2px solid #533483;
+            border-radius: 6px;
+            color: #fff;
+            font-size: 0.95em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+        .channel-btn:hover {
+            background: linear-gradient(135deg, #0f3460 0%, #533483 100%);
+            transform: translateX(4px);
+            box-shadow: 0 4px 12px rgba(83, 52, 131, 0.3);
+        }
+        .channel-btn.active {
+            background: linear-gradient(135deg, #533483 0%, #8e24aa 100%);
+            box-shadow: 0 6px 16px rgba(141, 68, 173, 0.4);
+        }
+        
+        /* RESPONSIVE */
+        @media (max-width: 1024px) {
+            .container {
+                grid-template-columns: 1fr 280px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr;
+                height: auto;
+                padding: 8px;
+                gap: 8px;
+            }
+            
+            .sidebar {
+                order: -1;
+                max-height: 200px;
+            }
+            
+            .channels-container {
+                flex-direction: row;
+                overflow-x: auto;
+                gap: 6px;
+            }
+            
+            .channel-btn {
+                min-width: 100px;
+                white-space: nowrap;
+            }
+            
+            .main-content {
+                height: 60vh;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .navbar {
+                padding: 10px 12px;
+            }
+            
+            .navbar img {
+                height: 45px;
+            }
+            
+            .main-content {
+                height: 50vh;
+            }
+            
+            .toggle-btn {
+                font-size: 0.8em;
+                padding: 8px;
+            }
+            
+            .channel-btn {
+                font-size: 0.85em;
+                padding: 10px;
+                min-width: 80px;
+            }
+            
+            .jam {
+                font-size: 0.8em;
+                padding: 6px 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <img src="/img/tipigaza.png" alt="TipiStream">
+    </div>
+    
+    <div class="container">
+        <div class="main-content">
+            <iframe id="player" src="about:blank"></iframe>
+            
+            <div class="running-trakteer">
+                <iframe 
+                    title="Trakteer"
+                    width="100%" 
+                    style="border:none" 
+                    src="https://stream.trakteer.id/running-text/index.html?rt_font=Chewy&rt_type=top-supporters&rt_count=10&rt_speed=slow&rt_theme=ramadhan&rt_interval=90&rt_messages=Ayo+dukung+terus+%7Busername%7D+di+%7Btrlink%7D+dan+beri+semangat+Tim+Kebanggaanmu...&rt_show_link=false&rt_txtshadow=true&creator_name=Tipistream&page_url=trakteer.id%2FTipistream%2Fgift&mod=3&key=trstream-yvOAUf9Z6t5e7jt9qBUw&hash=zb8r4zrrg6v569an&timestamp=1761836238"
+                    sandbox="allow-same-origin allow-scripts allow-popups">
+                </iframe>
+            </div>
+            
+            <div class="footer">
+                <div class="jam" id="jamWIB">JAM (WIB): --:--</div>
+                <div class="footer-running">
+                    <div class="running-text-content" id="runningText">
+                        🎉 Selamat datang di TipiStream - Streaming berkualitas tinggi untuk Anda!
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="sidebar">
+            <div class="toggle-buttons">
+                <button class="toggle-btn active" onclick="toggleView('channels')">📺 Channels</button>
+                <button class="toggle-btn" onclick="toggleView('chat')">💬 Chat</button>
+            </div>
+            
+            <div class="channels-container" id="channelsContainer">
+                <div class="channel-category">📺 Channel List</div>
+                <div class="channel-btn" onclick="loadChannel(this, 'A', '/op/ep/crt1')">channel A</div>
+                <div class="channel-btn" onclick="loadChannel(this, 'B', '/op/ep/crt2')">channel B</div>
+                <div class="channel-btn" onclick="loadChannel(this, 'C', '/op/ep/crt3')">channel C</div>
+                <div class="channel-btn" onclick="loadChannel(this, 'D', '/op/ep/crt4')">channel D</div>
+            </div>
+            
+            <div class="chatbox-container hidden" id="chatboxContainer">
+                <iframe 
+                    title="Chat Box"
+                    src="https://www5.cbox.ws/box/?boxid=940426&boxtag=rSDm0Y"
+                    sandbox="allow-same-origin allow-scripts allow-popups allow-pointer-lock allow-forms">
+                </iframe>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function updateJam() {
+            const jamEl = document.getElementById("jamWIB");
+            const now = new Date();
+            const wibTime = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Jakarta' }));
+            const jam = wibTime.toLocaleTimeString("id-ID", {
+                hour:'2-digit', 
+                minute:'2-digit',
+                hour12: false
+            });
+            jamEl.textContent = "JAM (WIB): " + jam;
+        }
+        setInterval(updateJam, 1000);
+        updateJam();
+
+        function toggleView(view) {
+            const channelsContainer = document.getElementById('channelsContainer');
+            const chatboxContainer = document.getElementById('chatboxContainer');
+            const toggleBtns = document.querySelectorAll('.toggle-btn');
+            
+            toggleBtns.forEach(btn => btn.classList.remove('active'));
+            
+            if (view === 'channels') {
+                channelsContainer.classList.remove('hidden');
+                chatboxContainer.classList.add('hidden');
+                toggleBtns[0].classList.add('active');
+            } else if (view === 'chat') {
+                channelsContainer.classList.add('hidden');
+                chatboxContainer.classList.remove('hidden');
+                toggleBtns[1].classList.add('active');
+            }
+        }
+
+        function loadChannel(element, channel, url) {
+            document.querySelectorAll('.channel-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            element.classList.add('active');
+            document.getElementById("player").src = url;
+            console.log('Channel ' + channel + ' dimuat dari: ' + url);
+        }
+
+        function updateRunningText(newText) {
+            document.getElementById("runningText").textContent = newText;
+        }
+
+        function setRunningTextSpeed(speed) {
+            const runningText = document.getElementById("runningText");
+            runningText.style.animation = `scroll ${speed}s linear infinite`;
+        }
+    </script>
+</body>
+</html>
