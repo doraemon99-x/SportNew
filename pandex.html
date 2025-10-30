@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta name="clckd" content="7dc9738a0a552511010f9dcf2de9a17b" />
+  <title>TipiStream</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  
+  <style>
+    /* Styling untuk Trakteer Running Text */
+    .trakteer-ticker-wrapper {
+      width: 100%;
+      overflow: hidden;
+      background: linear-gradient(90deg, #000000 0%, #1a1a1a 50%, #000000 100%);
+      padding: 0;
+      margin: 10px 0 0 0;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+      border-top: 2px solid #7B0961;
+      border-bottom: 2px solid #7B0961;
+      position: relative;
+    }
+
+    .trakteer-ticker-wrapper::before,
+    .trakteer-ticker-wrapper::after {
+      content: '⭐';
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 20px;
+      color: #FFD700;
+      z-index: 10;
+      animation: sparkle 2s ease-in-out infinite;
+    }
+
+    .trakteer-ticker-wrapper::before {
+      left: 10px;
+    }
+
+    .trakteer-ticker-wrapper::after {
+      right: 10px;
+    }
+
+    @keyframes sparkle {
+      0%, 100% { opacity: 1; transform: translateY(-50%) scale(1); }
+      50% { opacity: 0.5; transform: translateY(-50%) scale(1.2); }
+    }
+
+    #trakteer-ticker-frame {
+      display: block;
+      width: 100%;
+      height: 80px;
+      border: none;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+    }
+
+    /* Responsiveness untuk ticker */
+    @media (max-width: 768px) {
+      #trakteer-ticker-frame {
+        height: 40px;
+      }
+      
+      .trakteer-ticker-wrapper::before,
+      .trakteer-ticker-wrapper::after {
+        font-size: 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="#">
+      <img src="/img/tipigaza.png" alt="Logo">
+    </a>
+  </nav>
+
+  <!-- Content Frame (iframe yang sudah ada) -->
+  <iframe 
+    id="content-frame" 
+    src="https://stream.trakteer.id/running-text/index.html?rt_type=top-supporters&rt_count=10&rt_theme=default&rt_interval=90&rt_messages=Ayo+dukung+terus+%7Busername%7D+di+%7Btrlink%7D+dan+beri+semangat+Tim+Kebanggaanmu...&rt_txtshadow=true&creator_name=Tipistream&page_url=trakteer.id/Tipistream&mod=3&key=trstream-yvOAUf9Z6t5e7jt9qBUw&hash=zb8r4zrrg6v569an" 
+    style="border: solid 1px #A6A6A6" 
+    allowFullScreen="true" 
+    loading="lazy" 
+    width="100%" 
+    height="500">
+  </iframe>
+
+  <div class="info-bar">
+    <div class="clock">
+      <span id="clock-display">00:00:00 WIB</span>
+    </div>
+    <div class="marquee-container">
+      <div class="marquee">
+        <span>#StopJudi | Jangan Judi Teros Bang, Mending Traktir Mimin Kopi via Dana 085157386617, terus dukung TipiStream ya bang | #StopJudi .</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- TRAKTEER RUNNING TEXT - Posisi Baru di Bawah Marquee -->
+  <div class="trakteer-ticker-wrapper">
+    <iframe 
+      id="trakteer-ticker-frame" 
+      src="https://stream.trakteer.id/running-text/index.html?rt_font=Chewy&rt_type=top-supporters&rt_count=10&rt_theme=transitional&rt_interval=90&rt_messages=Ayo+dukung+terus+%7Busername%7D+di+%7Btrlink%7D+dan+beri+semangat+Tim+Kebanggaanmu...&rt_txtshadow=true&creator_name=Tipistream&page_url=trakteer.id%2FTipistream%2Fgift&mod=3&key=trstream-yvOAUf9Z6t5e7jt9qBUw&hash=zb8r4zrrg6v569an&timestamp=1761797504"
+      style="border: none; overflow: hidden;"
+      scrolling="no"
+      allowtransparency="true"
+      loading="eager">
+    </iframe>
+  </div>
+
+  <!-- Menu Section -->
+  <div id="text-container">
+    Sport
+  </div>
+
+  <div id="button-container">
+    <div class="bottom-button" onclick="goToHome()">Refresh</div>
+    <script>
+      function goToHome() {
+        window.location.replace("https://sport.tipiku.biz.id/");
+      }
+    </script>
+    <div class="bottom-button" onclick="window.location.href='/bri/bri'">Liga 1</div>
+    <div class="bottom-button" onclick="window.location.href='/fdm/fdm'">ACL</div>
+    <div class="bottom-button" onclick="window.location.href='/ep/ep'">EPL</div>
+    <div class="bottom-button" onclick="window.location.href='/sp/sp'">LaLiga</div>
+  </div>
+
+  <!-- Live Chat Section -->
+  <div id="livechat-container">
+    <h2>Live Chat</h2>
+    <iframe id="cbox-frame" src="https://www5.cbox.ws/box/?boxid=940426&boxtag=rSDm0Y" loading="lazy"></iframe>
+  </div>
+
+  <!-- Donasi Section -->
+  <div id="trakteer-container">
+    <div id="trakteer-button">
+      <script type='text/javascript' src='https://assets.trakteer.id/js/trbtn-overlay.min.js'></script>
+      <script type='text/javascript' class='troverlay'>
+        (function() {
+          var trbtnId = trbtnOverlay.init('Dukung TipiStream','#7B0961','https://trakteer.id/Tipistream/tip/embed/modal','https://trakteer.id/images/mix/coffee.png','40','inline');
+          trbtnOverlay.draw(trbtnId);
+        })();
+      </script>
+    </div>
+    <iframe 
+      src="https://stream.trakteer.id/top-supporter/index.html?ts_theme=default&ts_sortby=nominal&ts_interval=90&key=trstream-yvOAUf9Z6t5e7jt9qBUw&page_url=trakteer.id/Tipistream&mod=3&hash=zb8r4zrrg6v569an" 
+      title="frame" 
+      name="name1" 
+      width="280px" 
+      height="200px" 
+      style="border: solid 0px #A6A6A6" 
+      loading="lazy">
+    </iframe>
+  </div>
+
+  <script>
+    function loadContent(url) {
+      var iframe = document.getElementById('content-frame');
+      iframe.src = url;
+    }
+
+    function updateClock() {
+      var now = new Date();
+      var time = now.toLocaleTimeString('id-ID', { timeZone: 'Asia/Jakarta', hour: '2-digit', minute: '2-digit' }) + " WIB";
+      document.getElementById('clock-display').textContent = time;
+    }
+
+    // Update the clock every second
+    setInterval(updateClock, 1000);
+
+    // Initialize clock display
+    updateClock();
+
+    // Auto-refresh Trakteer ticker setiap 5 menit untuk data terbaru
+    setInterval(function() {
+      var tickerFrame = document.getElementById('trakteer-ticker-frame');
+      tickerFrame.src = tickerFrame.src;
+    }, 300000); // 5 menit = 300000 ms
+  </script>
+</body>
+</html>
