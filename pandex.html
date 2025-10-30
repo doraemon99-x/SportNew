@@ -16,10 +16,14 @@
       background: linear-gradient(90deg, #000000 0%, #1a1a1a 50%, #000000 100%);
       padding: 0;
       margin: 10px 0 0 0;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
       border-top: 2px solid #7B0961;
       border-bottom: 2px solid #7B0961;
       position: relative;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .trakteer-ticker-wrapper::before,
@@ -28,10 +32,11 @@
       position: absolute;
       top: 50%;
       transform: translateY(-50%);
-      font-size: 20px;
+      font-size: 22px;
       color: #FFD700;
       z-index: 10;
       animation: sparkle 2s ease-in-out infinite;
+      text-shadow: 0 0 10px rgba(255, 215, 0, 0.8);
     }
 
     .trakteer-ticker-wrapper::before {
@@ -44,28 +49,112 @@
 
     @keyframes sparkle {
       0%, 100% { opacity: 1; transform: translateY(-50%) scale(1); }
-      50% { opacity: 0.5; transform: translateY(-50%) scale(1.2); }
+      50% { opacity: 0.6; transform: translateY(-50%) scale(1.3); }
     }
 
     #trakteer-ticker-frame {
       display: block;
       width: 100%;
-      height: 80px;
+      height: 60px;
       border: none;
       margin: 0;
       padding: 0;
       overflow: hidden;
+      background: transparent;
+      position: relative;
     }
 
-    /* Responsiveness untuk ticker */
-    @media (max-width: 768px) {
+    /* Desktop - Centering dengan padding yang lebih besar */
+    @media (min-width: 1024px) {
+      .trakteer-ticker-wrapper {
+        height: 60px;
+      }
+
       #trakteer-ticker-frame {
-        height: 40px;
+        height: 60px;
+        padding: 0 50px;
+      }
+
+      .trakteer-ticker-wrapper::before {
+        left: 15px;
+        font-size: 24px;
+      }
+
+      .trakteer-ticker-wrapper::after {
+        right: 15px;
+        font-size: 24px;
+      }
+    }
+
+    /* Tablet */
+    @media (min-width: 769px) and (max-width: 1023px) {
+      .trakteer-ticker-wrapper {
+        height: 65px;
+      }
+
+      #trakteer-ticker-frame {
+        height: 65px;
+        padding: 0 40px;
+      }
+
+      .trakteer-ticker-wrapper::before {
+        left: 12px;
+      }
+
+      .trakteer-ticker-wrapper::after {
+        right: 12px;
+      }
+    }
+
+    /* Mobile Large */
+    @media (max-width: 768px) {
+      .trakteer-ticker-wrapper {
+        height: 70px;
+        padding: 5px 0;
+      }
+
+      #trakteer-ticker-frame {
+        height: 70px;
+        padding: 0 35px;
       }
       
       .trakteer-ticker-wrapper::before,
       .trakteer-ticker-wrapper::after {
+        font-size: 18px;
+      }
+
+      .trakteer-ticker-wrapper::before {
+        left: 8px;
+      }
+
+      .trakteer-ticker-wrapper::after {
+        right: 8px;
+      }
+    }
+
+    /* Extra small devices */
+    @media (max-width: 480px) {
+      .trakteer-ticker-wrapper {
+        height: 80px;
+        padding: 8px 0;
+      }
+
+      #trakteer-ticker-frame {
+        height: 80px;
+        padding: 0 30px;
+      }
+
+      .trakteer-ticker-wrapper::before,
+      .trakteer-ticker-wrapper::after {
         font-size: 16px;
+      }
+
+      .trakteer-ticker-wrapper::before {
+        left: 5px;
+      }
+
+      .trakteer-ticker-wrapper::after {
+        right: 5px;
       }
     }
   </style>
@@ -99,7 +188,7 @@
     </div>
   </div>
 
-  <!-- TRAKTEER RUNNING TEXT - Posisi Baru di Bawah Marquee -->
+  <!-- TRAKTEER RUNNING TEXT - Posisi di Bawah Marquee -->
   <div class="trakteer-ticker-wrapper">
     <iframe 
       id="trakteer-ticker-frame" 
@@ -180,6 +269,44 @@
       var tickerFrame = document.getElementById('trakteer-ticker-frame');
       tickerFrame.src = tickerFrame.src;
     }, 300000); // 5 menit = 300000 ms
+
+    // Adjust iframe height and padding based on screen size
+    function adjustTickerLayout() {
+      var tickerFrame = document.getElementById('trakteer-ticker-frame');
+      var wrapper = document.querySelector('.trakteer-ticker-wrapper');
+      var screenWidth = window.innerWidth;
+      
+      if (screenWidth >= 1024) {
+        // Desktop
+        tickerFrame.style.height = '60px';
+        tickerFrame.style.padding = '0 50px';
+        wrapper.style.height = '60px';
+      } else if (screenWidth >= 769) {
+        // Tablet
+        tickerFrame.style.height = '65px';
+        tickerFrame.style.padding = '0 40px';
+        wrapper.style.height = '65px';
+      } else if (screenWidth >= 481) {
+        // Mobile Large
+        tickerFrame.style.height = '70px';
+        tickerFrame.style.padding = '0 35px';
+        wrapper.style.height = '70px';
+      } else {
+        // Mobile Small
+        tickerFrame.style.height = '80px';
+        tickerFrame.style.padding = '0 30px';
+        wrapper.style.height = '80px';
+      }
+    }
+
+    // Run on load
+    window.addEventListener('load', adjustTickerLayout);
+
+    // Run on resize
+    window.addEventListener('resize', adjustTickerLayout);
+
+    // Initial adjustment
+    adjustTickerLayout();
   </script>
 </body>
 </html>
