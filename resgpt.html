@@ -19,20 +19,50 @@
             box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
             display: flex;
             align-items: center;
-            justify-content: center;
+            justify-content: space-between;
             position: sticky;
             top: 0;
             z-index: 100;
         }
+        
+        .navbar-content {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
         .navbar img {
             height: 55px;
             width: auto;
             object-fit: contain;
             filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
             transition: transform 0.3s ease;
+            cursor: pointer;
         }
         .navbar img:hover {
             transform: scale(1.05);
+        }
+        
+        .home-btn {
+            background: linear-gradient(135deg, #8e24aa 0%, #533483 100%);
+            color: #fff;
+            border: 2px solid #8e24aa;
+            padding: 10px 16px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 0.95em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .home-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(141, 68, 173, 0.4);
+        }
+        .home-btn:active {
+            background: linear-gradient(135deg, #6a1b9a 0%, #533483 100%);
+            box-shadow: 0 8px 20px rgba(141, 68, 173, 0.6);
         }
         
         .container { 
@@ -269,7 +299,6 @@
                 max-height: 300px;
             }
             
-            /* CHANNELS DALAM GRID */
             .channels-container {
                 display: grid;
                 grid-template-columns: repeat(auto-fit, minmax(85px, 1fr));
@@ -291,16 +320,34 @@
                 font-size: 0.8em;
                 border-radius: 6px;
             }
+            
+            .home-btn {
+                font-size: 0.85em;
+                padding: 8px 12px;
+            }
         }
         
         /* RESPONSIVE - MOBILE (480px) */
         @media (max-width: 480px) {
             .navbar {
                 padding: 8px 10px;
+                flex-wrap: wrap;
+                gap: 8px;
+            }
+            
+            .navbar-content {
+                gap: 10px;
+                width: 100%;
             }
             
             .navbar img {
                 height: 42px;
+            }
+            
+            .home-btn {
+                font-size: 0.7em;
+                padding: 6px 10px;
+                flex: 1;
             }
             
             .container {
@@ -323,7 +370,6 @@
                 padding: 6px;
             }
             
-            /* CHANNELS DALAM GRID MOBILE */
             .channels-container {
                 display: grid;
                 grid-template-columns: repeat(auto-fit, minmax(75px, 1fr));
@@ -373,6 +419,11 @@
                 height: 38px;
             }
             
+            .home-btn {
+                font-size: 0.65em;
+                padding: 5px 8px;
+            }
+            
             .container {
                 padding: 4px;
                 gap: 4px;
@@ -393,7 +444,6 @@
                 padding: 5px;
             }
             
-            /* CHANNELS GRID 2 KOLOM */
             .channels-container {
                 display: grid;
                 grid-template-columns: repeat(2, 1fr);
@@ -434,7 +484,10 @@
 </head>
 <body>
     <div class="navbar">
-        <img src="/img/tipigaza.png" alt="TipiStream">
+        <div class="navbar-content">
+            <img src="/img/tipigaza.png" alt="TipiStream" onclick="window.location.href='/'">
+            <a href="/" class="home-btn">🏠 Home</a>
+        </div>
     </div>
     
     <div class="container">
@@ -471,10 +524,10 @@
             
             <div class="channels-container" id="channelsContainer">
                 <div class="channel-category">📺 Channel List</div>
-                <div class="channel-btn" onclick="loadChannel(this, 'A', '/op/bri/crt1')">channel A</div>
-                <div class="channel-btn" onclick="loadChannel(this, 'B', '/op/bri/crt2')">channel B</div>
-                <div class="channel-btn" onclick="loadChannel(this, 'C', '/op/bri/crt3')">channel C</div>
-                <div class="channel-btn" onclick="loadChannel(this, 'D', '/op/bri/crt4')">channel D</div>
+                <div class="channel-btn" onclick="loadChannel(this, 'A', '/op/ep/crt1')">channel A</div>
+                <div class="channel-btn" onclick="loadChannel(this, 'B', '/op/ep/crt2')">channel B</div>
+                <div class="channel-btn" onclick="loadChannel(this, 'C', '/op/ep/crt3')">channel C</div>
+                <div class="channel-btn" onclick="loadChannel(this, 'D', '/op/ep/crt4')">channel D</div>
             </div>
             
             <div class="chatbox-container hidden" id="chatboxContainer">
