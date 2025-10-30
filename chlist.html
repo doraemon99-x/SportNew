@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Streaming TV</title>
+    <style>
+        * { margin:0; padding:0; }
+        body { font-family:sans-serif; background:#f5f5f5; }
+        
+        /* NAV BAR / LOGO - MODERN GRADIENT */
+        .navbar { 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            text-align:center; 
+            padding:15px; 
+            border:none;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+        .navbar img {
+            height: 50px;
+            width: auto;
+            object-fit: contain;
+            filter: drop-shadow(0 2px 4px rgba(255,255,255,0.3));
+        }
+        
+        /* MAIN CONTAINER */
+        .container { 
+            display:flex; 
+            gap:0;
+            margin: 0;
+        }
+        
+        /* MAIN CONTENT - PLAYER & RUNNING TEXT */
+        .main-content { 
+            flex:3; 
+            border:3px solid #e53935; 
+            display:flex; 
+            flex-direction:column;
+            background:#fff;
+            margin:10px;
+            margin-right:0;
+            border-radius: 4px;
+        }
+        
+        /* IFRAME PLAYER */
+        #player { 
+            flex:1; 
+            border:0; 
+            width:100%;
+            min-height:400px;
+            display:block;
+            background:#1a1a1a;
+            border-radius: 2px;
+        }
+        
+        /* RUNNING TEXT TRAKTEER - CLEAN STYLE */
+        .running-trakteer {
+            overflow-x: auto;
+        }
+        
+        .running-trakteer iframe {
+            border: none !important;
+            width: 100% !important;
+            height: 45px !important;
+            display: block !important;
+            background: transparent;
+        }
+        
+        /* FOOTER - JAM & RUNNING TEXT CUSTOM */
+        .footer { 
+            display:flex; 
+            align-items:center; 
+            gap:5px;
+            padding:5px;
+            background:#fff;
+        }
+        
+        /* JAM */
+        .jam { 
+            background:linear-gradient(135deg, #8e24aa 0%, #6a1b9a 100%);
+            color:#fff; 
+            padding:10px 16px; 
+            font-weight:bold; 
+            border-radius:4px; 
+            font-size:0.95em;
+            white-space:nowrap;
+            box-shadow: 0 2px 8px rgba(142, 36, 170, 0.3);
+        }
+        
+        /* RUNNING TEXT CUSTOM */
+        .footer-running { 
+            flex:1; 
+            background:#2a2a2a;
+            border-radius:4px;
+            overflow:hidden;
+            min-height:40px;
+            display:flex;
+            align-items:center;
+            padding:0 10px;
+        }
+        
+        .running-text-content {
+            width: 100%;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            color: #fff;
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            animation: scroll 15s linear infinite;
+        }
+        
+        @keyframes scroll {
+            0% {
+                transform: translateX(100%);
+            }
+            100% {
+                transform: translateX(-100%);
+            }
+        }
+        
+        /* SIDEBAR CONTAINER */
+        .sidebar { 
+            flex:1; 
+            background:#e3f2fd; 
+            padding:10px;
+            margin:10px;
+            margin-left:0;
+            display:flex;
+            flex-direction:column;
+            gap:8px;
+            border:3px solid #29b6f6;
+            border-radius:4px;
+        }
+        
+        /* TOGGLE BUTTONS */
+        .toggle-buttons {
+            display: flex;
+            gap: 5px;
+        }
+        
+        .toggle-btn {
+            flex: 1;
+            padding: 10px;
+            background: #fff;
+            border: 2px solid #29b6f6;
+            border-radius: 4px;
+            color: #03a9f4;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            font-size: 0.9em;
+        }
+        
+        .toggle-btn:hover {
+            background: #e3f2fd;
+            transform: translateY(-2px);
+        }
+        
+        .toggle-btn.active {
+            background: #03a9f4;
+            color: #fff;
+        }
+        
+        /* CHANNELS CONTAINER */
+        .channels-container {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            flex: 1;
+            overflow-y: auto;
+        }
+        
+        .channels-container.hidden {
+            display: none;
+        }
+        
+        /* CHAT BOX CONTAINER */
+        .chatbox-container {
+            flex: 1;
+            overflow: hidden;
+            border-radius: 4px;
+            background: #fff;
+        }
+        
+        .chatbox-container.hidden {
+            display: none;
+        }
+        
+        .chatbox-container iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        
+        /* CHANNEL CATEGORY HEADER */
+        .channel-category {
+            padding: 12px 16px;
+            background: linear-gradient(135deg, #29b6f6 0%, #0288d1 100%);
+            color: #fff;
+            font-weight: 700;
+            font-size: 1em;
+            text-align: center;
+            border-radius: 4px;
+            cursor: default;
+            user-select: none;
+        }
+        
+        /* CHANNEL BUTTONS */
+        .channel-btn { 
+            padding:16px; 
+            background:#fff; 
+            border:2px solid #29b6f6; 
+            border-radius:6px; 
+            color:#03a9f4; 
+            font-size:1em; 
+            font-weight:600;
+            cursor:pointer; 
+            text-align:center;
+            transition: all 0.3s ease;
+        }
+        
+        .channel-btn:hover {
+            background:#e3f2fd;
+            transform: translateX(3px);
+            box-shadow: 0 2px 8px rgba(3, 169, 244, 0.2);
+        }
+        
+        .channel-btn.active {
+            background:#03a9f4;
+            color:#fff;
+            box-shadow: 0 4px 12px rgba(3, 169, 244, 0.4);
+        }
+        
+        @media (max-width: 900px) {
+            .container { 
+                flex-direction:column; 
+            }
+            .sidebar { 
+                margin-left:10px;
+                margin-right:10px;
+                border-left: none;
+            }
+            .main-content {
+                margin-right:10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- NAV BAR / LOGO - MODERN GRADIENT -->
+    <div class="navbar">
+        <img src="/img/tipigaza.png" alt="Logo Streaming TV">
+    </div>
+    
+    <div class="container">
+        <!-- MAIN CONTENT -->
+        <div class="main-content">
+            <!-- IFRAME PLAYER -->
+            <iframe id="player" src="about:blank"></iframe>
+            
+            <!-- RUNNING TEXT TRAKTEER - CLEAN STYLE -->
+            <div class="running-trakteer">
+                <iframe 
+                    title="Trakteer"
+                    
+                    width="100%" 
+                    style="border:none" 
+                    src="https://stream.trakteer.id/running-text/index.html?rt_font=Chewy&rt_type=top-supporters&rt_count=10&rt_speed=slow&rt_theme=ramadhan&rt_interval=90&rt_messages=Ayo+dukung+terus+%7Busername%7D+di+%7Btrlink%7D+dan+beri+semangat+Tim+Kebanggaanmu...&rt_show_link=false&rt_txtshadow=true&creator_name=Tipistream&page_url=trakteer.id%2FTipistream%2Fgift&mod=3&key=trstream-yvOAUf9Z6t5e7jt9qBUw&hash=zb8r4zrrg6v569an&timestamp=1761836238"
+                    sandbox="allow-same-origin allow-scripts allow-popups">
+                </iframe>
+            </div>
+            
+            <!-- FOOTER - JAM & RUNNING TEXT CUSTOM -->
+            <div class="footer">
+                <div class="jam" id="jamWIB">JAM (WIB): --:--</div>
+                <div class="footer-running">
+                    <div class="running-text-content" id="runningText">
+                        running text yang bisa di custom/ubah
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- SIDEBAR - CHANNELS & CHAT BOX -->
+        <div class="sidebar">
+            <!-- TOGGLE BUTTONS -->
+            <div class="toggle-buttons">
+                <button class="toggle-btn active" onclick="toggleView('channels')">📺 Channels</button>
+                <button class="toggle-btn" onclick="toggleView('chat')">💬 Chat</button>
+            </div>
+            
+            <!-- CHANNELS CONTAINER -->
+            <div class="channels-container" id="channelsContainer">
+                <div class="channel-category">📺 Channel List</div>
+                <div class="channel-btn" onclick="loadChannel(this, 'A', '/op/ep/crt1')">channel A</div>
+                <div class="channel-btn" onclick="loadChannel(this, 'B', '/op/ep/crt2')">channel B</div>
+                <div class="channel-btn" onclick="loadChannel(this, 'C', '/op/ep/crt3')">channel C</div>
+                <div class="channel-btn" onclick="loadChannel(this, 'D', '/op/ep/crt4')">channel D</div>
+            </div>
+            
+            <!-- CHAT BOX CONTAINER -->
+            <div class="chatbox-container hidden" id="chatboxContainer">
+                <iframe 
+                    title="Chat Box"
+                    src="https://www5.cbox.ws/box/?boxid=940426&boxtag=rSDm0Y"
+                    sandbox="allow-same-origin allow-scripts allow-popups allow-pointer-lock allow-forms">
+                </iframe>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        // Fungsi Jam (WIB) - GMT+7
+        function updateJam() {
+            const jamEl = document.getElementById("jamWIB");
+            const now = new Date();
+            const wibTime = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Jakarta' }));
+            const jam = wibTime.toLocaleTimeString("id-ID", {
+                hour:'2-digit', 
+                minute:'2-digit',
+                hour12: false
+            });
+            jamEl.textContent = "JAM (WIB): " + jam;
+        }
+        setInterval(updateJam, 1000);
+        updateJam();
+
+        // Fungsi untuk toggle antara Channels dan Chat
+        function toggleView(view) {
+            const channelsContainer = document.getElementById('channelsContainer');
+            const chatboxContainer = document.getElementById('chatboxContainer');
+            const toggleBtns = document.querySelectorAll('.toggle-btn');
+            
+            toggleBtns.forEach(btn => btn.classList.remove('active'));
+            
+            if (view === 'channels') {
+                channelsContainer.classList.remove('hidden');
+                chatboxContainer.classList.add('hidden');
+                toggleBtns[0].classList.add('active');
+            } else if (view === 'chat') {
+                channelsContainer.classList.add('hidden');
+                chatboxContainer.classList.remove('hidden');
+                toggleBtns[1].classList.add('active');
+            }
+        }
+
+        // Fungsi untuk load channel TV di iframe
+        function loadChannel(element, channel, url) {
+            document.querySelectorAll('.channel-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            element.classList.add('active');
+            document.getElementById("player").src = url;
+            console.log('Channel ' + channel + ' dimuat dari: ' + url);
+        }
+
+        // FUNGSI UNTUK UBAH RUNNING TEXT DI FOOTER
+        function updateRunningText(newText) {
+            document.getElementById("runningText").textContent = newText;
+        }
+
+        // FUNGSI UNTUK UBAH KECEPATAN RUNNING TEXT
+        function setRunningTextSpeed(speed) {
+            const runningText = document.getElementById("runningText");
+            runningText.style.animation = `scroll ${speed}s linear infinite`;
+        }
+    </script>
+</body>
+</html>
