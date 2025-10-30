@@ -5,8 +5,407 @@
   <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <meta name="clckd" content="7dc9738a0a552511010f9dcf2de9a17b" />
   <title>TipiStream</title>
-  <link rel="stylesheet" href="styles.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  
+  <style>
+    /* ===== MODERN COLOR PALETTE ===== */
+    :root {
+      --primary: #6366f1;
+      --primary-dark: #4f46e5;
+      --secondary: #ec4899;
+      --accent: #f59e0b;
+      --bg-dark: #0f172a;
+      --bg-darker: #0a0f1f;
+      --bg-card: #1e293b;
+      --text-primary: #f1f5f9;
+      --text-secondary: #cbd5e1;
+      --border: #334155;
+      --gradient-1: linear-gradient(135deg, #6366f1 0%, #ec4899 100%);
+      --gradient-2: linear-gradient(135deg, #ec4899 0%, #f59e0b 100%);
+    }
+
+    /* ===== RESET & BASE ===== */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow-x: hidden;
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg-darker);
+      color: var(--text-primary);
+    }
+
+    /* ===== NAVIGATION ===== */
+    nav {
+      width: 100%;
+      background: linear-gradient(180deg, rgba(15, 23, 42, 0.95) 0%, rgba(15, 23, 42, 0.8) 100%);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      padding: 15px 20px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    }
+
+    nav a {
+      display: inline-block;
+      width: 100%;
+      max-width: 150px;
+    }
+
+    nav img {
+      width: 100%;
+      height: auto;
+      display: block;
+      border-radius: 8px;
+      transition: transform 0.3s ease;
+    }
+
+    nav img:hover {
+      transform: scale(1.05);
+    }
+
+    /* ===== TRAKTEER RUNNING TEXT ===== */
+    #trakteer-ticker-frame {
+      display: block;
+      width: 100%;
+      max-width: 100%;
+      border: none;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      background: var(--gradient-1);
+      position: relative;
+      box-sizing: border-box;
+      box-shadow: 0 10px 40px rgba(99, 102, 241, 0.3);
+    }
+
+    #trakteer-ticker-frame::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(90deg, rgba(15, 23, 42, 0.2) 0%, transparent 30%, transparent 70%, rgba(15, 23, 42, 0.2) 100%);
+      pointer-events: none;
+    }
+
+    /* ===== TRAKTEER TICKER RESPONSIVE ===== */
+    @media (min-width: 1024px) {
+      #trakteer-ticker-frame {
+        height: 65px;
+        margin: 0 auto;
+      }
+    }
+
+    @media (min-width: 768px) and (max-width: 1023px) {
+      #trakteer-ticker-frame {
+        height: 70px;
+      }
+    }
+
+    @media (min-width: 481px) and (max-width: 767px) {
+      #trakteer-ticker-frame {
+        height: 75px;
+      }
+    }
+
+    @media (min-width: 361px) and (max-width: 480px) {
+      #trakteer-ticker-frame {
+        height: 80px;
+      }
+    }
+
+    @media (max-width: 360px) {
+      #trakteer-ticker-frame {
+        height: 85px;
+      }
+    }
+
+    /* ===== CONTENT FRAME ===== */
+    #content-frame {
+      display: block;
+      width: 100%;
+      max-width: 100%;
+      border: none;
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      background: var(--bg-dark);
+    }
+
+    @media (min-width: 1024px) {
+      #content-frame {
+        height: 500px;
+      }
+    }
+
+    @media (min-width: 768px) and (max-width: 1023px) {
+      #content-frame {
+        height: 450px;
+      }
+    }
+
+    @media (min-width: 481px) and (max-width: 767px) {
+      #content-frame {
+        height: 400px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      #content-frame {
+        height: 350px;
+      }
+    }
+
+    /* ===== INFO BAR ===== */
+    .info-bar {
+      width: 100%;
+      background: var(--bg-card);
+      border-bottom: 1px solid var(--border);
+      padding: 15px 20px;
+      box-sizing: border-box;
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 20px;
+      align-items: center;
+    }
+
+    .clock {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      color: white;
+      padding: 10px 20px;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 600;
+      min-width: 120px;
+      text-align: center;
+      box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+    }
+
+    .marquee-container {
+      width: 100%;
+      overflow: hidden;
+      background: rgba(30, 41, 59, 0.5);
+      border-radius: 12px;
+      padding: 12px 15px;
+      border: 1px solid var(--border);
+    }
+
+    .marquee {
+      animation: marquee 20s linear infinite;
+      white-space: nowrap;
+      color: var(--text-secondary);
+      font-size: 13px;
+    }
+
+    @keyframes marquee {
+      0% { transform: translateX(100%); }
+      100% { transform: translateX(-100%); }
+    }
+
+    .marquee:hover {
+      animation-play-state: paused;
+    }
+
+    /* ===== TEXT CONTAINER ===== */
+    #text-container {
+      width: 100%;
+      padding: 30px 20px;
+      text-align: center;
+      background: linear-gradient(180deg, var(--bg-dark) 0%, var(--bg-card) 100%);
+      border-bottom: 1px solid var(--border);
+    }
+
+    #text-container {
+      font-size: 32px;
+      font-weight: 700;
+      background: var(--gradient-1);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      letter-spacing: -1px;
+    }
+
+    /* ===== BUTTON CONTAINER ===== */
+    #button-container {
+      width: 100%;
+      padding: 20px;
+      background: var(--bg-dark);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: center;
+      box-sizing: border-box;
+    }
+
+    .bottom-button {
+      padding: 12px 24px;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 4px 15px rgba(99, 102, 241, 0.2);
+      flex: 1;
+      min-width: 100px;
+      max-width: 150px;
+    }
+
+    .bottom-button:hover {
+      background: linear-gradient(135deg, var(--secondary) 0%, var(--accent) 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(236, 72, 153, 0.3);
+    }
+
+    .bottom-button:active {
+      transform: translateY(0);
+    }
+
+    /* ===== RESPONSIVE BUTTONS ===== */
+    @media (max-width: 480px) {
+      #button-container {
+        gap: 8px;
+        padding: 15px;
+      }
+
+      .bottom-button {
+        padding: 10px 16px;
+        font-size: 12px;
+        min-width: 80px;
+        max-width: none;
+        flex: 1 1 calc(50% - 4px);
+      }
+    }
+
+    /* ===== LIVECHAT CONTAINER ===== */
+    #livechat-container {
+      width: 100%;
+      padding: 20px;
+      background: var(--bg-card);
+      border-bottom: 1px solid var(--border);
+      box-sizing: border-box;
+    }
+
+    #livechat-container h2 {
+      color: var(--text-primary);
+      margin-bottom: 15px;
+      font-size: 20px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    #livechat-container h2::before {
+      content: '';
+      width: 4px;
+      height: 24px;
+      background: var(--gradient-1);
+      border-radius: 2px;
+    }
+
+    #cbox-frame {
+      width: 100%;
+      max-width: 100%;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      box-sizing: border-box;
+      background: var(--bg-darker);
+    }
+
+    @media (min-width: 1024px) {
+      #cbox-frame {
+        height: 600px;
+      }
+    }
+
+    @media (min-width: 768px) and (max-width: 1023px) {
+      #cbox-frame {
+        height: 500px;
+      }
+    }
+
+    @media (max-width: 767px) {
+      #cbox-frame {
+        height: 400px;
+      }
+    }
+
+    /* ===== TRAKTEER CONTAINER ===== */
+    #trakteer-container {
+      width: 100%;
+      padding: 30px 20px;
+      background: var(--bg-dark);
+      border-top: 1px solid var(--border);
+      box-sizing: border-box;
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    #trakteer-button {
+      flex: 1;
+      min-width: 200px;
+      display: flex;
+      justify-content: center;
+    }
+
+    #trakteer-container iframe {
+      border-radius: 12px;
+      border: 1px solid var(--border);
+    }
+
+    /* ===== SCROLLBAR STYLING ===== */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: var(--bg-darker);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--primary);
+      border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--secondary);
+    }
+
+    /* ===== ANIMATIONS ===== */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    nav, #trakteer-ticker-frame, #content-frame, .info-bar, #text-container, #button-container {
+      animation: fadeInUp 0.6s ease-out;
+    }
+  </style>
 </head>
 <body>
   <nav>
@@ -15,9 +414,15 @@
     </a>
   </nav>
 
-
-  <!-- Ganti iframe dengan yang baru -->
-  <iframe id="content-frame" src="https://stream.trakteer.id/running-text/index.html?rt_type=top-supporters&rt_count=10&rt_theme=default&rt_interval=90&rt_messages=Ayo+dukung+terus+%7Busername%7D+di+%7Btrlink%7D+dan+beri+semangat+Tim+Kebanggaanmu...&rt_txtshadow=true&creator_name=Tipistream&page_url=trakteer.id/Tipistream&mod=3&key=trstream-yvOAUf9Z6t5e7jt9qBUw&hash=zb8r4zrrg6v569an" style="border: solid 1px #A6A6A6" allowFullScreen="true" loading="lazy" width="100%" height="500"></iframe>
+  <!-- TRAKTEER RUNNING TEXT -->
+  <iframe 
+    id="trakteer-ticker-frame" 
+    src="https://stream.trakteer.id/running-text/index.html?rt_font=Chewy&rt_type=top-supporters&rt_count=10&rt_theme=transitional&rt_interval=90&rt_messages=Ayo+dukung+terus+%7Busername%7D+di+%7Btrlink%7D+dan+beri+semangat+Tim+Kebanggaanmu...&rt_txtshadow=true&creator_name=Tipistream&page_url=trakteer.id%2FTipistream%2Fgift&mod=3&key=trstream-yvOAUf9Z6t5e7jt9qBUw&hash=zb8r4zrrg6v569an&timestamp=1761797504"
+    style="border: none; overflow: hidden;"
+    scrolling="no"
+    allowtransparency="true"
+    loading="eager">
+  </iframe>
 
   <div class="info-bar">
     <div class="clock">
@@ -25,7 +430,7 @@
     </div>
     <div class="marquee-container">
       <div class="marquee">
-        <span>#StopJudi | Jangan Judi Teros Bang, Mending Traktir Mimin Kopi via Dana 085157386617, terus dukung TipiStream ya bang | #StopJudi .</span>
+        <span>#StopJudi | Jangan Judi Teros Bang, Mending Traktir Mimin Kopi via Dana 085157386617, terus dukung TipiStream ya bang | #StopJudi | Jangan Judi Teros Bang, Mending Traktir Mimin Kopi via Dana 085157386617, terus dukung TipiStream ya bang |</span>
       </div>
     </div>
   </div>
@@ -33,20 +438,31 @@
   <!-- Menu Section -->
   <div id="text-container">
     Sport
-</div>
+  </div>
 
-<div id="button-container">
-    <div class="bottom-button" onclick="goToHome()">Refresh</div>
-    <script>
-        function goToHome() {
-            window.location.replace("https://sport.tipiku.biz.id/");
-        }
-    </script>
-    <div class="bottom-button" onclick="window.location.href='/bri/bri'">Liga 1</div>
-  <div class="bottom-button" onclick="window.location.href='/fdm/fdm'">ACL</div>
-    <div class="bottom-button" onclick="window.location.href='/ep/ep'">EPL</div>
-    <div class="bottom-button" onclick="window.location.href='/sp/sp'">LaLiga</div>
-</div>
+  <div id="button-container">
+    <div class="bottom-button" onclick="goToHome()">
+      <i class="fas fa-redo"></i> Refresh
+    </div>
+    <div class="bottom-button" onclick="window.location.href='/bri/bri'">
+      <i class="fas fa-futbol"></i> Liga 1
+    </div>
+    <div class="bottom-button" onclick="window.location.href='/fdm/fdm'">
+      <i class="fas fa-futbol"></i> ACL
+    </div>
+    <div class="bottom-button" onclick="window.location.href='/ep/ep'">
+      <i class="fas fa-futbol"></i> EPL
+    </div>
+    <div class="bottom-button" onclick="window.location.href='/sp/sp'">
+      <i class="fas fa-futbol"></i> LaLiga
+    </div>
+  </div>
+
+  <script>
+    function goToHome() {
+      window.location.replace("https://sport.tipiku.biz.id/");
+    }
+  </script>
 
   <!-- Live Chat Section -->
   <div id="livechat-container">
@@ -60,24 +476,31 @@
       <script type='text/javascript' src='https://assets.trakteer.id/js/trbtn-overlay.min.js'></script>
       <script type='text/javascript' class='troverlay'>
         (function() {
-            var trbtnId = trbtnOverlay.init('Dukung TipiStream','#7B0961','https://trakteer.id/Tipistream/tip/embed/modal','https://trakteer.id/images/mix/coffee.png','40','inline');
-            trbtnOverlay.draw(trbtnId);
+          var trbtnId = trbtnOverlay.init('Dukung TipiStream','#6366f1','https://trakteer.id/Tipistream/tip/embed/modal','https://trakteer.id/images/mix/coffee.png','40','inline');
+          trbtnOverlay.draw(trbtnId);
         })();
       </script>
     </div>
-    <iframe src="https://stream.trakteer.id/top-supporter/index.html?ts_theme=default&ts_sortby=nominal&ts_interval=90&key=trstream-yvOAUf9Z6t5e7jt9qBUw&page_url=trakteer.id/Tipistream&mod=3&hash=zb8r4zrrg6v569an" title="frame" name="name1" width="280px" height="200px" style="border: solid 0px #A6A6A6" loading="lazy"></iframe>
+    <iframe 
+      src="https://stream.trakteer.id/top-supporter/index.html?ts_theme=default&ts_sortby=nominal&ts_interval=90&key=trstream-yvOAUf9Z6t5e7jt9qBUw&page_url=trakteer.id/Tipistream&mod=3&hash=zb8r4zrrg6v569an" 
+      title="frame" 
+      name="name1" 
+      width="280px" 
+      height="200px" 
+      loading="lazy">
+    </iframe>
   </div>
 
   <script>
     function loadContent(url) {
-        var iframe = document.getElementById('content-frame');
-        iframe.src = url;
+      var iframe = document.getElementById('content-frame');
+      iframe.src = url;
     }
 
     function updateClock() {
-        var now = new Date();
-        var time = now.toLocaleTimeString('id-ID', { timeZone: 'Asia/Jakarta', hour: '2-digit', minute: '2-digit' }) + " WIB";
-        document.getElementById('clock-display').textContent = time;
+      var now = new Date();
+      var time = now.toLocaleTimeString('id-ID', { timeZone: 'Asia/Jakarta', hour: '2-digit', minute: '2-digit' }) + " WIB";
+      document.getElementById('clock-display').textContent = time;
     }
 
     // Update the clock every second
@@ -85,6 +508,56 @@
 
     // Initialize clock display
     updateClock();
+
+    // Auto-refresh Trakteer ticker setiap 5 menit
+    setInterval(function() {
+      var tickerFrame = document.getElementById('trakteer-ticker-frame');
+      tickerFrame.src = tickerFrame.src;
+    }, 300000);
+
+    // Adjust responsive layout
+    function adjustResponsiveLayout() {
+      var screenWidth = window.innerWidth;
+      var tickerFrame = document.getElementById('trakteer-ticker-frame');
+      var contentFrame = document.getElementById('content-frame');
+      var cboxFrame = document.getElementById('cbox-frame');
+      
+      if (screenWidth >= 1024) {
+        tickerFrame.style.height = '65px';
+        contentFrame.style.height = '500px';
+        cboxFrame.style.height = '600px';
+      } else if (screenWidth >= 768 && screenWidth <= 1023) {
+        tickerFrame.style.height = '70px';
+        contentFrame.style.height = '450px';
+        cboxFrame.style.height = '500px';
+      } else if (screenWidth >= 481 && screenWidth <= 767) {
+        tickerFrame.style.height = '75px';
+        contentFrame.style.height = '400px';
+        cboxFrame.style.height = '400px';
+      } else if (screenWidth >= 361 && screenWidth <= 480) {
+        tickerFrame.style.height = '80px';
+        contentFrame.style.height = '350px';
+        cboxFrame.style.height = '350px';
+      } else {
+        tickerFrame.style.height = '85px';
+        contentFrame.style.height = '300px';
+        cboxFrame.style.height = '300px';
+      }
+    }
+
+    window.addEventListener('load', adjustResponsiveLayout);
+    
+    let resizeTimeout;
+    window.addEventListener('resize', function() {
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(adjustResponsiveLayout, 250);
+    });
+
+    adjustResponsiveLayout();
+
+    window.addEventListener('orientationchange', function() {
+      setTimeout(adjustResponsiveLayout, 500);
+    });
   </script>
 </body>
 </html>
