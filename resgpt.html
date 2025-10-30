@@ -95,7 +95,6 @@
             box-shadow: 0 4px 12px rgba(83, 52, 131, 0.4);
         }
         
-        /* RUNNING TEXT - FIXED */
         .footer-running { 
             flex: 1;
             background: linear-gradient(90deg, #1a1a2e 0%, #0f3460 100%);
@@ -243,12 +242,14 @@
             box-shadow: 0 6px 16px rgba(141, 68, 173, 0.4);
         }
         
+        /* RESPONSIVE - DESKTOP */
         @media (max-width: 1024px) {
             .container {
                 grid-template-columns: 1fr 280px;
             }
         }
         
+        /* RESPONSIVE - TABLET */
         @media (max-width: 768px) {
             .container {
                 grid-template-columns: 1fr;
@@ -268,61 +269,165 @@
                 max-height: 300px;
             }
             
+            /* CHANNELS DALAM GRID */
             .channels-container {
-                flex-direction: row;
-                overflow-x: auto;
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(85px, 1fr));
                 gap: 6px;
+                flex: 1;
+                overflow-y: auto;
+                padding-right: 0;
+            }
+            
+            .channel-category {
+                grid-column: 1 / -1;
+                padding: 8px;
+                font-size: 0.9em;
+                border-radius: 6px;
             }
             
             .channel-btn {
-                min-width: 100px;
-                white-space: nowrap;
-                flex-shrink: 0;
+                padding: 8px;
+                font-size: 0.8em;
+                border-radius: 6px;
             }
         }
         
+        /* RESPONSIVE - MOBILE (480px) */
         @media (max-width: 480px) {
             .navbar {
-                padding: 10px 12px;
+                padding: 8px 10px;
             }
             
             .navbar img {
-                height: 45px;
+                height: 42px;
             }
             
             .container {
-                padding: 8px;
-                gap: 8px;
+                padding: 6px;
+                gap: 6px;
             }
             
             .main-content {
-                min-height: 45vh;
+                min-height: 42vh;
             }
             
             .sidebar {
-                max-height: 280px;
-                padding: 10px;
+                max-height: 260px;
+                padding: 6px;
+                gap: 6px;
             }
             
             .toggle-btn {
+                font-size: 0.75em;
+                padding: 6px;
+            }
+            
+            /* CHANNELS DALAM GRID MOBILE */
+            .channels-container {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(75px, 1fr));
+                gap: 5px;
+                flex: 1;
+                overflow-y: auto;
+                padding-right: 0;
+            }
+            
+            .channel-category {
+                grid-column: 1 / -1;
+                padding: 6px;
                 font-size: 0.8em;
-                padding: 8px;
+                border-radius: 4px;
             }
             
             .channel-btn {
-                font-size: 0.85em;
-                padding: 10px;
-                min-width: 80px;
+                padding: 6px;
+                font-size: 0.75em;
+                border-radius: 4px;
             }
             
             .jam {
-                font-size: 0.8em;
-                padding: 6px 10px;
+                font-size: 0.7em;
+                padding: 4px 8px;
+                border-radius: 4px;
             }
             
             .footer {
-                gap: 6px;
+                gap: 4px;
+                padding: 4px 6px;
+            }
+            
+            .running-text-content {
+                padding: 0 15px;
+                font-size: 0.85em;
+            }
+        }
+        
+        /* RESPONSIVE - MOBILE EXTRA SMALL (360px) */
+        @media (max-width: 360px) {
+            .navbar {
                 padding: 6px 8px;
+            }
+            
+            .navbar img {
+                height: 38px;
+            }
+            
+            .container {
+                padding: 4px;
+                gap: 4px;
+            }
+            
+            .main-content {
+                min-height: 40vh;
+            }
+            
+            .sidebar {
+                max-height: 240px;
+                padding: 4px;
+                gap: 4px;
+            }
+            
+            .toggle-btn {
+                font-size: 0.7em;
+                padding: 5px;
+            }
+            
+            /* CHANNELS GRID 2 KOLOM */
+            .channels-container {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 4px;
+                flex: 1;
+                overflow-y: auto;
+                padding-right: 0;
+            }
+            
+            .channel-category {
+                grid-column: 1 / -1;
+                padding: 5px 4px;
+                font-size: 0.75em;
+            }
+            
+            .channel-btn {
+                padding: 5px;
+                font-size: 0.7em;
+                border-radius: 4px;
+            }
+            
+            .jam {
+                font-size: 0.65em;
+                padding: 3px 6px;
+            }
+            
+            .footer {
+                gap: 3px;
+                padding: 3px 4px;
+            }
+            
+            .running-text-content {
+                padding: 0 12px;
+                font-size: 0.8em;
             }
         }
     </style>
@@ -383,13 +488,11 @@
     </div>
 
     <script>
-        // Setup Running Text dengan duplikasi untuk smooth scrolling
         function setupRunningText() {
             const wrapper = document.getElementById('runningWrapper');
             const textContent = wrapper.querySelector('.running-text-content');
             
             if (textContent) {
-                // Clone text 3x untuk smooth loop
                 const clone1 = textContent.cloneNode(true);
                 const clone2 = textContent.cloneNode(true);
                 
@@ -441,7 +544,6 @@
             console.log('Channel ' + channel + ' dimuat dari: ' + url);
         }
 
-        // Fungsi untuk ubah running text
         function updateRunningText(newText) {
             const wrapper = document.getElementById('runningWrapper');
             wrapper.innerHTML = `
@@ -451,7 +553,6 @@
             `;
         }
 
-        // Fungsi untuk ubah kecepatan (dalam detik)
         function setRunningTextSpeed(speed) {
             const wrapper = document.getElementById('runningWrapper');
             wrapper.style.animation = `scrollText ${speed}s linear infinite`;
