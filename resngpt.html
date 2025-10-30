@@ -139,7 +139,7 @@
             overflow: hidden;
         }
         
-        /* TOGGLE BUTTONS - CHANNELS, CATEGORIES, CHAT */
+        /* TOGGLE BUTTONS - CATEGORIES, CHAT */
         .toggle-buttons {
             display: flex;
             gap: 6px;
@@ -163,30 +163,6 @@
         .toggle-btn.active {
             background: linear-gradient(135deg, #8e24aa 0%, #6a1b9a 100%);
             box-shadow: 0 8px 20px rgba(141, 68, 173, 0.6);
-        }
-        
-        /* CHANNELS CONTAINER */
-        .channels-container {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            flex: 1;
-            overflow-y: auto;
-            padding-right: 6px;
-        }
-        .channels-container::-webkit-scrollbar {
-            width: 6px;
-        }
-        .channels-container::-webkit-scrollbar-track {
-            background: rgba(83, 52, 131, 0.1);
-            border-radius: 3px;
-        }
-        .channels-container::-webkit-scrollbar-thumb {
-            background: linear-gradient(135deg, #533483 0%, #8e24aa 100%);
-            border-radius: 3px;
-        }
-        .channels-container.hidden {
-            display: none;
         }
         
         /* CATEGORIES CONTAINER */
@@ -242,29 +218,6 @@
             user-select: none;
         }
         
-        /* CHANNEL BUTTONS */
-        .channel-btn { 
-            padding: 12px;
-            background: linear-gradient(135deg, #1a1a2e 0%, #0f3460 100%);
-            border: 2px solid #533483;
-            border-radius: 6px;
-            color: #fff;
-            font-size: 0.95em;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-align: center;
-        }
-        .channel-btn:hover {
-            background: linear-gradient(135deg, #0f3460 0%, #533483 100%);
-            transform: translateX(4px);
-            box-shadow: 0 4px 12px rgba(83, 52, 131, 0.3);
-        }
-        .channel-btn.active {
-            background: linear-gradient(135deg, #533483 0%, #8e24aa 100%);
-            box-shadow: 0 6px 16px rgba(141, 68, 173, 0.4);
-        }
-        
         /* CATEGORY BUTTONS */
         .category-btn {
             padding: 12px;
@@ -305,7 +258,7 @@
             .main-content { order: 1; min-height: 50vh; }
             .sidebar { order: 2; max-height: 300px; }
             
-            .channels-container, .categories-container {
+            .categories-container {
                 display: grid;
                 grid-template-columns: repeat(auto-fit, minmax(85px, 1fr));
                 gap: 6px;
@@ -321,7 +274,7 @@
                 border-radius: 6px;
             }
             
-            .channel-btn, .category-btn {
+            .category-btn {
                 padding: 8px;
                 font-size: 0.8em;
                 border-radius: 6px;
@@ -337,7 +290,7 @@
             
             .toggle-btn { font-size: 0.75em; padding: 6px; }
             
-            .channels-container, .categories-container {
+            .categories-container {
                 display: grid;
                 grid-template-columns: repeat(auto-fit, minmax(75px, 1fr));
                 gap: 5px;
@@ -353,7 +306,7 @@
                 border-radius: 4px;
             }
             
-            .channel-btn, .category-btn {
+            .category-btn {
                 padding: 6px;
                 font-size: 0.75em;
                 border-radius: 4px;
@@ -373,7 +326,7 @@
             
             .toggle-btn { font-size: 0.7em; padding: 5px; }
             
-            .channels-container, .categories-container {
+            .categories-container {
                 display: grid;
                 grid-template-columns: repeat(2, 1fr);
                 gap: 4px;
@@ -388,7 +341,7 @@
                 font-size: 0.75em;
             }
             
-            .channel-btn, .category-btn {
+            .category-btn {
                 padding: 5px;
                 font-size: 0.7em;
                 border-radius: 4px;
@@ -432,14 +385,14 @@
         </div>
         
         <div class="sidebar">
-            <!-- TOGGLE BUTTONS - 3 TAB -->
+            <!-- TOGGLE BUTTONS - 2 TAB ONLY -->
             <div class="toggle-buttons">
-                <button class="toggle-btn" onclick="toggleView('categories')">📂 Categories</button>
+                <button class="toggle-btn active" onclick="toggleView('categories')">📂 Categories</button>
                 <button class="toggle-btn" onclick="toggleView('chat')">💬 Chat</button>
             </div>
         
             <!-- CATEGORIES CONTAINER -->
-            <div class="categories-container hidden" id="categoriesContainer">
+            <div class="categories-container" id="categoriesContainer">
                 <div class="channel-category">📂 Category List</div>
                 <div class="category-btn" onclick="loadCategory(this, 'Action', '/resgpt.html')">Action</div>
                 <div class="category-btn" onclick="loadCategory(this, 'Comedy', '/category/comedy')">Comedy</div>
@@ -491,38 +444,21 @@
         updateJam();
 
         function toggleView(view) {
-            const channelsContainer = document.getElementById('channelsContainer');
             const categoriesContainer = document.getElementById('categoriesContainer');
             const chatboxContainer = document.getElementById('chatboxContainer');
             const toggleBtns = document.querySelectorAll('.toggle-btn');
             
             toggleBtns.forEach(btn => btn.classList.remove('active'));
             
-            if (view === 'channels') {
-                channelsContainer.classList.remove('hidden');
-                categoriesContainer.classList.add('hidden');
-                chatboxContainer.classList.add('hidden');
-                toggleBtns[0].classList.add('active');
-            } else if (view === 'categories') {
-                channelsContainer.classList.add('hidden');
+            if (view === 'categories') {
                 categoriesContainer.classList.remove('hidden');
                 chatboxContainer.classList.add('hidden');
-                toggleBtns[1].classList.add('active');
+                toggleBtns[0].classList.add('active');
             } else if (view === 'chat') {
-                channelsContainer.classList.add('hidden');
                 categoriesContainer.classList.add('hidden');
                 chatboxContainer.classList.remove('hidden');
-                toggleBtns[2].classList.add('active');
+                toggleBtns[1].classList.add('active');
             }
-        }
-
-        function loadChannel(element, channel, url) {
-            document.querySelectorAll('.channel-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            element.classList.add('active');
-            document.getElementById("player").src = url;
-            console.log('Channel ' + channel + ' dimuat dari: ' + url);
         }
 
         function loadCategory(element, category, url) {
