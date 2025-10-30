@@ -119,3 +119,15 @@
     <div class="bottom-button" onclick="window.location.href='/fdm/fdm'">ACL</div>
     <div class="bottom-button" onclick="window.location.href='/ep/ep'">EPL</div>
     <div class="bottom-button" onclick="window.location.href='/sp/sp'">LaLiga</div>
+
+=================================================================================
+
+    <div class="bottom-button" onclick="window.location.href='/fdm/fdm'">
+      <i class="fas fa-futbol"></i> ACL
+    </div>
+    <div class="bottom-button" onclick="window.location.href='/ep/ep'">
+      <i class="fas fa-futbol"></i> EPL
+    </div>
+    <div class="bottom-button" onclick="window.location.href='/sp/sp'">
+      <i class="fas fa-futbol"></i> LaLiga
+    </div>
