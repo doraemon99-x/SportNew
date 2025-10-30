@@ -3,208 +3,632 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Streaming TV</title>
+    <title>Streaming TV - TipiStream</title>
     <style>
-        * { margin:0; padding:0; }
-        body { font-family:sans-serif; background:#f5f5f5; }
-        
-        /* NAV BAR / LOGO - MODERN GRADIENT */
-        .navbar { 
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            text-align:center; 
-            padding:15px; 
-            border:none;
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        * { margin:0; padding:0; box-sizing: border-box; }
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #fff;
+            overflow-x: hidden;
         }
+        
+        .navbar { 
+            background: linear-gradient(90deg, #0f3460 0%, #533483 100%);
+            padding: 12px 20px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            gap: 15px;
+        }
+        
+        .navbar-content {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
         .navbar img {
-            height: 50px;
+            height: 55px;
             width: auto;
             object-fit: contain;
-            filter: drop-shadow(0 2px 4px rgba(255,255,255,0.3));
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+            transition: transform 0.3s ease;
+            cursor: pointer;
+        }
+        .navbar img:hover {
+            transform: scale(1.05);
         }
         
-        /* MAIN CONTAINER */
+        .home-btn {
+            background: linear-gradient(135deg, #8e24aa 0%, #533483 100%);
+            color: #fff;
+            border: 2px solid #8e24aa;
+            padding: 10px 16px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 0.95em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .home-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(141, 68, 173, 0.4);
+        }
+        .home-btn:active {
+            background: linear-gradient(135deg, #6a1b9a 0%, #533483 100%);
+            box-shadow: 0 8px 20px rgba(141, 68, 173, 0.6);
+        }
+        
+        /* TRAKTEER BUTTON STYLING */
+        .trakteer-container {
+            display: flex;
+            align-items: center;
+        }
+        
+        #trbtn-container-0 .trbtn-img {
+            display: initial !important;
+            vertical-align: middle;
+            padding-top: 0 !important;
+            padding-bottom: 0 !important;
+            border: none;
+            margin-top: 0;
+            margin-right: 10px !important;
+            margin-left: 0 !important;
+            margin-bottom: 3px !important;
+        }
+        
+        .trbtn-container {
+            display: inline-block !important;
+            white-space: nowrap;
+            min-width: 110px;
+        }
+        
+        span.trbtn-txt {
+            color: #fff !important;
+            letter-spacing: -0.15px !important;
+            text-wrap: none;
+            vertical-align: middle;
+            line-height: 33px !important;
+            padding: 0;
+            text-align: center;
+            text-decoration: none !important;
+            text-shadow: 0 1px 1px rgba(34, 34, 34, 0.05);
+        }
+        
+        .trbtn-txt a {
+            color: #fff !important;
+            text-decoration: none !important;
+        }
+        
+        .trbtn-txt a:hover {
+            color: #fff !important;
+            text-decoration: none;
+        }
+        
+        a.trbtn {
+            box-shadow: 1px 1px 0px rgba(0, 0, 0, 0.2);
+            line-height: 36px !important;
+            min-width: 100px;
+            display: inline-block !important;
+            background-color: #be1e2d;
+            padding: 2px 24px !important;
+            text-align: center !important;
+            border-radius: 9999px;
+            color: #fff;
+            cursor: pointer;
+            overflow-wrap: break-word;
+            vertical-align: middle;
+            border: 0 none #fff !important;
+            font-family: 'Quicksand', Helvetica, Century Gothic, sans-serif !important;
+            text-decoration: none;
+            text-shadow: none;
+            font-weight: 700 !important;
+            font-size: 14px !important;
+        }
+        
+        a.trbtn:visited {
+            color: #fff !important;
+            text-decoration: none !important;
+        }
+        
+        a.trbtn:hover {
+            opacity: .85;
+            color: #f5f5f5 !important;
+            text-decoration: none !important;
+        }
+        
+        a.trbtn:active {
+            color: #f5f5f5 !important;
+            text-decoration: none !important;
+        }
+        
+        .trbtn-txt img.trbtn-img {
+            display: initial;
+            animation: trbtn-wiggle 3s infinite;
+            height: 22px;
+        }
+        
+        @keyframes trbtn-wiggle {
+            0% { transform: rotate(0) scale(1); }
+            60% { transform: rotate(0) scale(1); }
+            75% { transform: rotate(0) scale(1.12); }
+            80% { transform: rotate(0) scale(1.1); }
+            84% { transform: rotate(-10deg) scale(1.1); }
+            88% { transform: rotate(10deg) scale(1.1); }
+            92% { transform: rotate(-10deg) scale(1.1); }
+            96% { transform: rotate(10deg) scale(1.1); }
+            100% { transform: rotate(0) scale(1); }
+        }
+        
         .container { 
-            display:flex; 
-            gap:0;
-            margin: 0;
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 12px;
+            padding: 12px;
+            height: calc(100vh - 79px);
+            min-height: 600px;
         }
         
-        /* MAIN CONTENT - PLAYER & RUNNING TEXT */
         .main-content { 
-            flex:3; 
-            border:3px solid #e53935; 
-            display:flex; 
-            flex-direction:column;
-            background:#fff;
-            margin:10px;
-            margin-right:0;
-            border-radius: 4px;
+            display: flex;
+            flex-direction: column;
+            background: linear-gradient(135deg, #0f3460 0%, #1a1a2e 100%);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(83, 52, 131, 0.3);
+            border: 2px solid #533483;
         }
         
-        /* IFRAME PLAYER */
         #player { 
-            flex:1; 
-            border:0; 
-            width:100%;
-            min-height:400px;
-            display:block;
-            background:#1a1a1a;
-            border-radius: 2px;
+            flex: 1;
+            border: none;
+            width: 100%;
+            background: #000;
         }
         
-        /* RUNNING TEXT TRAKTEER - CLEAN STYLE */
         .running-trakteer {
-            overflow-x: auto;
+            height: 50px;
+            overflow: hidden;
+            border-bottom: 2px solid #533483;
+            background: rgba(83, 52, 131, 0.1);
         }
-        
         .running-trakteer iframe {
-            border: none !important;
             width: 100% !important;
-            height: 45px !important;
+            height: 50px !important;
+            border: none !important;
             display: block !important;
             background: transparent;
         }
         
-        /* FOOTER - JAM & RUNNING TEXT CUSTOM */
         .footer { 
-            display:flex; 
-            align-items:center; 
-            gap:5px;
-            padding:5px;
-            background:#fff;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 12px;
+            background: rgba(15, 52, 96, 0.5);
+            border-top: 1px solid #533483;
         }
         
-        /* JAM */
         .jam { 
-            background:linear-gradient(135deg, #8e24aa 0%, #6a1b9a 100%);
-            color:#fff; 
-            padding:10px 16px; 
-            font-weight:bold; 
-            border-radius:4px; 
-            font-size:0.95em;
-            white-space:nowrap;
-            box-shadow: 0 2px 8px rgba(142, 36, 170, 0.3);
+            background: linear-gradient(135deg, #533483 0%, #8e24aa 100%);
+            color: #fff;
+            padding: 8px 14px;
+            font-weight: bold;
+            border-radius: 6px;
+            font-size: 0.9em;
+            white-space: nowrap;
+            box-shadow: 0 4px 12px rgba(83, 52, 131, 0.4);
         }
         
-        /* RUNNING TEXT CUSTOM */
         .footer-running { 
-            flex:1; 
-            background:#2a2a2a;
-            border-radius:4px;
-            overflow:hidden;
-            min-height:40px;
-            display:flex;
-            align-items:center;
-            padding:0 10px;
+            flex: 1;
+            background: linear-gradient(90deg, #1a1a2e 0%, #0f3460 100%);
+            border-radius: 6px;
+            overflow: hidden;
+            min-height: 40px;
+            display: flex;
+            align-items: center;
+            border: 1px solid #533483;
+        }
+        
+        .running-text-wrapper {
+            display: flex;
+            width: 100%;
+            animation: scrollText 25s linear infinite;
         }
         
         .running-text-content {
-            width: 100%;
-            height: 40px;
-            display: flex;
+            display: inline-flex;
             align-items: center;
             color: #fff;
             font-weight: 600;
             white-space: nowrap;
+            padding: 0 30px;
+            min-width: max-content;
+        }
+        
+        @keyframes scrollText {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
+        
+        .sidebar { 
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            background: linear-gradient(135deg, #0f3460 0%, #1a1a2e 100%);
+            padding: 12px;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(83, 52, 131, 0.3);
+            border: 2px solid #533483;
             overflow: hidden;
-            animation: scroll 15s linear infinite;
         }
         
-        @keyframes scroll {
-            0% {
-                transform: translateX(100%);
-            }
-            100% {
-                transform: translateX(-100%);
-            }
+        .toggle-buttons {
+            display: flex;
+            gap: 6px;
+        }
+        .toggle-btn {
+            flex: 1;
+            padding: 10px;
+            background: linear-gradient(135deg, #533483 0%, #8e24aa 100%);
+            border: 2px solid #8e24aa;
+            border-radius: 6px;
+            color: #fff;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.85em;
+        }
+        .toggle-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(141, 68, 173, 0.4);
+        }
+        .toggle-btn.active {
+            background: linear-gradient(135deg, #8e24aa 0%, #6a1b9a 100%);
+            box-shadow: 0 8px 20px rgba(141, 68, 173, 0.6);
         }
         
-        /* CHANNELS SIDEBAR */
-        .channels { 
-            flex:1; 
-            background:#e3f2fd; 
-            padding:10px;
-            margin:10px;
-            margin-left:0;
-            display:flex;
-            flex-direction:column;
-            gap:8px;
-            border:3px solid #29b6f6;
-            border-radius:4px;
+        .categories-container {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            flex: 1;
+            overflow-y: auto;
+            padding-right: 6px;
+        }
+        .categories-container::-webkit-scrollbar {
+            width: 6px;
+        }
+        .categories-container::-webkit-scrollbar-track {
+            background: rgba(83, 52, 131, 0.1);
+            border-radius: 3px;
+        }
+        .categories-container::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #533483 0%, #8e24aa 100%);
+            border-radius: 3px;
+        }
+        .categories-container.hidden {
+            display: none;
         }
         
-        /* CHANNEL CATEGORY HEADER */
+        .chatbox-container {
+            flex: 1;
+            overflow: hidden;
+            border-radius: 8px;
+            background: #fff;
+            border: 1px solid #533483;
+        }
+        .chatbox-container.hidden {
+            display: none;
+        }
+        .chatbox-container iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        
         .channel-category {
-            padding: 12px 16px;
-            background: linear-gradient(135deg, #29b6f6 0%, #0288d1 100%);
+            padding: 10px;
+            background: linear-gradient(135deg, #533483 0%, #8e24aa 100%);
             color: #fff;
             font-weight: 700;
-            font-size: 1em;
+            font-size: 0.95em;
             text-align: center;
-            border-radius: 4px;
+            border-radius: 6px;
             cursor: default;
             user-select: none;
         }
         
-        /* CHANNEL BUTTONS */
-        .channel-btn { 
-            padding:16px; 
-            background:#fff; 
-            border:2px solid #29b6f6; 
-            border-radius:6px; 
-            color:#03a9f4; 
-            font-size:1em; 
-            font-weight:600;
-            cursor:pointer; 
-            text-align:center;
+        .category-btn {
+            padding: 12px;
+            background: linear-gradient(135deg, #1a1a2e 0%, #0f3460 100%);
+            border: 2px solid #533483;
+            border-radius: 6px;
+            color: #fff;
+            font-size: 0.95em;
+            font-weight: 600;
+            cursor: pointer;
             transition: all 0.3s ease;
+            text-align: center;
+            text-decoration: none;
+            display: block;
+        }
+        .category-btn:hover {
+            background: linear-gradient(135deg, #0f3460 0%, #533483 100%);
+            transform: translateX(4px);
+            box-shadow: 0 4px 12px rgba(83, 52, 131, 0.3);
+        }
+        .category-btn:active {
+            background: linear-gradient(135deg, #533483 0%, #8e24aa 100%);
+            box-shadow: 0 6px 16px rgba(141, 68, 173, 0.4);
         }
         
-        .channel-btn:hover {
-            background:#e3f2fd;
-            transform: translateX(3px);
-            box-shadow: 0 2px 8px rgba(3, 169, 244, 0.2);
+        /* RESPONSIVE */
+        @media (max-width: 1024px) {
+            .container { grid-template-columns: 1fr 280px; }
         }
         
-        .channel-btn.active {
-            background:#03a9f4;
-            color:#fff;
-            box-shadow: 0 4px 12px rgba(3, 169, 244, 0.4);
-        }
-        
-        @media (max-width: 900px) {
-            .container { 
-                flex-direction:column; 
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr;
+                grid-template-rows: auto auto;
+                height: auto;
+                padding: 8px;
+                gap: 8px;
             }
-            .channels { 
-                margin-left:10px;
-                margin-right:10px;
-                border-left: none;
+            
+            .main-content { order: 1; min-height: 50vh; }
+            .sidebar { order: 2; max-height: 300px; }
+            
+            .categories-container {
+                display: flex;
+                grid-template-columns: repeat(auto-fit, minmax(85px, 1fr));
+                gap: 6px;
+                flex: 1;
+                overflow-y: auto;
+                padding-right: 0;
             }
+            
+            .channel-category {
+                grid-column: 1 / -1;
+                padding: 8px;
+                font-size: 0.9em;
+                border-radius: 6px;
+            }
+            
+            .category-btn {
+                padding: 8px;
+                font-size: 0.8em;
+                border-radius: 6px;
+            }
+            
+            .navbar {
+                flex-wrap: wrap;
+            }
+            
+            .navbar-content {
+                gap: 10px;
+                width: 100%;
+            }
+            
+            .home-btn {
+                font-size: 0.85em;
+                padding: 8px 12px;
+            }
+            
+            a.trbtn {
+                font-size: 12px !important;
+                padding: 2px 16px !important;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .navbar {
+                padding: 8px 10px;
+                flex-wrap: wrap;
+                gap: 6px;
+            }
+            
+            .navbar-content {
+                gap: 8px;
+                width: 100%;
+                flex-wrap: wrap;
+            }
+            
+            .navbar img {
+                height: 42px;
+            }
+            
+            .home-btn {
+                font-size: 0.7em;
+                padding: 6px 10px;
+                flex: 1;
+                min-width: 70px;
+            }
+            
+            .trakteer-container {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            a.trbtn {
+                font-size: 11px !important;
+                padding: 2px 12px !important;
+                min-width: auto;
+            }
+            
+            .container {
+                padding: 6px;
+                gap: 6px;
+            }
+            
             .main-content {
-                margin-right:10px;
+                min-height: 42vh;
+            }
+            
+            .sidebar {
+                max-height: 260px;
+                padding: 6px;
+                gap: 6px;
+            }
+            
+            .toggle-btn {
+                font-size: 0.75em;
+                padding: 6px;
+            }
+            
+            .categories-container {
+                display: flex;
+                grid-template-columns: repeat(auto-fit, minmax(75px, 1fr));
+                gap: 5px;
+                flex: 1;
+                overflow-y: auto;
+                padding-right: 0;
+            }
+            
+            .channel-category {
+                grid-column: 1 / -1;
+                padding: 6px;
+                font-size: 0.8em;
+                border-radius: 4px;
+            }
+            
+            .category-btn {
+                padding: 6px;
+                font-size: 0.75em;
+                border-radius: 4px;
+            }
+            
+            .jam {
+                font-size: 0.7em;
+                padding: 4px 8px;
+                border-radius: 4px;
+            }
+            
+            .footer {
+                gap: 4px;
+                padding: 4px 6px;
+            }
+            
+            .running-text-content {
+                padding: 0 15px;
+                font-size: 0.85em;
+            }
+        }
+        
+        @media (max-width: 360px) {
+            .navbar {
+                padding: 6px 8px;
+            }
+            
+            .navbar-content {
+                flex-direction: column;
+                width: 100%;
+            }
+            
+            .navbar img {
+                height: 38px;
+            }
+            
+            .home-btn {
+                font-size: 0.65em;
+                padding: 5px 8px;
+                width: 100%;
+            }
+            
+            .trakteer-container {
+                width: 100%;
+            }
+            
+            a.trbtn {
+                font-size: 10px !important;
+                padding: 2px 10px !important;
+                width: 100%;
+            }
+            
+            .container {
+                padding: 4px;
+                gap: 4px;
+            }
+            
+            .main-content {
+                min-height: 40vh;
+            }
+            
+            .sidebar {
+                max-height: 240px;
+                padding: 4px;
+                gap: 4px;
+            }
+            
+            .toggle-btn {
+                font-size: 0.7em;
+                padding: 5px;
+            }
+            
+            .categories-container {
+                display: flex;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 4px;
+                flex: 1;
+                overflow-y: auto;
+                padding-right: 0;
+            }
+            
+            .channel-category {
+                grid-column: 1 / -1;
+                padding: 5px 4px;
+                font-size: 0.75em;
+            }
+            
+            .category-btn {
+                padding: 5px;
+                font-size: 0.7em;
+                border-radius: 4px;
+            }
+            
+            .jam {
+                font-size: 0.65em;
+                padding: 3px 6px;
+            }
+            
+            .footer {
+                gap: 3px;
+                padding: 3px 4px;
+            }
+            
+            .running-text-content {
+                padding: 0 12px;
+                font-size: 0.8em;
             }
         }
     </style>
+    <script type='text/javascript' src='https://edge-cdn.trakteer.id/js/embed/trbtn.min.js?v=14-05-2025'></script>
 </head>
 <body>
-    <!-- NAV BAR / LOGO - MODERN GRADIENT -->
     <div class="navbar">
-        <img src="/img/tipigaza.png" alt="Logo Streaming TV">
+        <div class="navbar-content">
+            <img src="/img/tipigaza.png" alt="TipiStream" onclick="window.location.href='/'">
+            <a href="/" class="home-btn">🏠 Home</a>
+        </div>
+        <div class="trakteer-container" id="trbtnContainer"></div>
     </div>
     
     <div class="container">
-        <!-- MAIN CONTENT -->
         <div class="main-content">
-            <!-- IFRAME PLAYER -->
             <iframe id="player" src="about:blank"></iframe>
             
-            <!-- RUNNING TEXT TRAKTEER - CLEAN STYLE -->
             <div class="running-trakteer">
                 <iframe 
                     title="Trakteer"
-                    
                     width="100%" 
                     style="border:none" 
                     src="https://stream.trakteer.id/running-text/index.html?rt_font=Chewy&rt_type=top-supporters&rt_count=10&rt_speed=slow&rt_theme=ramadhan&rt_interval=90&rt_messages=Ayo+dukung+terus+%7Busername%7D+di+%7Btrlink%7D+dan+beri+semangat+Tim+Kebanggaanmu...&rt_show_link=false&rt_txtshadow=true&creator_name=Tipistream&page_url=trakteer.id%2FTipistream%2Fgift&mod=3&key=trstream-yvOAUf9Z6t5e7jt9qBUw&hash=zb8r4zrrg6v569an&timestamp=1761836238"
@@ -212,33 +636,62 @@
                 </iframe>
             </div>
             
-            <!-- FOOTER - JAM & RUNNING TEXT CUSTOM -->
             <div class="footer">
                 <div class="jam" id="jamWIB">JAM (WIB): --:--</div>
                 <div class="footer-running">
-                    <div class="running-text-content" id="runningText">
-                        running text yang bisa di custom/ubah
+                    <div class="running-text-wrapper" id="runningWrapper">
+                        <div class="running-text-content">
+                            🎉 Selamat datang di TipiStream - Streaming berkualitas tinggi untuk Anda!
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
         
-        <!-- CHANNELS SIDEBAR -->
-        <div class="channels">
-            <!-- CHANNEL CATEGORY HEADER -->
-            <div class="channel-category">📺 Category List</div>
+        <div class="sidebar">
+            <div class="toggle-buttons">
+                <button class="toggle-btn active" onclick="toggleView('categories')">📂 Categories</button>
+                <button class="toggle-btn" onclick="toggleView('chat')">💬 Chat</button>
+            </div>
+        
+            <div class="categories-container" id="categoriesContainer">
+                
+                <a class="category-btn" href="/category/sport" onclick="window.location.href='/bri/bri'; return false;">Liga 1</a>
+                <a class="category-btn" href="/category/sport" onclick="window.location.href='/ep/ep'; return false;">EPL</a>
+                <a class="category-btn" href="/category/sport" onclick="window.location.href='/bd/bd'; return false;">BWF</a>
+            </div>
             
-            <!-- CHANNEL BUTTONS -->
-            <div class="channel-btn" onclick="loadChannel(this, 'A', '/bri/bri')">Football A</div>
-            <div class="channel-btn" onclick="loadChannel(this, 'B', '/ep/ep')">Football B</div>
-            <div class="channel-btn" onclick="loadChannel(this, 'C', '/bri/bri')">Football C</div>
-            <div class="channel-btn" onclick="loadChannel(this, 'D', '/bri/bri')">Football D</div>
+            <div class="chatbox-container hidden" id="chatboxContainer">
+                <iframe 
+                    title="Chat Box"
+                    src="https://www5.cbox.ws/box/?boxid=940426&boxtag=rSDm0Y"
+                    sandbox="allow-same-origin allow-scripts allow-popups allow-pointer-lock allow-forms">
+                </iframe>
+            </div>
         </div>
     </div>
 
+    <script type='text/javascript'>
+        (function(){
+            var trbtnId = trbtn.init('Dukung Saya di Trakteer','#533483','https://trakteer.id/Tipistream','https://trakteer.id/images/mix/cendol.png','40');
+            trbtn.draw(trbtnId);
+        })();
 
-    <script>
-        // Fungsi Jam (WIB) - GMT+7
+        function setupRunningText() {
+            const wrapper = document.getElementById('runningWrapper');
+            const textContent = wrapper.querySelector('.running-text-content');
+            
+            if (textContent) {
+                const clone1 = textContent.cloneNode(true);
+                const clone2 = textContent.cloneNode(true);
+                
+                wrapper.appendChild(clone1);
+                wrapper.appendChild(clone2);
+            }
+        }
+        
+        setupRunningText();
+
         function updateJam() {
             const jamEl = document.getElementById("jamWIB");
             const now = new Date();
@@ -253,28 +706,36 @@
         setInterval(updateJam, 1000);
         updateJam();
 
-
-        // Fungsi untuk load channel TV di iframe
-        function loadChannel(element, channel, url) {
-            document.querySelectorAll('.channel-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            element.classList.add('active');
-            document.getElementById("player").src = url;
-            console.log('Channel ' + channel + ' dimuat dari: ' + url);
+        function toggleView(view) {
+            const categoriesContainer = document.getElementById('categoriesContainer');
+            const chatboxContainer = document.getElementById('chatboxContainer');
+            const toggleBtns = document.querySelectorAll('.toggle-btn');
+            
+            toggleBtns.forEach(btn => btn.classList.remove('active'));
+            
+            if (view === 'categories') {
+                categoriesContainer.classList.remove('hidden');
+                chatboxContainer.classList.add('hidden');
+                toggleBtns[0].classList.add('active');
+            } else if (view === 'chat') {
+                categoriesContainer.classList.add('hidden');
+                chatboxContainer.classList.remove('hidden');
+                toggleBtns[1].classList.add('active');
+            }
         }
 
-
-        // FUNGSI UNTUK UBAH RUNNING TEXT DI FOOTER
         function updateRunningText(newText) {
-            document.getElementById("runningText").textContent = newText;
+            const wrapper = document.getElementById('runningWrapper');
+            wrapper.innerHTML = `
+                <div class="running-text-content">${newText}</div>
+                <div class="running-text-content">${newText}</div>
+                <div class="running-text-content">${newText}</div>
+            `;
         }
 
-
-        // FUNGSI UNTUK UBAH KECEPATAN RUNNING TEXT
         function setRunningTextSpeed(speed) {
-            const runningText = document.getElementById("runningText");
-            runningText.style.animation = `scroll ${speed}s linear infinite`;
+            const wrapper = document.getElementById('runningWrapper');
+            wrapper.style.animation = `scrollText ${speed}s linear infinite`;
         }
     </script>
 </body>
