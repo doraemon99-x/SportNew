@@ -172,8 +172,7 @@
             grid-template-columns: 1fr 300px;
             gap: 12px;
             padding: 12px;
-            height: calc(100vh - 79px);
-            min-height: 600px;
+            min-height: calc(100vh - 79px);
         }
         
         .main-content { 
@@ -184,12 +183,14 @@
             overflow: hidden;
             box-shadow: 0 8px 32px rgba(83, 52, 131, 0.3);
             border: 2px solid #533483;
+            height: fit-content;
         }
         
         #player { 
-            flex: 1;
-            border: none;
             width: 100%;
+            height: 60vh;
+            min-height: 400px;
+            border: none;
             background: #000;
         }
         
@@ -268,6 +269,8 @@
             border-radius: 12px;
             box-shadow: 0 8px 32px rgba(83, 52, 131, 0.3);
             border: 2px solid #533483;
+            height: fit-content;
+            max-height: calc(100vh - 103px);
             overflow: hidden;
         }
         
@@ -370,6 +373,24 @@
             box-shadow: 0 6px 16px rgba(141, 68, 173, 0.4);
         }
         
+        /* ADSTERRA NATIVE BANNER - PALING BAWAH */
+        .bottom-ad-container {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #0f3460 0%, #1a1a2e 100%);
+            border-top: 2px solid #533483;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 150px;
+            margin-top: 12px;
+        }
+        
+        #container-574e0aac9784269f4b996189aeaa3e52 {
+            width: 100%;
+            max-width: 100%;
+        }
+        
         /* RESPONSIVE - DESKTOP */
         @media (max-width: 1024px) {
             .container {
@@ -381,15 +402,17 @@
         @media (max-width: 768px) {
             .container {
                 grid-template-columns: 1fr;
-                grid-template-rows: auto auto;
-                height: auto;
-                padding: 8px;
                 gap: 8px;
+                padding: 8px;
             }
             
             .main-content {
                 order: 1;
-                min-height: 50vh;
+            }
+            
+            #player {
+                height: 50vh;
+                min-height: 300px;
             }
             
             .sidebar {
@@ -398,7 +421,7 @@
             }
             
             .channels-container {
-                display: flex;
+                display: grid;
                 grid-template-columns: repeat(auto-fit, minmax(85px, 1fr));
                 gap: 6px;
                 flex: 1;
@@ -436,6 +459,11 @@
             a.trbtn {
                 font-size: 12px !important;
                 padding: 2px 16px !important;
+            }
+            
+            .bottom-ad-container {
+                padding: 12px;
+                min-height: 120px;
             }
         }
         
@@ -480,8 +508,9 @@
                 gap: 6px;
             }
             
-            .main-content {
-                min-height: 42vh;
+            #player {
+                height: 42vh;
+                min-height: 250px;
             }
             
             .sidebar {
@@ -496,7 +525,7 @@
             }
             
             .channels-container {
-                display: flex;
+                display: grid;
                 grid-template-columns: repeat(auto-fit, minmax(75px, 1fr));
                 gap: 5px;
                 flex: 1;
@@ -531,6 +560,12 @@
             .running-text-content {
                 padding: 0 15px;
                 font-size: 0.85em;
+            }
+            
+            .bottom-ad-container {
+                padding: 8px;
+                min-height: 100px;
+                margin-top: 6px;
             }
         }
         
@@ -570,8 +605,9 @@
                 gap: 4px;
             }
             
-            .main-content {
-                min-height: 40vh;
+            #player {
+                height: 40vh;
+                min-height: 220px;
             }
             
             .sidebar {
@@ -586,7 +622,7 @@
             }
             
             .channels-container {
-                display: flex;
+                display: grid;
                 grid-template-columns: repeat(2, 1fr);
                 gap: 4px;
                 flex: 1;
@@ -620,6 +656,12 @@
                 padding: 0 12px;
                 font-size: 0.8em;
             }
+            
+            .bottom-ad-container {
+                padding: 6px;
+                min-height: 90px;
+                margin-top: 4px;
+            }
         }
     </style>
     <script type='text/javascript' src='https://edge-cdn.trakteer.id/js/embed/trbtn.min.js?v=14-05-2025'></script>
@@ -635,7 +677,7 @@
     
     <div class="container">
         <div class="main-content">
-            <iframe id="player" src="https://pub-cd04d0cec5c2411cab5f527cf3f88cf0.r2.dev/testipi.svg"></iframe>
+            <iframe id="player" src="/image-wrapper.html"></iframe>
             
             <div class="running-trakteer">
                 <iframe 
@@ -682,6 +724,14 @@
             </div>
         </div>
     </div>
+
+    <!-- ADSTERRA NATIVE BANNER - PALING BAWAH HALAMAN -->
+    <div class="bottom-ad-container">
+        <div id="container-574e0aac9784269f4b996189aeaa3e52"></div>
+    </div>
+
+    <!-- ADSTERRA NATIVE BANNER SCRIPT -->
+    <script async="async" data-cfasync="false" src="//pl28005532.effectivegatecpm.com/574e0aac9784269f4b996189aeaa3e52/invoke.js"></script>
 
     <script type='text/javascript'>
         (function(){
