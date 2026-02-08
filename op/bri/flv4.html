@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- DPlayer CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/dplayer/dist/DPlayer.min.css">
+
+<!-- DPlayer JS -->
+<script src="https://cdn.jsdelivr.net/npm/dplayer/dist/DPlayer.min.js"></script>
+
+<!-- FLV.js (WAJIB untuk FLV) -->
+<script src="https://cdn.jsdelivr.net/npm/flv.js@latest/dist/flv.min.js"></script>
+
+<style>
+html, body {
+  margin: 0;
+  height: 100%;
+  background: black;
+}
+#dplayer {
+  width: 100%;
+  height: 100%;
+}
+</style>
+
+<title>FLV Player</title>
+</head>
+<body>
+
+<div id="dplayer"></div>
+
+<script>
+const dp = new DPlayer({
+    container: document.getElementById('dplayer'),
+    live: true,
+    autoplay: true,
+    theme: '#00aaff',
+    loop: false,
+    screenshot: true,
+    hotkey: true,
+    volume: 0.7,
+    mutex: true,
+    video: {
+        url: 'https://vid.tipiku.biz.id/ch4.flv', // 🔁 GANTI URL FLV DI SINI
+        type: 'flv'
+    }
+});
+</script>
+
+</body>
+</html>
