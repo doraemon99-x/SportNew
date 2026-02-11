@@ -12,7 +12,7 @@
             color: #fff;
             overflow-x: hidden;
         }
-        
+
         .navbar { 
             background: linear-gradient(90deg, #0f3460 0%, #533483 100%);
             padding: 12px 20px;
@@ -25,13 +25,13 @@
             z-index: 100;
             gap: 15px;
         }
-        
+
         .navbar-content {
             display: flex;
             align-items: center;
             gap: 15px;
         }
-        
+
         .navbar img {
             height: 55px;
             width: auto;
@@ -43,7 +43,7 @@
         .navbar img:hover {
             transform: scale(1.05);
         }
-        
+
         .home-btn {
             background: linear-gradient(135deg, #8e24aa 0%, #533483 100%);
             color: #fff;
@@ -65,13 +65,13 @@
             background: linear-gradient(135deg, #6a1b9a 0%, #533483 100%);
             box-shadow: 0 8px 20px rgba(141, 68, 173, 0.6);
         }
-        
+
         /* TRAKTEER BUTTON STYLING */
         .trakteer-container {
             display: flex;
             align-items: center;
         }
-        
+
         #trbtn-container-0 .trbtn-img {
             display: initial !important;
             vertical-align: middle;
@@ -83,13 +83,13 @@
             margin-left: 0 !important;
             margin-bottom: 3px !important;
         }
-        
+
         .trbtn-container {
             display: inline-block !important;
             white-space: nowrap;
             min-width: 110px;
         }
-        
+
         span.trbtn-txt {
             color: #fff !important;
             letter-spacing: -0.15px !important;
@@ -101,17 +101,17 @@
             text-decoration: none !important;
             text-shadow: 0 1px 1px rgba(34, 34, 34, 0.05);
         }
-        
+
         .trbtn-txt a {
             color: #fff !important;
             text-decoration: none !important;
         }
-        
+
         .trbtn-txt a:hover {
             color: #fff !important;
             text-decoration: none;
         }
-        
+
         a.trbtn {
             box-shadow: 1px 1px 0px rgba(0, 0, 0, 0.2);
             line-height: 36px !important;
@@ -132,29 +132,29 @@
             font-weight: 700 !important;
             font-size: 14px !important;
         }
-        
+
         a.trbtn:visited {
             color: #fff !important;
             text-decoration: none !important;
         }
-        
+
         a.trbtn:hover {
             opacity: .85;
             color: #f5f5f5 !important;
             text-decoration: none !important;
         }
-        
+
         a.trbtn:active {
             color: #f5f5f5 !important;
             text-decoration: none !important;
         }
-        
+
         .trbtn-txt img.trbtn-img {
             display: initial;
             animation: trbtn-wiggle 3s infinite;
             height: 22px;
         }
-        
+
         @keyframes trbtn-wiggle {
             0% { transform: rotate(0) scale(1); }
             60% { transform: rotate(0) scale(1); }
@@ -166,7 +166,7 @@
             96% { transform: rotate(10deg) scale(1.1); }
             100% { transform: rotate(0) scale(1); }
         }
-        
+
         .container { 
             display: grid;
             grid-template-columns: 1fr 300px;
@@ -174,7 +174,7 @@
             padding: 12px;
             min-height: calc(100vh - 79px);
         }
-        
+
         .main-content { 
             display: flex;
             flex-direction: column;
@@ -185,7 +185,7 @@
             border: 2px solid #533483;
             height: fit-content;
         }
-        
+
         #player { 
             width: 100%;
             height: 60vh;
@@ -193,7 +193,7 @@
             border: none;
             background: #000;
         }
-        
+
         .running-trakteer {
             height: 50px;
             overflow: hidden;
@@ -207,7 +207,7 @@
             display: block !important;
             background: transparent;
         }
-        
+
         .footer { 
             display: flex;
             align-items: center;
@@ -216,7 +216,7 @@
             background: rgba(15, 52, 96, 0.5);
             border-top: 1px solid #533483;
         }
-        
+
         .jam { 
             background: linear-gradient(135deg, #533483 0%, #8e24aa 100%);
             color: #fff;
@@ -227,7 +227,7 @@
             white-space: nowrap;
             box-shadow: 0 4px 12px rgba(83, 52, 131, 0.4);
         }
-        
+
         .footer-running { 
             flex: 1;
             background: linear-gradient(90deg, #1a1a2e 0%, #0f3460 100%);
@@ -238,13 +238,13 @@
             align-items: center;
             border: 1px solid #533483;
         }
-        
+
         .running-text-wrapper {
             display: flex;
             width: 100%;
             animation: scrollText 25s linear infinite;
         }
-        
+
         .running-text-content {
             display: inline-flex;
             align-items: center;
@@ -254,12 +254,12 @@
             padding: 0 30px;
             min-width: max-content;
         }
-        
+
         @keyframes scrollText {
             0% { transform: translateX(100%); }
             100% { transform: translateX(-100%); }
         }
-        
+
         .sidebar { 
             display: flex;
             flex-direction: column;
@@ -273,7 +273,7 @@
             max-height: calc(100vh - 103px);
             overflow: hidden;
         }
-        
+
         .toggle-buttons {
             display: flex;
             gap: 6px;
@@ -298,7 +298,7 @@
             background: linear-gradient(135deg, #8e24aa 0%, #6a1b9a 100%);
             box-shadow: 0 8px 20px rgba(141, 68, 173, 0.6);
         }
-        
+
         .channels-container {
             display: flex;
             flex-direction: column;
@@ -318,11 +318,11 @@
             background: linear-gradient(135deg, #533483 0%, #8e24aa 100%);
             border-radius: 3px;
         }
-        
+
         .channels-container.hidden {
             display: none;
         }
-        
+
         .chatbox-container {
             flex: 1;
             overflow: hidden;
@@ -338,7 +338,7 @@
             height: 100%;
             border: none;
         }
-        
+
         .channel-category {
             padding: 10px;
             background: linear-gradient(135deg, #533483 0%, #8e24aa 100%);
@@ -350,7 +350,7 @@
             cursor: default;
             user-select: none;
         }
-        
+
         .channel-btn { 
             padding: 12px;
             background: linear-gradient(135deg, #1a1a2e 0%, #0f3460 100%);
@@ -372,7 +372,7 @@
             background: linear-gradient(135deg, #533483 0%, #8e24aa 100%);
             box-shadow: 0 6px 16px rgba(141, 68, 173, 0.4);
         }
-        
+
         /* ADSTERRA NATIVE BANNER - PALING BAWAH */
         .bottom-ad-container {
             width: 100%;
@@ -385,19 +385,19 @@
             min-height: 150px;
             margin-top: 12px;
         }
-        
+
         #container-574e0aac9784269f4b996189aeaa3e52 {
             width: 100%;
             max-width: 100%;
         }
-        
+
         /* RESPONSIVE - DESKTOP */
         @media (max-width: 1024px) {
             .container {
                 grid-template-columns: 1fr 280px;
             }
         }
-        
+
         /* RESPONSIVE - TABLET */
         @media (max-width: 768px) {
             .container {
@@ -405,21 +405,21 @@
                 gap: 8px;
                 padding: 8px;
             }
-            
+
             .main-content {
                 order: 1;
             }
-            
+
             #player {
                 height: 50vh;
                 min-height: 300px;
             }
-            
+
             .sidebar {
                 order: 2;
                 max-height: 300px;
             }
-            
+
             .channels-container {
                 display: grid;
                 grid-template-columns: repeat(auto-fit, minmax(85px, 1fr));
@@ -428,45 +428,45 @@
                 overflow-y: auto;
                 padding-right: 0;
             }
-            
+
             .channel-category {
                 grid-column: 1 / -1;
                 padding: 8px;
                 font-size: 0.9em;
                 border-radius: 6px;
             }
-            
+
             .channel-btn {
                 padding: 8px;
                 font-size: 0.8em;
                 border-radius: 6px;
             }
-            
+
             .navbar {
                 flex-wrap: wrap;
             }
-            
+
             .navbar-content {
                 gap: 10px;
                 width: 100%;
             }
-            
+
             .home-btn {
                 font-size: 0.85em;
                 padding: 8px 12px;
             }
-            
+
             a.trbtn {
                 font-size: 12px !important;
                 padding: 2px 16px !important;
             }
-            
+
             .bottom-ad-container {
                 padding: 12px;
                 min-height: 120px;
             }
         }
-        
+
         /* RESPONSIVE - MOBILE (480px) */
         @media (max-width: 480px) {
             .navbar {
@@ -474,56 +474,56 @@
                 flex-wrap: wrap;
                 gap: 6px;
             }
-            
+
             .navbar-content {
                 gap: 8px;
                 width: 100%;
                 flex-wrap: wrap;
             }
-            
+
             .navbar img {
                 height: 42px;
             }
-            
+
             .home-btn {
                 font-size: 0.7em;
                 padding: 6px 10px;
                 flex: 1;
                 min-width: 70px;
             }
-            
+
             .trakteer-container {
                 width: 100%;
                 justify-content: center;
             }
-            
+
             a.trbtn {
                 font-size: 11px !important;
                 padding: 2px 12px !important;
                 min-width: auto;
             }
-            
+
             .container {
                 padding: 6px;
                 gap: 6px;
             }
-            
+
             #player {
                 height: 42vh;
                 min-height: 250px;
             }
-            
+
             .sidebar {
                 max-height: 260px;
                 padding: 6px;
                 gap: 6px;
             }
-            
+
             .toggle-btn {
                 font-size: 0.75em;
                 padding: 6px;
             }
-            
+
             .channels-container {
                 display: grid;
                 grid-template-columns: repeat(auto-fit, minmax(75px, 1fr));
@@ -532,95 +532,95 @@
                 overflow-y: auto;
                 padding-right: 0;
             }
-            
+
             .channel-category {
                 grid-column: 1 / -1;
                 padding: 6px;
                 font-size: 0.8em;
                 border-radius: 4px;
             }
-            
+
             .channel-btn {
                 padding: 6px;
                 font-size: 0.75em;
                 border-radius: 4px;
             }
-            
+
             .jam {
                 font-size: 0.7em;
                 padding: 4px 8px;
                 border-radius: 4px;
             }
-            
+
             .footer {
                 gap: 4px;
                 padding: 4px 6px;
             }
-            
+
             .running-text-content {
                 padding: 0 15px;
                 font-size: 0.85em;
             }
-            
+
             .bottom-ad-container {
                 padding: 8px;
                 min-height: 100px;
                 margin-top: 6px;
             }
         }
-        
+
         /* RESPONSIVE - MOBILE EXTRA SMALL (360px) */
         @media (max-width: 360px) {
             .navbar {
                 padding: 6px 8px;
             }
-            
+
             .navbar-content {
                 flex-direction: column;
                 width: 100%;
             }
-            
+
             .navbar img {
                 height: 38px;
             }
-            
+
             .home-btn {
                 font-size: 0.65em;
                 padding: 5px 8px;
                 width: 100%;
             }
-            
+
             .trakteer-container {
                 width: 100%;
             }
-            
+
             a.trbtn {
                 font-size: 10px !important;
                 padding: 2px 10px !important;
                 width: 100%;
             }
-            
+
             .container {
                 padding: 4px;
                 gap: 4px;
             }
-            
+
             #player {
                 height: 40vh;
                 min-height: 220px;
             }
-            
+
             .sidebar {
                 max-height: 240px;
                 padding: 4px;
                 gap: 4px;
             }
-            
+
             .toggle-btn {
                 font-size: 0.7em;
                 padding: 5px;
             }
-            
+
             .channels-container {
                 display: grid;
                 grid-template-columns: repeat(2, 1fr);
@@ -629,34 +629,34 @@
                 overflow-y: auto;
                 padding-right: 0;
             }
-            
+
             .channel-category {
                 grid-column: 1 / -1;
                 padding: 5px 4px;
                 font-size: 0.75em;
             }
-            
+
             .channel-btn {
                 padding: 5px;
                 font-size: 0.7em;
                 border-radius: 4px;
             }
-            
+
             .jam {
                 font-size: 0.65em;
                 padding: 3px 6px;
             }
-            
+
             .footer {
                 gap: 3px;
                 padding: 3px 4px;
             }
-            
+
             .running-text-content {
                 padding: 0 12px;
                 font-size: 0.8em;
             }
-            
+
             .bottom-ad-container {
                 padding: 6px;
                 min-height: 90px;
@@ -674,7 +674,7 @@
         </div>
         <div class="trakteer-container" id="trbtnContainer"></div>
     </div>
-    
+
     <div class="container">
         <div class="main-content">
             <iframe id="player" src="/image-wrapper.html" 
@@ -682,7 +682,7 @@
             allow="fullscreen"
             style="width: 100%; height: 60vh; min-height: 400px; border: none; background: #000;">
             </iframe>
-            
+
             <div class="running-trakteer">
                 <iframe 
                     title="Trakteer"
@@ -692,7 +692,7 @@
                     sandbox="allow-same-origin allow-scripts allow-popups">
                 </iframe>
             </div>
-            
+
             <div class="footer">
                 <div class="jam" id="jamWIB">JAM (WIB): --:--</div>
                 <div class="footer-running">
@@ -704,13 +704,13 @@
                 </div>
             </div>
         </div>
-        
+
         <div class="sidebar">
             <div class="toggle-buttons">
                 <button class="toggle-btn active" onclick="toggleView('channels')">📺 Channels</button>
                 <button class="toggle-btn" onclick="toggleView('chat')">💬 Chat</button>
             </div>
-            
+
             <div class="channels-container" id="channelsContainer">
                 <div class="channel-category">📺 ACL [TEST]</div>
                 <div class="channel-btn" onclick="loadChannel(this, 'A', '/op/fdm/flv1')">CH 1</div>
@@ -718,7 +718,7 @@
                 <div class="channel-btn" onclick="loadChannel(this, 'C', '/op/fdm/flv3')">CH 3</div>
                 <div class="channel-btn" onclick="loadChannel(this, 'D', '/op/fdm/flv4')">CH 4</div>
             </div>
-            
+
             <div class="chatbox-container hidden" id="chatboxContainer">
                 <iframe 
                     title="Chat Box"
@@ -729,6 +729,14 @@
         </div>
     </div>
 
+    <!-- ADSTERRA NATIVE BANNER - PALING BAWAH HALAMAN -->
+    <div class="bottom-ad-container">
+        <div id="container-574e0aac9784269f4b996189aeaa3e52"></div>
+    </div>
+
+    <!-- ADSTERRA NATIVE BANNER SCRIPT -->
+    <script async="async" data-cfasync="false" src="//pl28005532.effectivegatecpm.com/574e0aac9784269f4b996189aeaa3e52/invoke.js"></script>
+
     <script type='text/javascript'>
         (function(){
             var trbtnId = trbtn.init('Dukung Saya di Trakteer','#533483','https://trakteer.id/Tipistream','https://trakteer.id/images/mix/cendol.png','40');
@@ -738,16 +746,16 @@
         function setupRunningText() {
             const wrapper = document.getElementById('runningWrapper');
             const textContent = wrapper.querySelector('.running-text-content');
-            
+
             if (textContent) {
                 const clone1 = textContent.cloneNode(true);
                 const clone2 = textContent.cloneNode(true);
-                
+
                 wrapper.appendChild(clone1);
                 wrapper.appendChild(clone2);
             }
         }
-        
+
         setupRunningText();
 
         function updateJam() {
@@ -765,21 +773,30 @@
         updateJam();
 
         function toggleView(view) {
-            const categoriesContainer = document.getElementById('categoriesContainer');
+            const channelsContainer = document.getElementById('channelsContainer');
             const chatboxContainer = document.getElementById('chatboxContainer');
             const toggleBtns = document.querySelectorAll('.toggle-btn');
-            
+
             toggleBtns.forEach(btn => btn.classList.remove('active'));
-            
-            if (view === 'categories') {
-                categoriesContainer.classList.remove('hidden');
+
+            if (view === 'channels') {
+                channelsContainer.classList.remove('hidden');
                 chatboxContainer.classList.add('hidden');
                 toggleBtns[0].classList.add('active');
             } else if (view === 'chat') {
-                categoriesContainer.classList.add('hidden');
+                channelsContainer.classList.add('hidden');
                 chatboxContainer.classList.remove('hidden');
                 toggleBtns[1].classList.add('active');
             }
+        }
+
+        function loadChannel(element, channel, url) {
+            document.querySelectorAll('.channel-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            element.classList.add('active');
+            document.getElementById("player").src = url;
+            console.log('Channel ' + channel + ' dimuat dari: ' + url);
         }
 
         function updateRunningText(newText) {
@@ -796,13 +813,13 @@
             wrapper.style.animation = `scrollText ${speed}s linear infinite`;
         }
     </script>
-    <!-- ADSTERRA NATIVE BANNER - PALING BAWAH HALAMAN -->
-    <div class="bottom-ad-container">
-        <div id="container-574e0aac9784269f4b996189aeaa3e52"></div>
-    </div>
 
-    <!-- ADSTERRA NATIVE BANNER SCRIPT -->
-    <script async="async" data-cfasync="false" src="//pl28005532.effectivegatecpm.com/574e0aac9784269f4b996189aeaa3e52/invoke.js"></script>
+
+
+
+
+
+
 
 </body>
 </html>
