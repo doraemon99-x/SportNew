@@ -729,14 +729,6 @@
         </div>
     </div>
 
-    <!-- ADSTERRA NATIVE BANNER - PALING BAWAH HALAMAN -->
-    <div class="bottom-ad-container">
-        <div id="container-574e0aac9784269f4b996189aeaa3e52"></div>
-    </div>
-
-    <!-- ADSTERRA NATIVE BANNER SCRIPT -->
-    <script async="async" data-cfasync="false" src="//pl28005532.effectivegatecpm.com/574e0aac9784269f4b996189aeaa3e52/invoke.js"></script>
-
     <script type='text/javascript'>
         (function(){
             var trbtnId = trbtn.init('Dukung Saya di Trakteer','#533483','https://trakteer.id/Tipistream','https://trakteer.id/images/mix/cendol.png','40');
@@ -773,30 +765,21 @@
         updateJam();
 
         function toggleView(view) {
-            const channelsContainer = document.getElementById('channelsContainer');
+            const categoriesContainer = document.getElementById('categoriesContainer');
             const chatboxContainer = document.getElementById('chatboxContainer');
             const toggleBtns = document.querySelectorAll('.toggle-btn');
             
             toggleBtns.forEach(btn => btn.classList.remove('active'));
             
-            if (view === 'channels') {
-                channelsContainer.classList.remove('hidden');
+            if (view === 'categories') {
+                categoriesContainer.classList.remove('hidden');
                 chatboxContainer.classList.add('hidden');
                 toggleBtns[0].classList.add('active');
             } else if (view === 'chat') {
-                channelsContainer.classList.add('hidden');
+                categoriesContainer.classList.add('hidden');
                 chatboxContainer.classList.remove('hidden');
                 toggleBtns[1].classList.add('active');
             }
-        }
-
-        function loadChannel(element, channel, url) {
-            document.querySelectorAll('.channel-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            element.classList.add('active');
-            document.getElementById("player").src = url;
-            console.log('Channel ' + channel + ' dimuat dari: ' + url);
         }
 
         function updateRunningText(newText) {
@@ -813,5 +796,13 @@
             wrapper.style.animation = `scrollText ${speed}s linear infinite`;
         }
     </script>
+    <!-- ADSTERRA NATIVE BANNER - PALING BAWAH HALAMAN -->
+    <div class="bottom-ad-container">
+        <div id="container-574e0aac9784269f4b996189aeaa3e52"></div>
+    </div>
+
+    <!-- ADSTERRA NATIVE BANNER SCRIPT -->
+    <script async="async" data-cfasync="false" src="//pl28005532.effectivegatecpm.com/574e0aac9784269f4b996189aeaa3e52/invoke.js"></script>
+
 </body>
 </html>
