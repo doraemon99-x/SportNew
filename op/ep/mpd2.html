@@ -1,19 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
-<title>TipiStream DASH Player</title>
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0"/>
 
-<!-- Shaka Player -->
+<title>TipiStream DASH DRM Player</title>
+
+<!-- SHAKA PLAYER -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.7.11/shaka-player.compiled.js"></script>
 
-<!-- Icons -->
+<!-- FONT AWESOME -->
 <link rel="stylesheet"
 href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
 
 <style>
+
+/* =========================
+   RESET
+========================= */
 
 *{
     margin:0;
@@ -21,7 +28,8 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
     box-sizing:border-box;
 }
 
-html,body{
+html,
+body{
     width:100%;
     height:100%;
     overflow:hidden;
@@ -29,15 +37,22 @@ html,body{
     font-family:Arial, Helvetica, sans-serif;
 }
 
-/* PLAYER WRAPPER */
+/* =========================
+   PLAYER CONTAINER
+========================= */
+
 .player-container{
     position:relative;
     width:100%;
     height:100%;
     background:#000;
+    overflow:hidden;
 }
 
-/* VIDEO */
+/* =========================
+   VIDEO
+========================= */
+
 video{
     width:100%;
     height:100%;
@@ -45,164 +60,271 @@ video{
     background:#000;
 }
 
-/* TOP OVERLAY */
+/* =========================
+   TOP BAR
+========================= */
+
 .top-bar{
+
     position:absolute;
+
     top:0;
     left:0;
+
     width:100%;
+
     padding:20px;
+
     z-index:20;
 
-    background:linear-gradient(to bottom,
-    rgba(0,0,0,0.75),
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    background:linear-gradient(
+    to bottom,
+    rgba(0,0,0,0.8),
     transparent);
 
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
+    transition:opacity .4s ease;
 }
 
-/* LOGO */
+/* =========================
+   LOGO
+========================= */
+
 .logo{
     display:flex;
     align-items:center;
     gap:10px;
+
     color:white;
+
     font-size:22px;
+
     font-weight:bold;
 }
 
 .logo i{
-    color:#ff0000;
+    color:red;
 }
 
-/* LIVE BADGE */
+/* =========================
+   LIVE BADGE
+========================= */
+
 .live-badge{
+
     background:red;
+
     color:white;
-    padding:7px 15px;
+
+    padding:8px 16px;
+
     border-radius:50px;
+
     font-size:14px;
+
     font-weight:bold;
+
     animation:pulse 1.5s infinite;
 }
 
 @keyframes pulse{
-    0%{opacity:1;}
-    50%{opacity:.5;}
-    100%{opacity:1;}
+
+    0%{
+        opacity:1;
+    }
+
+    50%{
+        opacity:.5;
+    }
+
+    100%{
+        opacity:1;
+    }
+
 }
 
-/* CENTER BUTTON */
+/* =========================
+   CENTER BUTTON
+========================= */
+
 .center-play{
+
     position:absolute;
+
     top:50%;
     left:50%;
+
     transform:translate(-50%,-50%);
-    z-index:20;
 
     width:90px;
     height:90px;
+
     border-radius:50%;
 
-    background:rgba(255,255,255,0.15);
+    background:rgba(255,255,255,.15);
+
     backdrop-filter:blur(10px);
 
     display:flex;
+
     justify-content:center;
+
     align-items:center;
 
+    z-index:25;
+
     cursor:pointer;
-    transition:.3s;
+
+    transition:opacity .4s ease,
+               transform .3s ease;
 }
 
 .center-play:hover{
-    transform:translate(-50%,-50%) scale(1.1);
+
+    transform:
+    translate(-50%,-50%)
+    scale(1.1);
 }
 
 .center-play i{
+
     color:white;
+
     font-size:35px;
 }
 
-/* BOTTOM CONTROLS */
+/* =========================
+   BOTTOM BAR
+========================= */
+
 .bottom-bar{
+
     position:absolute;
+
     bottom:0;
     left:0;
+
     width:100%;
 
     padding:20px;
 
     z-index:20;
 
-    background:linear-gradient(to top,
-    rgba(0,0,0,0.8),
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    background:linear-gradient(
+    to top,
+    rgba(0,0,0,0.85),
     transparent);
 
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
+    transition:opacity .4s ease;
 }
 
-/* LEFT CONTROLS */
+/* =========================
+   CONTROLS
+========================= */
+
 .controls-left,
 .controls-right{
+
     display:flex;
+
     align-items:center;
+
     gap:20px;
 }
 
+/* =========================
+   BUTTONS
+========================= */
+
 .control-btn{
+
     color:white;
+
     font-size:20px;
+
     cursor:pointer;
+
     transition:.3s;
 }
 
 .control-btn:hover{
+
     color:red;
 }
 
-/* TITLE */
+/* =========================
+   TITLE
+========================= */
+
 .video-title{
+
     color:white;
+
     font-size:16px;
+
     font-weight:bold;
 }
 
-/* LOADING */
+/* =========================
+   LOADING
+========================= */
+
 .loading{
+
     position:absolute;
+
     top:50%;
     left:50%;
+
     transform:translate(-50%,-50%);
 
     width:80px;
     height:80px;
 
     border:5px solid rgba(255,255,255,.2);
+
     border-top:5px solid red;
+
     border-radius:50%;
 
     animation:spin 1s linear infinite;
 
-    z-index:30;
+    z-index:50;
 }
 
 @keyframes spin{
+
     100%{
-        transform:translate(-50%,-50%) rotate(360deg);
+        transform:
+        translate(-50%,-50%)
+        rotate(360deg);
     }
+
 }
 
-/* HIDE */
+/* =========================
+   HIDDEN
+========================= */
+
 .hidden{
     display:none;
 }
 
-/* MOBILE */
+/* =========================
+   MOBILE
+========================= */
+
 @media(max-width:768px){
 
     .top-bar,
@@ -214,14 +336,23 @@ video{
         font-size:18px;
     }
 
-    .control-btn{
-        font-size:18px;
-    }
-
     .center-play{
         width:70px;
         height:70px;
     }
+
+    .center-play i{
+        font-size:28px;
+    }
+
+    .control-btn{
+        font-size:18px;
+    }
+
+    .video-title{
+        font-size:14px;
+    }
+
 }
 
 </style>
@@ -232,12 +363,15 @@ video{
 <div class="player-container">
 
     <!-- VIDEO -->
-    <video id="video" autoplay playsinline></video>
+    <video id="video"
+    autoplay
+    playsinline></video>
 
     <!-- LOADING -->
-    <div class="loading" id="loading"></div>
+    <div class="loading"
+    id="loading"></div>
 
-    <!-- TOP -->
+    <!-- TOP BAR -->
     <div class="top-bar">
 
         <div class="logo">
@@ -252,29 +386,40 @@ video{
     </div>
 
     <!-- CENTER PLAY -->
-    <div class="center-play" id="playBtn">
+    <div class="center-play"
+    id="playBtn">
+
         <i class="fa-solid fa-play"></i>
+
     </div>
 
-    <!-- BOTTOM -->
+    <!-- BOTTOM BAR -->
     <div class="bottom-bar">
 
         <div class="controls-left">
 
-            <div class="control-btn" id="muteBtn">
+            <div class="control-btn"
+            id="muteBtn">
+
                 <i class="fa-solid fa-volume-high"></i>
+
             </div>
 
             <div class="video-title">
+
                 DASH DRM Protected Stream
+
             </div>
 
         </div>
 
         <div class="controls-right">
 
-            <div class="control-btn" id="fullscreenBtn">
+            <div class="control-btn"
+            id="fullscreenBtn">
+
                 <i class="fa-solid fa-expand"></i>
+
             </div>
 
         </div>
@@ -285,40 +430,112 @@ video{
 
 <script>
 
-const video = document.getElementById('video');
+/* =========================
+   ELEMENTS
+========================= */
 
-const playBtn = document.getElementById('playBtn');
+const video =
+document.getElementById('video');
 
-const muteBtn = document.getElementById('muteBtn');
+const playBtn =
+document.getElementById('playBtn');
 
-const fullscreenBtn = document.getElementById('fullscreenBtn');
+const muteBtn =
+document.getElementById('muteBtn');
 
-const loading = document.getElementById('loading');
+const fullscreenBtn =
+document.getElementById('fullscreenBtn');
 
-/* INSTALL POLYFILLS */
-shaka.polyfill.installAll();
+const loading =
+document.getElementById('loading');
 
-if (shaka.Player.isBrowserSupported()) {
+const topBar =
+document.querySelector('.top-bar');
 
-    initPlayer();
+const bottomBar =
+document.querySelector('.bottom-bar');
 
-} else {
+/* =========================
+   AUTO HIDE CONTROLS
+========================= */
 
-    alert('Browser not supported');
+let controlsTimeout;
+
+function showControls(){
+
+    topBar.style.opacity = '1';
+
+    bottomBar.style.opacity = '1';
+
+    playBtn.style.opacity = '1';
+
+    topBar.style.pointerEvents = 'auto';
+
+    bottomBar.style.pointerEvents = 'auto';
+
+    playBtn.style.pointerEvents = 'auto';
+
+    clearTimeout(controlsTimeout);
+
+    if(!video.paused){
+
+        controlsTimeout = setTimeout(() => {
+
+            hideControls();
+
+        }, 2500);
+
+    }
 
 }
 
-/* INIT PLAYER */
+function hideControls(){
+
+    topBar.style.opacity = '0';
+
+    bottomBar.style.opacity = '0';
+
+    playBtn.style.opacity = '0';
+
+    topBar.style.pointerEvents = 'none';
+
+    bottomBar.style.pointerEvents = 'none';
+
+    playBtn.style.pointerEvents = 'none';
+}
+
+/* =========================
+   INSTALL SHAKA
+========================= */
+
+shaka.polyfill.installAll();
+
+if(shaka.Player.isBrowserSupported()){
+
+    initPlayer();
+
+}else{
+
+    alert('Browser Not Supported');
+
+}
+
+/* =========================
+   INIT PLAYER
+========================= */
+
 async function initPlayer(){
 
-    const player = new shaka.Player(video);
+    const player =
+    new shaka.Player(video);
 
     /* DRM CLEARKEY */
+
     player.configure({
 
-        drm: {
+        drm:{
 
-            clearKeys: {
+            clearKeys:{
 
                 '294b5761cefc22d0c6312939e13d8278':
                 '52148f1042d238849f0a7813f1da8a7b'
@@ -329,22 +546,27 @@ async function initPlayer(){
 
     });
 
-    /* ERROR HANDLER */
-    player.addEventListener('error', onErrorEvent);
+    /* ERROR */
 
-    try {
+    player.addEventListener(
+    'error',
+    onErrorEvent);
+
+    try{
 
         await player.load(
-        'https://otte.cache.aiv-cdn.net/bom-nitro/live/dash/enc/cllekigzzn/out/v1/bd3b0c314fff4bb1ab4693358f3cd2d3/cenc.mpd'
-        );
 
-        console.log('Video loaded');
+        'https://otte.cache.aiv-cdn.net/bom-nitro/live/dash/enc/cllekigzzn/out/v1/bd3b0c314fff4bb1ab4693358f3cd2d3/cenc.mpd'
+
+        );
 
         loading.classList.add('hidden');
 
-        video.play();
+        await video.play();
 
-    } catch(error){
+        showControls();
+
+    }catch(error){
 
         console.error(error);
 
@@ -352,15 +574,24 @@ async function initPlayer(){
 
 }
 
-/* ERROR */
+/* =========================
+   ERROR HANDLER
+========================= */
+
 function onErrorEvent(event){
 
-    console.error('Error code', event.detail);
+    console.error(
+    'Error',
+    event.detail);
 
 }
 
-/* PLAY PAUSE */
-playBtn.addEventListener('click', () => {
+/* =========================
+   PLAY / PAUSE
+========================= */
+
+playBtn.addEventListener(
+'click', () => {
 
     if(video.paused){
 
@@ -378,10 +609,44 @@ playBtn.addEventListener('click', () => {
 
     }
 
+    showControls();
+
 });
 
-/* MUTE */
-muteBtn.addEventListener('click', () => {
+/* =========================
+   PLAY EVENT
+========================= */
+
+video.addEventListener(
+'play', () => {
+
+    playBtn.innerHTML =
+    '<i class="fa-solid fa-pause"></i>';
+
+    showControls();
+
+});
+
+/* =========================
+   PAUSE EVENT
+========================= */
+
+video.addEventListener(
+'pause', () => {
+
+    playBtn.innerHTML =
+    '<i class="fa-solid fa-play"></i>';
+
+    showControls();
+
+});
+
+/* =========================
+   MUTE
+========================= */
+
+muteBtn.addEventListener(
+'click', () => {
 
     video.muted = !video.muted;
 
@@ -397,14 +662,61 @@ muteBtn.addEventListener('click', () => {
 
     }
 
+    showControls();
+
 });
 
-/* FULLSCREEN */
-fullscreenBtn.addEventListener('click', () => {
+/* =========================
+   FULLSCREEN
+========================= */
+
+fullscreenBtn.addEventListener(
+'click', () => {
 
     if(!document.fullscreenElement){
 
-        document.documentElement.requestFullscreen();
+        document.documentElement
+        .requestFullscreen();
+
+    }else{
+
+        document.exitFullscreen();
+
+    }
+
+    showControls();
+
+});
+
+/* =========================
+   SHOW UI ON MOVE
+========================= */
+
+document.addEventListener(
+'mousemove', () => {
+
+    showControls();
+
+});
+
+document.addEventListener(
+'touchstart', () => {
+
+    showControls();
+
+});
+
+/* =========================
+   DOUBLE CLICK FULLSCREEN
+========================= */
+
+video.addEventListener(
+'dblclick', () => {
+
+    if(!document.fullscreenElement){
+
+        document.documentElement
+        .requestFullscreen();
 
     }else{
 
@@ -414,22 +726,36 @@ fullscreenBtn.addEventListener('click', () => {
 
 });
 
-/* AUTO HIDE PLAY BUTTON */
-video.addEventListener('play', () => {
+/* =========================
+   SPACE KEY PLAY PAUSE
+========================= */
 
-    setTimeout(() => {
+document.addEventListener(
+'keydown', (e) => {
 
-        playBtn.style.opacity = '0';
+    if(e.code === 'Space'){
 
-    }, 1500);
+        e.preventDefault();
+
+        if(video.paused){
+
+            video.play();
+
+        }else{
+
+            video.pause();
+
+        }
+
+    }
 
 });
 
-video.addEventListener('pause', () => {
+/* =========================
+   INITIAL UI
+========================= */
 
-    playBtn.style.opacity = '1';
-
-});
+showControls();
 
 </script>
 
