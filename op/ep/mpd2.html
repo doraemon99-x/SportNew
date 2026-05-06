@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Shaka DASH DRM</title>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.7.11/shaka-player.compiled.js"></script>
+
+  <style>
+    html, body {
+      margin:0;
+      padding:0;
+      width:100%;
+      height:100%;
+      background:#000;
+    }
+
+    video {
+      width:100%;
+      height:100%;
+    }
+  </style>
+</head>
+
+<body>
+
+<video id="video" controls autoplay></video>
+
+<script>
+async function initPlayer() {
+
+  const video = document.getElementById('video');
+
+  const player = new shaka.Player(video);
+
+  player.configure({
+    drm: {
+      clearKeys: {
+        '294b5761cefc22d0c6312939e13d8278':
+        '52148f1042d238849f0a7813f1da8a7b'
+      }
+    }
+  });
+
+  try {
+    await player.load('https://otte.cache.aiv-cdn.net/bom-nitro/live/dash/enc/cllekigzzn/out/v1/bd3b0c314fff4bb1ab4693358f3cd2d3/cenc.mpd');
+    console.log('Video loaded');
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+document.addEventListener('DOMContentLoaded', initPlayer);
+</script>
+
+</body>
+</html>
