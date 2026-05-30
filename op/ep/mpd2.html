@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>TipiStream JW Player</title>
 
-<!-- JW PLAYER - ganti SAHhwOAi dengan license key kamu -->
 <script src="https://cdn.jwplayer.com/libraries/SAHhwOAi.js"></script>
 
 <style>
@@ -76,11 +75,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000;font-family:Ari
 <body>
 
 <div id="player-wrapper">
-
-  <!-- JW Player akan render di sini -->
   <div id="player"></div>
-
-  <!-- Top bar overlay (logo + live badge) -->
   <div class="top-bar">
     <div class="logo">
       <span class="icon">&#9654;</span>
@@ -88,23 +83,20 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000;font-family:Ari
     </div>
     <div class="live-badge">LIVE</div>
   </div>
-
 </div>
 
 <script>
+
+// License Key
+jwplayer.key = '7MeMRClEneUmFoHRO3u3ypzAZXlVgNtBE2pKDw==';
+
 jwplayer("player").setup({
-
-  // Info
   title: "Jangan Lupa Traktir Kopi",
-
-  // Tampilan
   autostart: true,
   mute: false,
   stretching: "fill",
   width: "100%",
   height: "100%",
-
-  // Stream + DRM ClearKey
   sources: [{
     file: "https://otte.cache.aiv-cdn.net/bom-nitro/live/dash/enc/cllekigzzn/out/v1/bd3b0c314fff4bb1ab4693358f3cd2d3/cenc.mpd",
     type: "application/dash+xml",
@@ -115,20 +107,14 @@ jwplayer("player").setup({
       }
     }
   }],
-
-  // Sembunyikan logo JW
   logo: {
     hide: true
   },
-
-  // Skin
   skin: {
     name: "netflix"
   }
-
 });
 
-// Event Handlers
 jwplayer("player").on("ready", function(){
   console.log("Player siap.");
 });
@@ -140,7 +126,7 @@ jwplayer("player").on("error", function(e){
 jwplayer("player").on("bufferFull", function(){
   console.log("Buffer penuh, siap putar.");
 });
-</script>
 
+</script>
 </body>
 </html>
