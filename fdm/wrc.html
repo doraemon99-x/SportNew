@@ -186,12 +186,28 @@
             height: fit-content;
         }
 
-        #player { 
+        /* =============================================
+           FIX FULLSCREEN: wrapper posisi relative
+           agar fullscreen button dari player eksternal
+           bisa bekerja dengan benar
+        ============================================= */
+        .player-wrapper {
+            position: relative;
             width: 100%;
             height: 60vh;
             min-height: 400px;
+            background: #000;
+        }
+
+        #player { 
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             border: none;
             background: #000;
+            /* allowfullscreen diset via atribut HTML, bukan CSS */
         }
 
         .running-trakteer {
@@ -410,7 +426,7 @@
                 order: 1;
             }
 
-            #player {
+            .player-wrapper {
                 height: 50vh;
                 min-height: 300px;
             }
@@ -508,7 +524,7 @@
                 gap: 6px;
             }
 
-            #player {
+            .player-wrapper {
                 height: 42vh;
                 min-height: 250px;
             }
@@ -605,7 +621,7 @@
                 gap: 4px;
             }
 
-            #player {
+            .player-wrapper {
                 height: 40vh;
                 min-height: 220px;
             }
@@ -677,11 +693,23 @@
 
     <div class="container">
         <div class="main-content">
-            <iframe id="player" src="/image-wrapper.html"></iframe>
 
-
-
-
+            <!-- =============================================
+                 FIX FULLSCREEN:
+                 1. Dibungkus .player-wrapper (position:relative)
+                 2. iframe #player pakai allowfullscreen + allow
+                    + webkitallowfullscreen + mozallowfullscreen
+            ============================================= -->
+            <div class="player-wrapper">
+                <iframe 
+                    id="player" 
+                    src="/image-wrapper.html"
+                    allowfullscreen
+                    allow="fullscreen; autoplay; encrypted-media; picture-in-picture"
+                    webkitallowfullscreen
+                    mozallowfullscreen>
+                </iframe>
+            </div>
 
             <div class="running-trakteer">
                 <iframe 
@@ -790,12 +818,23 @@
             }
         }
 
+        // =============================================
+        // FIX FULLSCREEN: loadChannel juga set ulang
+        // atribut allowfullscreen setiap ganti channel
+        // =============================================
         function loadChannel(element, channel, url) {
             document.querySelectorAll('.channel-btn').forEach(btn => {
                 btn.classList.remove('active');
             });
             element.classList.add('active');
-            document.getElementById("player").src = url;
+
+            const player = document.getElementById("player");
+            player.src = url;
+
+            // Pastikan atribut fullscreen selalu ada setelah ganti src
+            player.setAttribute('allowfullscreen', '');
+            player.setAttribute('allow', 'fullscreen; autoplay; encrypted-media; picture-in-picture');
+
             console.log('Channel ' + channel + ' dimuat dari: ' + url);
         }
 
@@ -813,13 +852,6 @@
             wrapper.style.animation = `scrollText ${speed}s linear infinite`;
         }
     </script>
-
-
-
-
-
-
-
 
 </body>
 </html>
