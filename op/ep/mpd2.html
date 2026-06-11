@@ -1,131 +1,115 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>TipiStream JW Player</title>
+    <meta charset="UTF-8">
+    <title>LIVE EVENT STREAMING DASH</title>
 
-<script src="https://ssl.p.jwpcdn.com/player/v/8.31.0/jwplayer.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://ssl.p.jwpcdn.com/player/v/8.31.0/jwplayer.js"></script>
 
-<style>
-*{margin:0;padding:0;box-sizing:border-box;}
-html,body{width:100%;height:100%;overflow:hidden;background:#000;font-family:Arial,sans-serif;}
+    <script>
+        jwplayer.key = '7MeMRClEneUmFoHRO3u3ypzAZXlVgNtBE2pKDw==';
+    </script>
 
-#player-wrapper{
-  position:relative;
-  width:100%;
-  height:100vh;
-}
+    <style>
+        html, body {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            position: relative;
+            background: #000;
+        }
 
-#player{
-  width:100%;
-  height:100%;
-}
+        .player {
+            width: 100%;
+            height: 100%;
+        }
 
-.top-bar{
-  position:absolute;
-  top:0;left:0;
-  width:100%;
-  padding:20px;
-  z-index:20;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  background:linear-gradient(to bottom,rgba(0,0,0,0.8),transparent);
-  pointer-events:none;
-}
-
-.logo{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  color:white;
-  font-size:22px;
-  font-weight:bold;
-}
-
-.logo .icon{
-  color:red;
-  font-size:26px;
-}
-
-.live-badge{
-  background:red;
-  color:white;
-  padding:8px 16px;
-  border-radius:50px;
-  font-size:14px;
-  font-weight:bold;
-  animation:pulse 1.5s infinite;
-}
-
-@keyframes pulse{
-  0%{opacity:1;}
-  50%{opacity:.5;}
-  100%{opacity:1;}
-}
-
-@media(max-width:768px){
-  .top-bar{padding:15px;}
-  .logo{font-size:18px;}
-  .live-badge{font-size:12px;padding:6px 12px;}
-}
-</style>
+        #widget-overlay {
+            position: absolute;
+            bottom: 70px;
+            left: 0;
+            width: 100%;
+            z-index: 10000;
+            pointer-events: none;
+        }
+    </style>
 </head>
+
 <body>
 
-<div id="player-wrapper">
-  <div id="player"></div>
-  <div class="top-bar">
-    <div class="logo">
-      <span class="icon">&#9654;</span>
-      <span>TipiStream</span>
-    </div>
-    <div class="live-badge">LIVE</div>
-  </div>
-</div>
+<div id="player" class="player"></div>
+
+<!-- Overlay -->
+<iframe id="widget-overlay" src="" frameborder="0"></iframe>
 
 <script>
 
-jwplayer.key = '7MeMRClEneUmFoHRO3u3ypzAZXlVgNtBE2pKDw==';
+var playerInstance = jwplayer("player");
 
-jwplayer("player").setup({
-  title: "Jangan Lupa Traktir Kopi",
-  autostart: true,
-  mute: false,
-  stretching: "uniform",
-  width: "100%",
-  height: "100%",
-  sources: [{
-    file: "https://otte.cache.aiv-cdn.net/bom-nitro/live/dash/enc/cllekigzzn/out/v1/bd3b0c314fff4bb1ab4693358f3cd2d3/cenc.mpd",
-    type: "application/dash+xml",
-    drm: {
-      clearkey: {
-        keyId: "294b5761cefc22d0c6312939e13d8278",
-        key:   "52148f1042d238849f0a7813f1da8a7b"
-      }
-    }
-  }],
-  logo: {
-    hide: true
-  },
-  skin: {
-    name: "netflix"
-  }
-});
+playerInstance.setup({
 
-jwplayer("player").on("ready", function(){
-  console.log("Player siap.");
-});
+    playlist: [{
+        "title": "TipiStream iTV",
+        "image": "https://i.postimg.cc/3NLwz2zj/banntipistream.png",
 
-jwplayer("player").on("error", function(e){
-  console.error("Error:", e.message);
-});
+        "sources": [{
+            "default": true,
+            "type": "dash",
+            "file": "https://otte.cache.aiv-cdn.net/bom-nitro/live/clients/enc/slc1dkcymj/out/v1/dd17af8835fe4bd087d1a4e359b635d7/cenc.mpd",
 
-jwplayer("player").on("bufferFull", function(){
-  console.log("Buffer penuh, siap putar.");
+            "drm": {
+                "clearkey": {
+                    "keyId": "b6c1c527303bc577b85eb849cbab75d2",
+                    "key": "ec533d484c550a892ff162e4a5f4dbc3"
+                }
+            }
+        }]
+    }],
+
+    width: "100%",
+    height: "100%",
+
+    autostart: true,
+    mute: false,
+    volume: 25,
+
+    preload: "auto",
+
+    logo: {
+        file: "/img/tipistreamnew.png",
+        hide: false,
+        position: "bottom-right",
+        margin: 35
+    },
+
+    skin: {
+        name: "Netflix",
+        url: "https://cdn.jsdelivr.net/gh/kiprox/cf-gdplay@master/skins/netplex.css",
+
+        controlbar: {
+            background: "rgba(0,0,0,0)",
+            icons: "#FFFFFF",
+            iconsActive: "#FF0000",
+            text: "#FFFFFF"
+        }
+    },
+
+    captions: {
+        color: "#f3f368",
+        fontSize: 16,
+        backgroundOpacity: 0,
+        fontfamily: "Helvetica",
+        edgeStyle: "raised"
+    },
+
+    cast: {},
+    pipIcon: {}
+
 });
 
 </script>
+
 </body>
 </html>
