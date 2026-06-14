@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>LIVE EVENT STREAMING DASH</title>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://ssl.p.jwpcdn.com/player/v/8.31.0/jwplayer.js"></script>
+
+    <script>
+        jwplayer.key = '7MeMRClEneUmFoHRO3u3ypzAZXlVgNtBE2pKDw==';
+    </script>
+
+    <style>
+        html, body {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            position: relative;
+            background: #000;
+        }
+
+        .player {
+            width: 100%;
+            height: 100%;
+        }
+
+        #widget-overlay {
+            position: absolute;
+            bottom: 70px;
+            left: 0;
+            width: 100%;
+            z-index: 10000;
+            pointer-events: none;
+        }
+    </style>
+</head>
+
+<body>
+
+<div id="player" class="player"></div>
+
+<!-- Overlay -->
+<iframe id="widget-overlay" src="" frameborder="0"></iframe>
+
+<script>
+
+var playerInstance = jwplayer("player");
+
+playerInstance.setup({
+
+    playlist: [{
+        "title": "TipiStream TSN",
+        "image": "https://i.postimg.cc/3NLwz2zj/banntipistream.png",
+
+        "sources": [{
+            "default": true,
+            "type": "dash",
+            "file": "https://tencent-css.byteplaycdn.com/a7b153be3cbdd5bde40bc95d92c9ecc0/6A2F7C37/Content/DASH_ENC2/Live/channel(tselwc1)/master.mpd",
+
+            "drm": {
+                "clearkey": {
+                    "keyId": "efe538648aad30c9893edf1a69eb8c8e",
+                    "key": "fe9b77088a67777af435c3fa5f1bbdd0"
+                }
+            }
+        }]
+    }],
+
+    width: "100%",
+    height: "100%",
+
+    autostart: true,
+    mute: false,
+    volume: 25,
+
+    preload: "auto",
+
+    logo: {
+        file: "/img/tipistreamnew.png",
+        hide: false,
+        position: "bottom-right",
+        margin: 35
+    },
+
+    skin: {
+        name: "Netflix",
+        url: "https://cdn.jsdelivr.net/gh/kiprox/cf-gdplay@master/skins/netplex.css",
+
+        controlbar: {
+            background: "rgba(0,0,0,0)",
+            icons: "#FFFFFF",
+            iconsActive: "#FF0000",
+            text: "#FFFFFF"
+        }
+    },
+
+    captions: {
+        color: "#f3f368",
+        fontSize: 16,
+        backgroundOpacity: 0,
+        fontfamily: "Helvetica",
+        edgeStyle: "raised"
+    },
+
+    cast: {},
+    pipIcon: {}
+
+});
+
+</script>
+
+</body>
+</html>
