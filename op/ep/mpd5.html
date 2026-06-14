@@ -1,133 +1,115 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>LIVE EVENT STREAMING DASH</title>
+    <meta charset="UTF-8">
+    <title>LIVE EVENT STREAMING DASH</title>
 
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-  <script src="https://ssl.p.jwpcdn.com/player/v/8.31.0/jwplayer.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://ssl.p.jwpcdn.com/player/v/8.31.0/jwplayer.js"></script>
 
-  <script>
-    jwplayer.key = '7MeMRClEneUmFoHRO3u3ypzAZXlVgNtBE2pKDw==';
-  </script>
+    <script>
+        jwplayer.key = '7MeMRClEneUmFoHRO3u3ypzAZXlVgNtBE2pKDw==';
+    </script>
 
-  <style>
-    html, body {
-      width: 100%;
-      height: 100%;
-      margin: 0;
-      padding: 0;
-      position: relative;
-      background: #000;
-    }
+    <style>
+        html, body {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            position: relative;
+            background: #000;
+        }
 
-    .player {
-      width: 100%;
-      height: 100%;
-    }
+        .player {
+            width: 100%;
+            height: 100%;
+        }
 
-    #widget-overlay {
-      position: absolute;
-      bottom: 70px;
-      left: 0;
-      width: 100%;
-      z-index: 10000;
-      pointer-events: none;
-    }
-  </style>
+        #widget-overlay {
+            position: absolute;
+            bottom: 70px;
+            left: 0;
+            width: 100%;
+            z-index: 10000;
+            pointer-events: none;
+        }
+    </style>
 </head>
 
 <body>
-  <div id="player" class="player"></div>
 
-  <!-- Overlay -->
-  <iframe id="widget-overlay" src="" frameborder="0"></iframe>
+<div id="player" class="player"></div>
 
-  <script>
-    // ===== HEX -> base64url converter (untuk ClearKey JW Player) =====
-    function hexToBytes(hex) {
-      hex = (hex || "").trim().replace(/^0x/i, "").replace(/\s+/g, "");
-      if (hex.length % 2 !== 0) throw new Error("Hex length must be even.");
-      const bytes = new Uint8Array(hex.length / 2);
-      for (let i = 0; i < bytes.length; i++) {
-        bytes[i] = parseInt(hex.substr(i * 2, 2), 16);
-      }
-      return bytes;
-    }
+<!-- Overlay -->
+<iframe id="widget-overlay" src="" frameborder="0"></iframe>
 
-    function bytesToBase64url(bytes) {
-      let binary = "";
-      for (let i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i]);
-      const b64 = btoa(binary);
-      return b64.replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/g, "");
-    }
+<script>
 
-    function hexToBase64url(hex) {
-      return bytesToBase64url(hexToBytes(hex));
-    }
+var playerInstance = jwplayer("player");
 
-    // ===== ClearKey kamu (HEX) =====
-    const CLEARKEY_KID_HEX = "efe538648aad30c9893edf1a69eb8c8e";
-    const CLEARKEY_KEY_HEX = "fe9b77088a67777af435c3fa5f1bbdd0";
+playerInstance.setup({
 
-    var playerInstance = jwplayer("player");
-
-    playerInstance.setup({
-      playlist: [{
+    playlist: [{
         "title": "TipiStream TSN",
         "image": "https://i.postimg.cc/3NLwz2zj/banntipistream.png",
+
         "sources": [{
-          "default": true,
-          "type": "dash",
-          "file": "https://tencent-css.byteplaycdn.com/a7b153be3cbdd5bde40bc95d92c9ecc0/6A2F7C37/Content/DASH_ENC2/Live/channel(tselwc1)/master.mpd",
-          "drm": {
-            "clearkey": {
-              // JW Player pakai base64url, kita convert dari hex:
-              "keyId": hexToBase64url(CLEARKEY_KID_HEX),
-              "key": hexToBase64url(CLEARKEY_KEY_HEX)
+            "default": true,
+            "type": "dash",
+            "file": "https://otte.cache.aiv-cdn.net/bom-nitro/live/clients/dash/enc/ubehitlwzo/out/v1/8e09c381a51f4366a19e979418112e8f/cenc.mpd",
+
+            "drm": {
+                "clearkey": {
+                    "keyId": "a7d11d37a1f7611ee88d4db880171f32",
+                    "key": "68f96d618b0b956b008c445896a25a79"
+                }
             }
-          }
         }]
-      }],
+    }],
 
-      width: "100%",
-      height: "100%",
+    width: "100%",
+    height: "100%",
 
-      autostart: true,
-      mute: false,
-      volume: 25,
+    autostart: true,
+    mute: false,
+    volume: 25,
 
-      preload: "auto",
+    preload: "auto",
 
-      logo: {
+    logo: {
         file: "/img/tipistreamnew.png",
         hide: false,
         position: "bottom-right",
         margin: 35
-      },
+    },
 
-      skin: {
+    skin: {
         name: "Netflix",
         url: "https://cdn.jsdelivr.net/gh/kiprox/cf-gdplay@master/skins/netplex.css",
-        controlbar: {
-          background: "rgba(0,0,0,0)",
-          icons: "#FFFFFF",
-          iconsActive: "#FF0000",
-          text: "#FFFFFF"
-        }
-      },
 
-      captions: {
+        controlbar: {
+            background: "rgba(0,0,0,0)",
+            icons: "#FFFFFF",
+            iconsActive: "#FF0000",
+            text: "#FFFFFF"
+        }
+    },
+
+    captions: {
         color: "#f3f368",
         fontSize: 16,
         backgroundOpacity: 0,
         fontfamily: "Helvetica",
         edgeStyle: "raised"
-      },
+    },
 
-      cast: {},
-      pipIcon: {}
-    });
-  </script>
+    cast: {},
+    pipIcon: {}
+
+});
+
+</script>
+
 </body>
 </html>
