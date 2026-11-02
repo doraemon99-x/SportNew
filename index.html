@@ -63,7 +63,7 @@
             <div class="stat__label">Channel</div>
           </div>
           <div class="stat">
-            <div class="stat__num">24/7</div>
+            <div class="stat__num" id="statLive">–</div>
             <div class="stat__label">Live</div>
           </div>
         </div>
@@ -73,6 +73,15 @@
       <div class="ticker" aria-label="Informasi">
         <div class="ticker__track" data-ticker></div>
       </div>
+
+      <!-- LIVE SEKARANG -->
+      <section class="live-strip" aria-label="Pertandingan live">
+        <div class="section__head">
+          <h2>⚽ Live Sekarang</h2>
+          <a class="count-pill" href="/football/football">Semua jadwal</a>
+        </div>
+        <div id="liveNow"></div>
+      </section>
 
       <!-- QUICK PICKS -->
       <div class="chip-row" aria-label="Pilihan cepat">

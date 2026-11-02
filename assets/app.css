@@ -518,6 +518,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   gap: 18px;
   align-items: start;
 }
+.layout > * { min-width: 0; }
 
 .side-stack {
   display: flex;
@@ -525,9 +526,11 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   gap: 16px;
   position: sticky;
   top: 82px;
+  min-width: 0;
 }
 
 .panel {
+  min-width: 0;
   border-radius: var(--radius-lg);
   border: 1px solid var(--line);
   background: var(--panel);
@@ -672,6 +675,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   gap: 18px;
   align-items: start;
 }
+.watch-grid > * { min-width: 0; }
 
 .player-card {
   border-radius: var(--radius-lg);
@@ -912,6 +916,143 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 }
 
 /* ============================================================
+   Live match board (feed oneball)
+   ============================================================ */
+.feed-status {
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted-2);
+  padding: 3px 9px;
+  border-radius: 99px;
+  border: 1px dashed var(--line-strong);
+}
+
+.section-match { margin-top: 26px; }
+
+.match-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(268px, 1fr));
+  gap: 10px;
+}
+.match-grid > * { min-width: 0; }
+
+.match-card {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  padding: 13px 15px;
+  border-radius: var(--radius);
+  background: linear-gradient(150deg, rgba(21, 30, 62, 0.92), rgba(10, 15, 34, 0.92));
+  border: 1px solid var(--line);
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.match-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--line-strong);
+  box-shadow: 0 16px 32px rgba(4, 9, 26, 0.55);
+}
+.match-card.is-live {
+  border-color: rgba(34, 224, 138, 0.42);
+  background:
+    radial-gradient(260px 140px at 100% 0%, rgba(34, 224, 138, 0.14), transparent 70%),
+    linear-gradient(150deg, rgba(21, 30, 62, 0.94), rgba(10, 15, 34, 0.94));
+}
+.match-card.is-ended { opacity: 0.62; }
+
+.match-card__top,
+.match-card__foot {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  justify-content: space-between;
+}
+.match-card__league {
+  min-width: 0;
+  font-size: 0.66rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted-2);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.match-card__foot {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--muted-2);
+  padding-top: 8px;
+  border-top: 1px solid var(--line);
+}
+.match-card__teams {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  font-size: 0.9rem;
+  font-weight: 800;
+  line-height: 1.35;
+}
+.match-card__vs {
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted-2);
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: rgba(124, 146, 255, 0.1);
+  border: 1px solid var(--line);
+}
+.match-card__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  color: var(--brand-2);
+}
+.match-card.is-ended .match-card__cta { color: var(--muted-2); }
+
+.match-status {
+  flex: 0 0 auto;
+  padding: 2px 8px;
+  font-size: 0.58rem;
+  font-weight: 900;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  border-radius: 99px;
+  color: #cbd7ff;
+  background: rgba(124, 146, 255, 0.14);
+  border: 1px solid var(--line);
+}
+.match-status.is-live {
+  color: #04140c;
+  background: linear-gradient(135deg, var(--live), #7cf0bb);
+  border-color: transparent;
+  animation: pulse 1.8s ease-in-out infinite;
+}
+.match-status.is-soon {
+  color: #ffe8c2;
+  background: rgba(255, 176, 59, 0.16);
+  border-color: rgba(255, 176, 59, 0.4);
+}
+.match-status.is-ended { color: var(--muted-2); }
+
+.empty-state--sm {
+  padding: 22px 16px;
+  font-size: 0.84rem;
+}
+.empty-state a { color: var(--brand-2); font-weight: 700; }
+
+/* Strip "Live sekarang" di Home */
+.live-strip { margin: 4px 0 26px; }
+
+/* ============================================================
    Toast
    ============================================================ */
 .toast {
@@ -967,7 +1108,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 }
 
 @media (max-width: 900px) {
-  .layout, .watch-grid { grid-template-columns: 1fr; }
+  .layout, .watch-grid { grid-template-columns: minmax(0, 1fr); }
   .side-stack { position: static; }
   .chat-frame { height: 360px; }
   .ch-list { max-height: none; }
@@ -997,6 +1138,9 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   .player-shell { min-height: 200px; }
   .player-bar { padding: 11px 12px; gap: 8px; }
   .chat-frame { height: 300px; }
+  .match-grid { grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 8px; }
+  .match-card { padding: 11px 12px; }
+  .match-card__teams { font-size: 0.84rem; }
 }
 
 @media (max-width: 480px) {
@@ -1015,6 +1159,8 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   .ch-item__label { font-size: 0.8rem; }
   .ch-item__tag { display: none; }
   .ch-item.is-active .ch-item__play { display: none; }
+  .match-grid { grid-template-columns: minmax(0, 1fr); }
+  .match-card__foot { font-size: 0.66rem; }
   .toast { bottom: 16px; font-size: 0.78rem; padding: 9px 14px; }
 }
 
