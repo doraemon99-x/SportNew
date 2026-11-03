@@ -532,93 +532,238 @@
 
   /* ------------------------------------------------------------
      HOME
+     Fokus utama: papan pertandingan dari feed. Daftar kategori
+     diringkas jadi satu blok lipat di bagian bawah.
      ------------------------------------------------------------ */
+  var HOME_FILTERS = [
+    { key: "live", label: "● Live" },
+    { key: "today", label: "Hari ini" },
+    { key: "tomorrow", label: "Besok" },
+    { key: "all", label: "Semua jadwal" }
+  ];
+
+  /* Chip liga mengikuti isi feed; liga langka tetap tampil lewat scroll. */
+  var LEAGUE_CHIP_MAX = 40;
+
   function renderHome() {
+    renderHomeBoard();
+    renderHomeCategories();
+  }
+
+  function sortMatches(matches, now) {
+    return matches.slice().sort(function (a, b) {
+      var sa = matchStatus(a, now), sb = matchStatus(b, now);
+      if (sa.state !== sb.state) return STATUS_ORDER[sa.state] - STATUS_ORDER[sb.state];
+      return (a.start ? a.start.getTime() : 0) - (b.start ? b.start.getTime() : 0);
+    });
+  }
+
+  function setStat(id, value) {
+    var el = document.getElementById(id);
+    if (el) el.textContent = value;
+  }
+
+  function renderHomeBoard() {
+    var board = $("#matchBoard");
+    if (!board) return;
+
+    var filterBar = $("#matchFilters");
+    var leagueBar = $("#leagueFilters");
+    var searchEl = $("#matchSearch");
+    var active = "all";
+    var league = "";               /* "" = semua liga */
+    var leagueSig = "";
+    var term = "";
+
+    function setActive(key) {
+      active = key;
+      if (!filterBar) return;
+      $$("[data-mfilter]", filterBar).forEach(function (b) {
+        b.classList.toggle("is-active", b.getAttribute("data-mfilter") === active);
+      });
+    }
+
+    if (filterBar) {
+      filterBar.innerHTML = HOME_FILTERS.map(function (f) {
+        return '<button type="button" class="chip' + (f.key === active ? " is-active" : "") +
+          '" data-mfilter="' + f.key + '">' + f.label + "</button>";
+      }).join("");
+
+      filterBar.addEventListener("click", function (event) {
+        var btn = event.target.closest("[data-mfilter]");
+        if (!btn) return;
+        setActive(btn.getAttribute("data-mfilter"));
+        paint();
+      });
+    }
+
+    if (leagueBar) {
+      leagueBar.addEventListener("click", function (event) {
+        var btn = event.target.closest("[data-league]");
+        if (!btn) return;
+        var picked = btn.getAttribute("data-league");
+        league = picked === league ? "" : picked;   /* klik lagi = lepas filter */
+        if (league) setActive("all");               /* tampilkan semua jadwal liga itu */
+        paint();
+      });
+    }
+
+    if (searchEl) {
+      searchEl.addEventListener("input", function () {
+        term = searchEl.value.trim().toLowerCase();
+        paint();
+      });
+    }
+
+    function matchesFilter(match, now) {
+      if (!match.start) return active === "all";
+      var state = matchStatus(match, now).state;
+      if (active === "live") return state === "live";
+      if (active === "today") return wibDayIndex(match.start) === wibDayIndex(now);
+      if (active === "tomorrow") return wibDayIndex(match.start) === wibDayIndex(now) + 1;
+      return true;
+    }
+
+    function inLeague(match) {
+      return !league || match.league === league;
+    }
+
+    function matchesTerm(match) {
+      if (!term) return true;
+      return (match.home + " " + match.away + " " + match.league).toLowerCase().indexOf(term) !== -1;
+    }
+
+    function emptyText() {
+      if (term) return "Tidak ada pertandingan yang cocok dengan pencarian.";
+      if (league) {
+        var inLeagueCount = (feedState.matches || []).filter(function (m) {
+          return inLeague(m) && matchesFilter(m, new Date());
+        }).length;
+        if (!inLeagueCount) {
+          if (active === "live") return "Belum ada pertandingan live di " + league + ". Coba filter Semua.";
+          if (active === "today") return "Tidak ada jadwal " + league + " hari ini.";
+          if (active === "tomorrow") return "Tidak ada jadwal " + league + " besok.";
+          return "Belum ada pertandingan di " + league + ".";
+        }
+      }
+      if (active === "live") return "Belum ada pertandingan live saat ini. Coba filter Hari ini.";
+      if (active === "tomorrow") return "Belum ada jadwal untuk besok.";
+      if (active === "today") return "Tidak ada pertandingan hari ini.";
+      return "Belum ada pertandingan dengan link streaming.";
+    }
+
+    /* Chip liga dibuat dari isi feed (liga terbanyak lebih dulu). */
+    function paintLeagues(all, now) {
+      if (!leagueBar) return;
+      var byLeague = {};
+      var order = [];
+      all.forEach(function (m) {
+        var name = m.league || "Lainnya";
+        if (!byLeague[name]) { byLeague[name] = { total: 0, live: 0 }; order.push(name); }
+        byLeague[name].total++;
+        if (matchStatus(m, now).state === "live") byLeague[name].live++;
+      });
+      order.sort(function (a, b) {
+        if (byLeague[a].live !== byLeague[b].live) return byLeague[b].live - byLeague[a].live;
+        if (byLeague[a].total !== byLeague[b].total) return byLeague[b].total - byLeague[a].total;
+        return a.localeCompare(b);
+      });
+
+      /* Liga pilihan hilang dari feed (rotasi stream) -> kembalikan ke semua liga. */
+      if (league && !byLeague[league]) league = "";
+
+      var names = order.slice(0, LEAGUE_CHIP_MAX);
+      /* Liga yang sedang dipilih tetap tampil walau di luar batas. */
+      if (league && names.indexOf(league) === -1) names.unshift(league);
+
+      var sig = names.join("|") + "#" +
+        names.map(function (n) { return byLeague[n].live + "/" + byLeague[n].total; }).join("|");
+
+      /* Daftar chip tidak berubah -> cukup tukar kelas aktif. Render ulang
+         innerHTML akan mengembalikan posisi geser bar ke awal. */
+      if (sig === leagueSig) {
+        $$("[data-league]", leagueBar).forEach(function (b) {
+          b.classList.toggle("is-active", b.getAttribute("data-league") === league);
+        });
+        return;
+      }
+      leagueSig = sig;
+
+      leagueBar.innerHTML =
+        '<button type="button" class="chip chip--all' + (league ? "" : " is-active") +
+          '" data-league="">Semua liga<span class="chip__count">' + all.length + "</span></button>" +
+        names.map(function (name) {
+          var info = byLeague[name];
+          return '<button type="button" class="chip' + (name === league ? " is-active" : "") +
+            '" data-league="' + esc(name) + '" title="' + esc(name) + '">' +
+            (info.live ? '<span class="chip__dot" aria-hidden="true"></span>' : "") +
+            esc(name) + '<span class="chip__count">' + info.total + "</span>" +
+          "</button>";
+        }).join("");
+    }
+
+    function paint() {
+      var now = new Date();
+      var all = feedState.matches || [];
+
+      var liveCount = all.filter(function (m) { return matchStatus(m, now).state === "live"; }).length;
+      var todayCount = all.filter(function (m) {
+        return m.start && wibDayIndex(m.start) === wibDayIndex(now);
+      }).length;
+
+      setStat("statLive", liveCount);
+      setStat("statToday", todayCount);
+      setStat("statTotal", all.length);
+
+      paintLeagues(all, now);
+
+      var list = all.filter(function (match) {
+        return inLeague(match) && matchesFilter(match, now) && matchesTerm(match);
+      });
+
+      var totalEl = $("#matchTotal");
+      if (totalEl) totalEl.textContent = list.length;
+
+      if (!list.length) {
+        board.innerHTML = '<div class="empty-state empty-state--sm">' + esc(emptyText()) + "</div>";
+        return;
+      }
+
+      board.innerHTML = '<div class="match-grid">' +
+        sortMatches(list, now).map(function (match) { return matchCardHtml(match, now); }).join("") +
+        "</div>";
+    }
+
+    board.innerHTML = '<div class="empty-state empty-state--sm">Memuat pertandingan…</div>';
+
+    loadFeed().then(paint).catch(function () {
+      board.innerHTML = '<div class="empty-state empty-state--sm">Feed pertandingan sedang tidak tersedia. ' +
+        '<a href="/' + LIVE_FOOTBALL_SLUG + '">Buka halaman Football Live &rarr;</a></div>';
+    });
+
+    /* Segarkan status setiap menit; loadFeed() otomatis ambil ulang setelah TTL. */
+    setInterval(function () { loadFeed().then(paint).catch(function () {}); }, 60000);
+  }
+
+  /* Daftar kategori ringkas di dalam <details>. */
+  function renderHomeCategories() {
     var sectionsEl = $("#categorySections");
     if (!sectionsEl) return;
 
-    var totalChannels = CATEGORIES.reduce(function (sum, c) { return sum + c.channels.length; }, 0);
-    var statCats = $("#statCats");
-    var statChannels = $("#statChannels");
-    if (statCats) statCats.textContent = CATEGORIES.length;
-    if (statChannels) statChannels.textContent = totalChannels;
+    sectionsEl.innerHTML = '<div class="category-grid">' +
+      CATEGORIES.map(function (c) {
+        return '<a class="cat-card" href="' + pageUrl(c.slug) + '">' +
+          '<span class="cat-card__icon" aria-hidden="true">' + c.icon + "</span>" +
+          '<span class="cat-card__body">' +
+            '<span class="cat-card__name">' + esc(c.name) + "</span>" +
+            '<span class="cat-card__meta">' + esc(cardMeta(c)) + "</span>" +
+          "</span>" +
+          '<span class="cat-card__arrow" aria-hidden="true">' + arrowIcon() + "</span>" +
+        "</a>";
+      }).join("") + "</div>";
 
-    var html = "";
-    GROUPS.forEach(function (group) {
-      var items = CATEGORIES.filter(function (c) { return c.group === group; });
-      if (!items.length) return;
-      html += '<section class="section" data-group="' + esc(group) + '">' +
-        '<div class="section__head"><h2>' + esc(group) + "</h2>" +
-        '<span class="count-pill">' + items.length + "</span></div>" +
-        '<div class="category-grid">' +
-        items.map(function (c) {
-          return '<a class="cat-card" href="' + pageUrl(c.slug) + '" data-name="' +
-            esc(c.name.toLowerCase()) + '" data-group="' + esc(group) + '">' +
-            '<span class="cat-card__icon" aria-hidden="true">' + c.icon + "</span>" +
-            '<span class="cat-card__body">' +
-              '<span class="cat-card__name">' + esc(c.name) + "</span>" +
-              '<span class="cat-card__meta">' + esc(cardMeta(c)) + "</span>" +
-            "</span>" +
-            '<span class="cat-card__arrow" aria-hidden="true">' + arrowIcon() + "</span>" +
-          "</a>";
-        }).join("") +
-        "</div></section>";
-    });
-    sectionsEl.innerHTML = html;
-
-    renderFeatured();
-    setupFilters();
-
-    var listEl = $("#homeTotal");
-    if (listEl) listEl.textContent = totalChannels;
-  }
-
-  function renderFeatured() {
-    var el = $("#featuredRow");
-    if (!el) return;
-    el.innerHTML = CATEGORIES.filter(function (c) { return c.featured; })
-      .map(function (c) {
-        return '<a class="chip" href="' + pageUrl(c.slug) + '">' + c.icon + " " + esc(c.name) + "</a>";
-      }).join("");
-  }
-
-  function setupFilters() {
-    var searchEl = $("#catSearch");
-    var chips = $$("[data-filter]");
-    var activeGroup = "all";
-
-    function apply() {
-      var term = (searchEl && searchEl.value ? searchEl.value : "").trim().toLowerCase();
-      var anyVisible = false;
-
-      $$(".section", $("#categorySections")).forEach(function (section) {
-        var groupMatch = activeGroup === "all" || section.getAttribute("data-group") === activeGroup;
-        var visibleInSection = 0;
-        $$(".cat-card", section).forEach(function (card) {
-          var nameMatch = !term || card.getAttribute("data-name").indexOf(term) !== -1;
-          var show = groupMatch && nameMatch;
-          card.style.display = show ? "" : "none";
-          if (show) visibleInSection++;
-        });
-        section.style.display = visibleInSection ? "" : "none";
-        if (visibleInSection) anyVisible = true;
-      });
-
-      var empty = $("#catEmpty");
-      if (empty) empty.style.display = anyVisible ? "none" : "";
-    }
-
-    chips.forEach(function (chip) {
-      chip.addEventListener("click", function () {
-        chips.forEach(function (c) { c.classList.remove("is-active"); });
-        chip.classList.add("is-active");
-        activeGroup = chip.getAttribute("data-filter");
-        apply();
-      });
-    });
-
-    if (searchEl) searchEl.addEventListener("input", apply);
-    apply();
+    var totalEl = $("#homeTotal");
+    if (totalEl) totalEl.textContent = CATEGORIES.length;
   }
 
   /* ------------------------------------------------------------
@@ -882,64 +1027,28 @@
       return (a.start ? a.start.getTime() : 0) - (b.start ? b.start.getTime() : 0);
     });
 
-    boardEl.innerHTML = '<div class="match-grid">' + sorted.slice(0, 24).map(function (match) {
-      var status = matchStatus(match, now);
-      var when = match.start ? dayText(match.start, now) + " · " + clockText(match.start) : "–";
-      return '<a class="match-card is-' + status.state + '" href="' + matchHref(match) + '">' +
-        '<span class="match-card__top">' +
-          '<span class="match-card__league">' + esc(match.league) + "</span>" +
-          '<span class="match-status is-' + status.state + '">' + esc(status.label) + "</span>" +
-        "</span>" +
-        '<span class="match-card__teams">' + esc(match.home) +
-          '<span class="match-card__vs">vs</span>' + esc(match.away) + "</span>" +
-        '<span class="match-card__foot">' +
-          "<span>" + esc(when) + " WIB</span>" +
-          '<span class="match-card__cta">' + playIcon() + " Tonton</span>" +
-        "</span>" +
-      "</a>";
-    }).join("") + "</div>";
+    boardEl.innerHTML = '<div class="match-grid">' +
+      sorted.slice(0, 24).map(function (match) { return matchCardHtml(match, now); }).join("") +
+      "</div>";
   }
 
-  /* Strip "Live sekarang" di Home. */
-  function renderHomeLive() {
-    var box = $("#liveNow");
-    if (!box) return;
-
-    function paint() {
-      var now = new Date();
-      var live = (feedState.matches || []).filter(function (m) {
-        return matchStatus(m, now).state === "live";
-      });
-
-      var statLive = $("#statLive");
-      if (statLive) statLive.textContent = live.length;
-
-      if (!live.length) {
-        box.innerHTML = '<div class="empty-state empty-state--sm">Belum ada pertandingan live saat ini. ' +
-          '<a href="/' + LIVE_FOOTBALL_SLUG + '">Lihat jadwal football &rarr;</a></div>';
-        return;
-      }
-
-      box.innerHTML = '<div class="match-grid">' + live.slice(0, 8).map(function (match) {
-        return '<a class="match-card is-live" href="' + matchHref(match) + '">' +
-          '<span class="match-card__top">' +
-            '<span class="match-card__league">' + esc(match.league) + "</span>" +
-            '<span class="match-status is-live">LIVE</span>' +
-          "</span>" +
-          '<span class="match-card__teams">' + esc(match.home) +
-            '<span class="match-card__vs">vs</span>' + esc(match.away) + "</span>" +
-          '<span class="match-card__foot"><span>' +
-            esc(match.start ? clockText(match.start) : "") + " WIB</span>" +
-            '<span class="match-card__cta">' + playIcon() + " Tonton</span></span>" +
-        "</a>";
-      }).join("") + "</div>";
-    }
-
-    box.innerHTML = '<div class="empty-state empty-state--sm">Memuat pertandingan…</div>';
-    loadFeed().then(paint).catch(function () {
-      box.innerHTML = '<div class="empty-state empty-state--sm">Feed pertandingan sedang tidak tersedia. ' +
-        '<a href="/' + LIVE_FOOTBALL_SLUG + '">Buka halaman Football Live &rarr;</a></div>';
-    });
+  /* Satu kartu pertandingan — dipakai Home dan halaman Football Live. */
+  function matchCardHtml(match, now) {
+    var status = matchStatus(match, now);
+    var when = match.start ? dayText(match.start, now) + " · " + clockText(match.start) : "–";
+    var cta = status.state === "ended" ? "Tonton ulang" : "Tonton";
+    return '<a class="match-card is-' + status.state + '" href="' + matchHref(match) + '">' +
+      '<span class="match-card__top">' +
+        '<span class="match-card__league">' + esc(match.league) + "</span>" +
+        '<span class="match-status is-' + status.state + '">' + esc(status.label) + "</span>" +
+      "</span>" +
+      '<span class="match-card__teams">' + esc(match.home) +
+        '<span class="match-card__vs">vs</span>' + esc(match.away) + "</span>" +
+      '<span class="match-card__foot">' +
+        "<span>" + esc(when) + " WIB</span>" +
+        '<span class="match-card__cta">' + playIcon() + " " + cta + "</span>" +
+      "</span>" +
+    "</a>";
   }
 
   function toast(message) {
@@ -988,7 +1097,6 @@
 
     if (page === "home") {
       renderHome();
-      renderHomeLive();
     } else if (page === "category") {
       mountCategory(body.getAttribute("data-category") || "");
     }

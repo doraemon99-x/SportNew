@@ -243,6 +243,12 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   pointer-events: none;
 }
 
+/* Varian ringkas: Home fokus ke papan pertandingan. */
+.hero--compact { padding: clamp(18px, 2.6vw, 30px); margin-bottom: 18px; }
+.hero--compact .hero__title { font-size: clamp(1.45rem, 3vw, 2.1rem); margin-bottom: 8px; }
+.hero--compact .hero__sub { max-width: 560px; font-size: 0.88rem; }
+.hero--compact .hero__stats { margin-top: 16px; }
+
 .hero__eyebrow {
   display: inline-flex;
   align-items: center;
@@ -287,8 +293,8 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   margin-top: 22px;
 }
 .stat {
-  flex: 1 1 140px;
-  max-width: 220px;
+  flex: 1 1 110px;
+  max-width: 190px;
   padding: 12px 16px;
   border-radius: var(--radius);
   background: rgba(7, 12, 26, 0.55);
@@ -507,6 +513,64 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   color: var(--muted);
   border: 1px dashed var(--line-strong);
   border-radius: var(--radius);
+}
+
+/* ---------- kategori ringkas (details) ---------- */
+.cat-fold {
+  margin-top: 24px;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--line);
+  background: rgba(10, 16, 36, 0.55);
+  overflow: hidden;
+}
+
+.cat-fold__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 15px 18px;
+  cursor: pointer;
+  list-style: none;
+  transition: background 0.2s ease;
+}
+.cat-fold__head::-webkit-details-marker { display: none; }
+.cat-fold__head:hover { background: rgba(124, 146, 255, 0.07); }
+
+.cat-fold__title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.95rem;
+  font-weight: 800;
+}
+
+.cat-fold__hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 0.74rem;
+  font-weight: 700;
+  color: var(--muted-2);
+}
+.cat-fold__hint::after {
+  content: "";
+  width: 7px;
+  height: 7px;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: rotate(45deg) translateY(-2px);
+  transition: transform 0.22s ease;
+}
+.cat-fold[open] .cat-fold__hint::after {
+  transform: rotate(-135deg) translateY(-2px);
+}
+
+.cat-fold > div {
+  padding: 0 18px 18px;
+  border-top: 1px solid var(--line);
+  padding-top: 16px;
 }
 
 /* ============================================================
@@ -1049,8 +1113,56 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 }
 .empty-state a { color: var(--brand-2); font-weight: 700; }
 
-/* Strip "Live sekarang" di Home */
-.live-strip { margin: 4px 0 26px; }
+/* Papan pertandingan di Home */
+#matchBoard .match-grid { margin-top: 4px; }
+#matchFilters { margin-bottom: 10px; }
+
+/* Filter liga — satu baris yang bisa digeser ke samping */
+.league-bar {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 18px;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+}
+.league-bar::-webkit-scrollbar { display: none; }
+.league-bar .chip { flex: 0 0 auto; white-space: nowrap; }
+.league-bar .chip--all {
+  position: sticky;
+  left: 0;
+  z-index: 2;
+  background: #0b1226;
+  box-shadow: 10px 0 14px -10px rgba(0, 0, 0, 0.95);
+}
+.league-bar .chip--all:hover { background: #131c38; }
+.league-bar .chip--all.is-active {
+  border-color: var(--line-strong);
+  background: linear-gradient(135deg, #332a63, #16324a);
+  box-shadow: 10px 0 14px -10px rgba(0, 0, 0, 0.95), inset 0 0 0 1px rgba(124, 92, 255, 0.25);
+}
+.chip__count {
+  display: inline-block;
+  margin-left: 7px;
+  padding: 1px 6px;
+  font-size: 0.64rem;
+  font-weight: 800;
+  line-height: 1.5;
+  color: var(--muted);
+  background: rgba(124, 146, 255, 0.14);
+  border-radius: 99px;
+}
+.chip.is-active .chip__count { color: var(--text); background: rgba(255, 255, 255, 0.16); }
+.chip__dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  margin-right: 6px;
+  border-radius: 50%;
+  background: var(--live);
+  box-shadow: 0 0 0 3px rgba(34, 224, 138, 0.16);
+  vertical-align: 1px;
+}
 
 /* ============================================================
    Toast

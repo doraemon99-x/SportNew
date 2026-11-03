@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#060a15">
   <title>TipiStream — Live Streaming Olahraga</title>
-  <meta name="description" content="TipiStream — live streaming olahraga: sepak bola, basket, voli, motorsport, dan lainnya. Pilih kategori, lalu pilih channel favoritmu.">
+  <meta name="description" content="TipiStream — jadwal pertandingan football dan live streaming olahraga: sepak bola, basket, voli, motorsport, dan lainnya.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap">
@@ -46,25 +46,25 @@
     <div class="wrap">
 
       <!-- HERO -->
-      <section class="hero">
-        <span class="hero__eyebrow">● Live Sport Streaming</span>
-        <h1 class="hero__title">Nonton Live Olahraga<br><span>Tanpa Ribet.</span></h1>
+      <section class="hero hero--compact">
+        <span class="hero__eyebrow">● Jadwal &amp; Live Streaming</span>
+        <h1 class="hero__title">Semua <span>Pertandingan</span><br>Ada di Sini.</h1>
         <p class="hero__sub">
-          Sepak bola, basket, voli, motorsport, hingga event besar — semua dalam satu tempat.
-          Pilih kategori, lalu pilih channel favoritmu.
+          Jadwal football terbaru diperbarui otomatis dari feed. Klik salah satu pertandingan
+          untuk langsung menonton.
         </p>
         <div class="hero__stats">
           <div class="stat">
-            <div class="stat__num" id="statCats">–</div>
-            <div class="stat__label">Kategori</div>
-          </div>
-          <div class="stat">
-            <div class="stat__num" id="statChannels">–</div>
-            <div class="stat__label">Channel</div>
-          </div>
-          <div class="stat">
             <div class="stat__num" id="statLive">–</div>
             <div class="stat__label">Live</div>
+          </div>
+          <div class="stat">
+            <div class="stat__num" id="statToday">–</div>
+            <div class="stat__label">Hari ini</div>
+          </div>
+          <div class="stat">
+            <div class="stat__num" id="statTotal">–</div>
+            <div class="stat__label">Total jadwal</div>
           </div>
         </div>
       </section>
@@ -74,43 +74,38 @@
         <div class="ticker__track" data-ticker></div>
       </div>
 
-      <!-- LIVE SEKARANG -->
-      <section class="live-strip" aria-label="Pertandingan live">
-        <div class="section__head">
-          <h2>⚽ Live Sekarang</h2>
-          <a class="count-pill" href="/football/football">Semua jadwal</a>
-        </div>
-        <div id="liveNow"></div>
-      </section>
-
-      <!-- QUICK PICKS -->
-      <div class="chip-row" aria-label="Pilihan cepat">
-        <a class="chip is-active" href="#kategori" data-filter="all">Semua</a>
-        <button type="button" class="chip" data-filter="Sepak Bola">⚽ Sepak Bola</button>
-        <button type="button" class="chip" data-filter="Basket">🏀 Basket</button>
-        <button type="button" class="chip" data-filter="Voli">🏐 Voli</button>
-        <button type="button" class="chip" data-filter="Motorsport">🏎️ Motorsport</button>
-        <button type="button" class="chip" data-filter="Lainnya">🎯 Lainnya</button>
-      </div>
-      <div class="chip-row" id="featuredRow" aria-label="Kategori populer"></div>
-
       <!-- MAIN LAYOUT -->
       <div class="layout">
 
         <div>
-          <div class="toolbar" id="kategori">
+          <div class="toolbar" id="jadwal">
             <div class="toolbar__title">
-              🗂️ Semua Kategori
-              <span class="count-pill" id="homeTotal">–</span>
+              ⚽ Papan Pertandingan
+              <span class="count-pill" id="matchTotal">–</span>
             </div>
             <div class="search">
               <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
-              <input type="search" id="catSearch" placeholder="Cari kategori…" autocomplete="off" aria-label="Cari kategori">
+              <input type="search" id="matchSearch" placeholder="Cari tim atau liga…" autocomplete="off" aria-label="Cari pertandingan">
             </div>
           </div>
 
-          <div id="categorySections"></div>
-          <div class="empty-state" id="catEmpty" style="display:none">Kategori tidak ditemukan. Coba kata kunci lain.</div>
+          <div class="chip-row" id="matchFilters" aria-label="Filter jadwal"></div>
+
+          <div class="league-bar" id="leagueFilters" aria-label="Filter liga" role="group"></div>
+
+          <div id="matchBoard"></div>
+
+          <!-- KATEGORI RINGKAS -->
+          <details class="cat-fold" id="kategori">
+            <summary class="cat-fold__head">
+              <span class="cat-fold__title">
+                🗂️ Semua Kategori
+                <span class="count-pill" id="homeTotal">–</span>
+              </span>
+              <span class="cat-fold__hint">Buka daftar channel</span>
+            </summary>
+            <div id="categorySections"></div>
+          </details>
         </div>
 
         <!-- SIDEBAR -->
