@@ -103,18 +103,22 @@
             sudah punya link streaming. Jika player tidak tampil, coba channel lain atau tekan muat ulang.
           </p>
 
-          <div class="section-match">
-            <div class="section__head"><h2>Jadwal Football</h2></div>
+          <details class="cat-fold section-match" data-match-section>
+            <summary class="cat-fold__head">
+              <span class="cat-fold__title">📅 Jadwal Pertandingan Lain</span>
+              <span class="cat-fold__hint">Buka daftar jadwal</span>
+            </summary>
             <div id="matchBoard"></div>
-          </div>
+          </details>
         </div>
 
         <aside class="side-stack">
           <div class="panel">
             <div class="panel__head">
-              <h3>⚽ Stream Tersedia</h3>
+              <h3 id="chPanelTitle">⚽ Stream Tersedia</h3>
               <span class="count-pill" id="chCountSide">–</span>
             </div>
+            <div class="ch-match" id="matchHeader" hidden></div>
             <div class="ch-list" id="chList"></div>
           </div>
 

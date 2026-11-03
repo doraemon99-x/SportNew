@@ -320,6 +320,18 @@
     return "/" + slug;
   }
 
+  function readParam(name) {
+    try { return new URLSearchParams(location.search).get(name) || ""; } catch (e) { return ""; }
+  }
+
+  function findMatchById(matches, id) {
+    if (!id) return null;
+    for (var i = 0; i < matches.length; i++) {
+      if (matches[i].id === id) return matches[i];
+    }
+    return null;
+  }
+
   function store(key, value) {
     try { window.localStorage.setItem(key, value); } catch (e) { /* ignore */ }
   }
@@ -485,20 +497,29 @@
     return "/" + LIVE_FOOTBALL_SLUG + "?m=" + encodeURIComponent(match.id);
   }
 
-  /* Pertandingan -> daftar channel (satu channel per signal). */
+  /* Satu pertandingan -> daftar channel (satu channel per signal). */
+  function channelsFromMatch(match, now) {
+    var status = matchStatus(match, now || new Date());
+    return match.channels.map(function (signal, i) {
+      return {
+        label: signal.label,
+        url: "/hls.html?url=" + encodeURIComponent(signal.url),
+        match: match,
+        signalIndex: i,
+        status: status,
+        isLive: status.state === "live"
+      };
+    });
+  }
+
+  /* Banyak pertandingan -> daftar channel dengan nama laga di label. */
   function channelsFromMatches(matches, now) {
     var list = [];
     matches.forEach(function (match) {
-      var status = matchStatus(match, now || new Date());
-      match.channels.forEach(function (signal, i) {
-        var prefix = i === 0 ? "" : " · " + signal.label;
-        list.push({
-          label: match.home + " vs " + match.away + prefix,
-          url: "/hls.html?url=" + encodeURIComponent(signal.url),
-          match: match,
-          status: status,
-          isLive: status.state === "live"
-        });
+      channelsFromMatch(match, now).forEach(function (channel, i) {
+        channel.label = match.home + " vs " + match.away +
+          (i === 0 ? "" : " · " + channel.label);
+        list.push(channel);
       });
     });
     return list;
@@ -779,6 +800,9 @@
     var reloadBtn = $("#btnReload");
     var fullBtn = $("#btnFull");
     var categoryName = labels.categoryName || slug;
+    /* Pilihan channel disimpan per pertandingan supaya tidak tertukar
+       antara daftar fokus (?m=) dan daftar jelajah. */
+    var storeKey = "tipi:last:" + slug + (labels.matchId ? ":" + labels.matchId : "");
     if (!listEl) return null;
 
     if (!channels.length) {
@@ -822,7 +846,7 @@
       try { player.src = channel.url; } catch (e) { /* ignore */ }
 
       currentIndex = index;
-      store("tipi:last:" + slug, String(index));
+      store(storeKey, String(index));
 
       if (options.scroll) {
         var el = items[index];
@@ -875,7 +899,10 @@
       copyBtn.addEventListener("click", function () {
         if (currentIndex < 0) return;
         var channel = channels[currentIndex];
-        var link = location.origin + pageUrl(slug) + "?ch=" + (currentIndex + 1);
+        var shareMatch = labels.matchId || (channel.match && channel.match.id) || "";
+        var chNo = (channel.signalIndex >= 0 ? channel.signalIndex : currentIndex) + 1;
+        var link = location.origin + pageUrl(slug) +
+          (shareMatch ? "?m=" + encodeURIComponent(shareMatch) + "&ch=" + chNo : "?ch=" + (currentIndex + 1));
         var done = function () { toast("Link channel disalin"); };
         var fail = function () { toast("Gagal menyalin link"); };
 
@@ -897,27 +924,20 @@
       });
     }
 
-    var saved = parseInt(read("tipi:last:" + slug) || "0", 10);
+    var saved = parseInt(read(storeKey) || "0", 10);
     if (isNaN(saved) || saved < 0 || saved >= channels.length) saved = 0;
 
-    var fromUrl = 0;
-    try {
-      var param = new URLSearchParams(location.search).get("ch");
-      if (param) {
-        fromUrl = parseInt(param, 10) - 1;
-      }
-    } catch (e) { /* ignore */ }
-    if (!isNaN(fromUrl) && fromUrl >= 0 && fromUrl < channels.length) saved = fromUrl;
-
     /* ?m=<nami_id> — dipakai kartu pertandingan dari feed. */
-    try {
-      var matchId = new URLSearchParams(location.search).get("m");
-      if (matchId) {
-        for (var mi = 0; mi < channels.length; mi++) {
-          if (channels[mi].match && channels[mi].match.id === matchId) { saved = mi; break; }
-        }
+    var matchId = labels.matchId || readParam("m");
+    if (matchId) {
+      for (var mi = 0; mi < channels.length; mi++) {
+        if (channels[mi].match && channels[mi].match.id === matchId) { saved = mi; break; }
       }
-    } catch (e) { /* ignore */ }
+    }
+
+    /* ?ch=<n> (1-based) menang atas pilihan tersimpan. */
+    var fromUrl = parseInt(readParam("ch"), 10) - 1;
+    if (!isNaN(fromUrl) && fromUrl >= 0 && fromUrl < channels.length) saved = fromUrl;
 
     selectChannel(saved);
     return { select: selectChannel };
@@ -956,15 +976,71 @@
      ------------------------------------------------------------ */
   function mountLiveCategory(cat, listEl, loader, categoryName) {
     var statusEl = $("#feedStatus");
+    var panelTitle = $("#chPanelTitle");
+    var boardEl = $("#matchBoard");
+    var boardWrap = $("[data-match-section]");
+    var hintEl = $(".player-hint");
+    var headerEl = $("#matchHeader");
+    var matchId = readParam("m");
+    var focused = null;          /* pertandingan yang sedang dibuka lewat ?m= */
+
+    /* Papan jadwal jadi daftar pendukung, bukan tandingan daftar stream:
+       hanya dirender ketika pengunjung benar-benar membukanya. Laga yang
+       sedang dibuka lewat ?m= tidak diulang di sini. */
+    function showBoard() {
+      if (!boardEl) return;
+      var matches = feedState.matches || [];
+      if (focused) {
+        matches = matches.filter(function (m) { return m.id !== focused.id; });
+      }
+      renderMatchBoard(boardEl, matches, categoryName);
+    }
+
+    if (boardWrap) {
+      boardWrap.addEventListener("toggle", function () {
+        if (boardWrap.open) showBoard();
+      });
+    }
 
     function paint() {
       var now = new Date();
-      var channels = channelsFromMatches(feedState.matches || [], now);
+      var matches = feedState.matches || [];
+
+      focused = matchId ? findMatchById(matches, matchId) : null;
+
+      var channels = focused
+        ? channelsFromMatch(focused, now)
+        : channelsFromMatches(matches, now);
 
       var countEl = $("#chCount");
       if (countEl) countEl.textContent = channels.length;
       var countSide = $("#chCountSide");
       if (countSide) countSide.textContent = channels.length + " ch";
+
+      var titleText = focused ? focused.home + " vs " + focused.away : categoryName;
+      $$("[data-category-name]").forEach(function (el) { el.textContent = titleText; });
+      if (focused) {
+        document.title = focused.home + " vs " + focused.away + " — Live Streaming | TipiStream";
+      }
+
+      if (panelTitle) {
+        panelTitle.textContent = focused ? "⚽ Stream Laga Ini" : "⚽ Stream Tersedia";
+      }
+      var foldTitle = boardWrap ? $(".cat-fold__title", boardWrap) : null;
+      if (foldTitle) {
+        foldTitle.textContent = focused ? "📅 Jadwal Pertandingan Lain" : "📅 Jadwal Pertandingan";
+      }
+      if (headerEl) {
+        headerEl.hidden = !focused;
+        headerEl.innerHTML = focused ? matchHeaderHtml(focused, now) : "";
+      }
+      if (hintEl) {
+        hintEl.textContent = focused
+          ? "Pilih channel di samping untuk menyaksikan laga ini. Jadwal pertandingan lain ada di daftar lipat di bawah."
+          : matchId
+            ? "Jadwal laga yang kamu buka sudah tidak ada di feed, jadi semua stream ditampilkan. Pilih laga lain dari daftar di bawah."
+            : "Jadwal di bawah diambil otomatis dari feed pertandingan dan hanya menampilkan laga yang sudah punya link streaming. Jika player tidak tampil, coba channel lain atau tekan muat ulang.";
+      }
 
       if (statusEl) {
         var liveCount = channels.filter(function (c) { return c.isLive; }).length;
@@ -972,27 +1048,31 @@
       }
 
       if (!channels.length) {
-        listEl.innerHTML = '<div class="ch-list--empty">Belum ada pertandingan football yang punya link streaming.</div>';
+        listEl.innerHTML = focused
+          ? '<div class="ch-list--empty">Laga ini belum punya link streaming.</div>'
+          : '<div class="ch-list--empty">Belum ada pertandingan football yang punya link streaming.</div>';
         if (loader) loader.classList.add("is-hidden");
         return;
       }
 
-      wirePlayer(cat.slug, channels, { categoryName: categoryName });
+      wirePlayer(cat.slug, channels, {
+        categoryName: focused ? focused.home + " vs " + focused.away : categoryName,
+        matchId: focused ? focused.id : ""
+      });
     }
 
     if (feedState.matches) {
-      renderMatchBoard($("#matchBoard"), feedState.matches, categoryName);
       paint();
+      if (boardWrap && boardWrap.open) showBoard();
       return;
     }
 
-    renderMatchBoard($("#matchBoard"), null, categoryName);
     listEl.innerHTML = '<div class="ch-list--empty">Memuat jadwal pertandingan…</div>';
     loadFeed().then(function () {
-      renderMatchBoard($("#matchBoard"), feedState.matches, categoryName);
       paint();
+      if (boardWrap && boardWrap.open) showBoard();
     }).catch(function () {
-      renderMatchBoard($("#matchBoard"), null, categoryName, true);
+      if (boardWrap && boardWrap.open) renderMatchBoard(boardEl, null, categoryName, true);
       listEl.innerHTML = '<div class="ch-list--empty">Gagal memuat feed. Coba muat ulang halaman.</div>';
       if (loader) loader.classList.add("is-hidden");
       if (statusEl) statusEl.textContent = "feed offline";
@@ -1049,6 +1129,19 @@
         '<span class="match-card__cta">' + playIcon() + " " + cta + "</span>" +
       "</span>" +
     "</a>";
+  }
+
+  /* Ringkasan laga yang sedang dibuka — tampil di atas daftar stream. */
+  function matchHeaderHtml(match, now) {
+    var status = matchStatus(match, now);
+    var when = match.start ? dayText(match.start, now) + " · " + clockText(match.start) + " WIB" : "Jadwal menyusul";
+    return '<div class="ch-match__league">' + esc(match.league) + "</div>" +
+      '<div class="ch-match__teams">' + esc(match.home) +
+        '<span class="ch-match__vs">vs</span>' + esc(match.away) + "</div>" +
+      '<div class="ch-match__foot">' +
+        '<span class="match-status is-' + status.state + '">' + esc(status.label) + "</span>" +
+        "<span>" + esc(when) + "</span>" +
+      "</div>";
   }
 
   function toast(message) {

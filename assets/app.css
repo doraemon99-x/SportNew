@@ -979,6 +979,53 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   color: var(--muted-2);
 }
 
+/* Ringkasan laga aktif di atas daftar stream (mode ?m=). */
+.ch-match {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 12px 12px 0;
+  padding: 12px 14px;
+  border-radius: var(--radius);
+  border: 1px solid var(--line);
+  background: linear-gradient(150deg, rgba(21, 30, 62, 0.9), rgba(10, 15, 34, 0.9));
+}
+.ch-match[hidden] { display: none; }
+.ch-match__league {
+  font-size: 0.64rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted-2);
+}
+.ch-match__teams {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  font-size: 0.88rem;
+  font-weight: 800;
+  line-height: 1.35;
+}
+.ch-match__vs {
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted-2);
+}
+.ch-match__foot {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding-top: 7px;
+  border-top: 1px solid var(--line);
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--muted-2);
+}
+
 /* ============================================================
    Live match board (feed oneball)
    ============================================================ */
