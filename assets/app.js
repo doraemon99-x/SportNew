@@ -260,10 +260,13 @@
   /* ------------------------------------------------------------
      LIVE FEED (oneball)
      Sumber: https://oneball.to/list.json — CORS terbuka (ACAO *).
-     Format waktu "YYYY-MM-DD HH:MM:SS" dalam WIB (+7).
+     Format waktu "YYYY-MM-DD HH:MM:SS" memakai jam dinding BEIJING
+     (UTC+8) — sama dengan data-match-time di oneball.to. Bukan WIB.
+     Semua tampilan tetap dikonversi ke WIB (+7) di clockText/dayText.
      Hanya pertandingan yang punya signals[] yang bisa ditonton.
      ------------------------------------------------------------ */
   var FEED_URL = "https://oneball.to/list.json";
+  var FEED_UTC_OFFSET_HOURS = 8;     // zona waktu string match_time dari feed
   var FEED_TTL = 90 * 1000;          // cache 90 detik
   var MATCH_WINDOW_AFTER = 3 * 60;   // menit: masih dianggap live 3 jam setelah kickoff
   var LIVE_FOOTBALL_SLUG = "football/football";
@@ -353,11 +356,14 @@
     return false;
   }
 
-  /* "2026-11-02 19:30:00" adalah jam dinding WIB, bukan UTC. */
+  /* "2026-11-02 19:30:00" dari feed adalah jam dinding Beijing (UTC+8),
+     bukan UTC dan bukan WIB. Ditandai +08:00 supaya konversi ke WIB
+     di clockText()/dayText() menghasilkan jam yang benar (mundur 1 jam). */
   function parseMatchTime(value) {
     var m = /^(\d{4})-(\d{2})-(\d{2})[ T](\d{2}):(\d{2})(?::(\d{2}))?/.exec(String(value || ""));
     if (!m) return null;
-    var iso = m[1] + "-" + m[2] + "-" + m[3] + "T" + m[4] + ":" + m[5] + ":" + (m[6] || "00") + "+07:00";
+    var iso = m[1] + "-" + m[2] + "-" + m[3] + "T" + m[4] + ":" + m[5] + ":" + (m[6] || "00") +
+      "+0" + FEED_UTC_OFFSET_HOURS + ":00";
     var d = new Date(iso);
     return isNaN(d.getTime()) ? null : d;
   }
