@@ -258,18 +258,28 @@
   ];
 
   /* ------------------------------------------------------------
-     LIVE FEED (sportsonline)
-     Sumber: https://sportsonline.st/ — halaman HTML teks polos, TANPA
-     header CORS, jadi dibaca lewat proxy /schedule (functions/schedule.js).
-     Isinya jam pertandingan dalam UTC; semua tampilan dikonversi ke WIB
-     (+7) di clockText/dayText. Kanalnya berupa halaman pemutar .php,
-     dimuat apa adanya di iframe.
+     LIVE FEED (dua sumber, berlapis)
+     1. sportsonline.st — halaman HTML teks polos, TANPA
+        header CORS, jadi dibaca lewat proxy /schedule (functions/schedule.js).
+        Jamnya UTC; semua tampilan dikonversi ke WIB (+7) di
+        clockText/dayText. Kanalnya halaman pemutar .php, dimuat apa
+        adanya di iframe.
+     2. oneball.to/list.json — JSON, dulu CORS-nya terbuka sehingga
+        dibaca langsung dari browser. Jamnya jam dinding Beijing (UTC+8),
+        ditandai +08:00 di parseMatchTime(). Domain ini sedang mati,
+        tapi tetap disimpan sebagai cadangan: begitu hidup lagi, situs
+        langsung punya sumber kedua tanpa perlu diubah.
 
-     Catatan: sebelumnya sumbernya oneball.to/list.json (jam dinding
-     Beijing UTC+8). Domain itu sekarang mati total, jadi cadangannya
-     tidak perlu dipertahankan.
+     Urutan dicoba dari atas. Sumber berikutnya hanya dipakai kalau
+     sumber sebelumnya gagal atau tidak menghasilkan satu laga pun.
+     Keduanya lewat /schedule (functions/schedule.js) supaya sumber
+     tidak perlu punya header CORS.
      ------------------------------------------------------------ */
-  var FEED_URL = "/schedule";
+  var FEED_SOURCES = [
+    { key: "sportsonline", url: "/schedule", kind: "text" },
+    { key: "oneball", url: "/schedule?src=oneball", kind: "json" }
+  ];
+  var FEED_UTC_OFFSET_HOURS = 8;       // zona waktu string match_time oneball (Beijing)
   var FEED_TTL = 90 * 1000;            // cache 90 detik
   var MATCH_WINDOW_AFTER = 3 * 60;     // menit: masih dianggap live 3 jam setelah kickoff
   var LIVE_FOOTBALL_SLUG = "football/football";
@@ -330,6 +340,37 @@
   /* ------------------------------------------------------------
      LIVE FEED — ambil, saring, dan ubah ke bentuk channel
      ------------------------------------------------------------ */
+  /* Daftar kata kunci liga sepak bola untuk feed oneball, yang isinya
+     semua cabang olahraga. Dicek negatif dulu supaya "College Football"
+     dan liga basket tidak ikut lolos. */
+  var FOOTBALL_OK = [
+    "league", "liga", "serie", "bundesliga", "eredivisie", "ligue", "premier",
+    "champions", "europa", "conference", "copa", "cup", "uefa", "afc", "caf",
+    "conmebol", "concacaf", "fifa", "qualif", "ekstraklasa", "superliga",
+    "allsvenskan", "superettan", "veikkausliiga", "division", "divisjon",
+    "primera", "segunda", "prva liga", "1.liga", "super lig", "soccer",
+    "football", "eerste divisie", "super division", "mls", "youth league",
+    "j2 league", "j3 league", "pro league", "a-league"
+  ];
+  var FOOTBALL_NOT = [
+    "basketball", "basketbol", "basket", "nba", "nhl", "nfl",
+    "college football", "canadian football", "wrestling", "vtb united",
+    "adriatic basketball", "ncaa", "national collegiate", "fiba",
+    "novo basquete", "basquete", "baloncesto", "korean basketball",
+    "philippine basketball", "women's national basketball", "ncaa"
+  ];
+
+  function isFootball(league) {
+    var n = String(league || "").toLowerCase();
+    for (var i = 0; i < FOOTBALL_NOT.length; i++) {
+      if (n.indexOf(FOOTBALL_NOT[i]) !== -1) return false;
+    }
+    for (var j = 0; j < FOOTBALL_OK.length; j++) {
+      if (n.indexOf(FOOTBALL_OK[j]) !== -1) return true;
+    }
+    return false;
+  }
+
   /* ------------------------------------------------------------
      JADWAL sportsonline
      Satu baris: "17:45   AEK Athens x Real Madrid | https://…hd5.php"
@@ -437,6 +478,47 @@
 
   function pad2(n) { return String(n).padStart(2, "0"); }
 
+  /* "2026-11-02 19:30:00" dari oneball adalah jam dinding Beijing (UTC+8),
+     bukan UTC dan bukan WIB. Ditandai +08:00 supaya konversi ke WIB
+     di clockText()/dayText() menghasilkan jam yang benar (mundur 1 jam). */
+  function parseMatchTime(value) {
+    var m = /^(\d{4})-(\d{2})-(\d{2})[ T](\d{2}):(\d{2})(?::(\d{2}))?/.exec(String(value || ""));
+    if (!m) return null;
+    var iso = m[1] + "-" + m[2] + "-" + m[3] + "T" + m[4] + ":" + m[5] + ":" + (m[6] || "00") +
+      "+0" + FEED_UTC_OFFSET_HOURS + ":00";
+    var d = new Date(iso);
+    return isNaN(d.getTime()) ? null : d;
+  }
+
+  /* Baris oneball -> bentuk pertandingan yang sama dengan buildSchedule().
+     Hanya laga sepak bola yang punya signals[] (link stream) yang dipakai;
+     id-nya nami_id, jadi ?m= di halaman player berlaku untuk kedua sumber. */
+  function buildOneball(rows) {
+    var matches = [];
+    rows.forEach(function (row) {
+      if (!row || !isFootball(row.league_name)) return;
+      var signals = Array.isArray(row.signals) ? row.signals : [];
+      if (!signals.length) return;               /* belum ada stream */
+      var urls = signals
+        .filter(function (s) { return s && s.url; })
+        .map(function (s, i) {
+          return { label: s.label || ("CH " + (i + 1)), url: s.url };
+        });
+      if (!urls.length) return;
+      matches.push({
+        id: String(row.nami_id || ""),
+        league: String(row.league_name || ""),
+        home: String(row.home_team || ""),
+        away: String(row.away_team || ""),
+        title: String(row.home_team || ""),
+        rawTime: String(row.match_time || ""),
+        start: parseMatchTime(row.match_time),
+        channels: urls
+      });
+    });
+    return matches;
+  }
+
   /* "…/channels/hd/hd5.php" -> "HD5"; "…/channels/bra/br2.php" -> "BR2" */
   function channelLabel(url) {
     var m = /\/([a-z0-9_-]+)\.php(?:$|\?)/i.exec(String(url || ""));
@@ -524,16 +606,19 @@
     }
     if (feedState.promise) return feedState.promise;
 
-    feedState.promise = fetch(FEED_URL, { cache: "no-store" })
-      .then(function (res) {
-        if (!res.ok) throw new Error("HTTP " + res.status);
-        return res.text();
-      })
-      .then(function (html) {
-        if (!html || html.indexOf("SPORTSONLINE") === -1) {
-          throw new Error("Format jadwal tidak dikenal");
-        }
-        var matches = buildSchedule(html, new Date());
+    /* Coba sumber berurutan. Sumber cadangan hanya dipakai kalau yang
+       sudah dicoba gagal (jaringan/HTTP/format) atau tidak menghasilkan
+       satu laga pun — jangan sampai feed kosong menutupi sumber lain. */
+    function tryFrom(index, failures) {
+      if (index >= FEED_SOURCES.length) {
+        var err = new Error("Semua sumber jadwal gagal");
+        err.failures = failures;
+        return Promise.reject(err);
+      }
+      var src = FEED_SOURCES[index];
+      var job = src.kind === "json" ? fetchJsonFeed(src) : fetchTextFeed(src);
+      return job.then(function (matches) {
+        if (!matches.length) throw new Error("Tidak ada laga di feed");
         matches.sort(function (a, b) {
           return (a.start ? a.start.getTime() : 0) - (b.start ? b.start.getTime() : 0);
         });
@@ -542,14 +627,45 @@
         feedState.error = null;
         feedState.promise = null;
         return matches;
-      })
-      .catch(function (err) {
-        feedState.error = err;
-        feedState.promise = null;
-        throw err;
+      }).catch(function (err) {
+        failures.push(src.key + ": " + (err && err.message ? err.message : "gagal"));
+        return tryFrom(index + 1, failures);
       });
+    }
+
+    feedState.promise = tryFrom(0, []).catch(function (err) {
+      feedState.error = err;
+      feedState.promise = null;
+      throw err;
+    });
 
     return feedState.promise;
+  }
+
+  function fetchTextFeed(src) {
+    return fetch(src.url, { cache: "no-store" })
+      .then(function (res) {
+        if (!res.ok) throw new Error("HTTP " + res.status);
+        return res.text();
+      })
+      .then(function (html) {
+        if (!html || html.indexOf("SPORTSONLINE") === -1) {
+          throw new Error("Format jadwal tidak dikenal");
+        }
+        return buildSchedule(html, new Date());
+      });
+  }
+
+  function fetchJsonFeed(src) {
+    return fetch(src.url, { cache: "no-store" })
+      .then(function (res) {
+        if (!res.ok) throw new Error("HTTP " + res.status);
+        return res.json();
+      })
+      .then(function (rows) {
+        if (!Array.isArray(rows)) throw new Error("Format feed tidak dikenal");
+        return buildOneball(rows);
+      });
   }
 
   function leagueSlug(league) {
