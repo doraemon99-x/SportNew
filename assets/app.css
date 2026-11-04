@@ -1080,6 +1080,8 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   gap: 8px;
   justify-content: space-between;
 }
+/* Tanpa badge liga (sumber tidak menyebut cabangnya) status tetap di kanan. */
+.match-card__top .match-status { margin-left: auto; }
 .match-card__league {
   min-width: 0;
   font-size: 0.66rem;

@@ -258,36 +258,21 @@
   ];
 
   /* ------------------------------------------------------------
-     LIVE FEED (oneball)
-     Sumber: https://oneball.to/list.json — CORS terbuka (ACAO *).
-     Format waktu "YYYY-MM-DD HH:MM:SS" memakai jam dinding BEIJING
-     (UTC+8) — sama dengan data-match-time di oneball.to. Bukan WIB.
-     Semua tampilan tetap dikonversi ke WIB (+7) di clockText/dayText.
-     Hanya pertandingan yang punya signals[] yang bisa ditonton.
-     ------------------------------------------------------------ */
-  var FEED_URL = "https://oneball.to/list.json";
-  var FEED_UTC_OFFSET_HOURS = 8;     // zona waktu string match_time dari feed
-  var FEED_TTL = 90 * 1000;          // cache 90 detik
-  var MATCH_WINDOW_AFTER = 3 * 60;   // menit: masih dianggap live 3 jam setelah kickoff
-  var LIVE_FOOTBALL_SLUG = "football/football";
+     LIVE FEED (sportsonline)
+     Sumber: https://sportsonline.st/ — halaman HTML teks polos, TANPA
+     header CORS, jadi dibaca lewat proxy /schedule (functions/schedule.js).
+     Isinya jam pertandingan dalam UTC; semua tampilan dikonversi ke WIB
+     (+7) di clockText/dayText. Kanalnya berupa halaman pemutar .php,
+     dimuat apa adanya di iframe.
 
-  var FOOTBALL_OK = [
-    "league", "liga", "serie", "bundesliga", "eredivisie", "ligue", "premier",
-    "champions", "europa", "conference", "copa", "cup", "uefa", "afc", "caf",
-    "conmebol", "concacaf", "fifa", "qualif", "ekstraklasa", "superliga",
-    "allsvenskan", "superettan", "veikkausliiga", "division", "divisjon",
-    "primera", "segunda", "prva liga", "1.liga", "super lig", "soccer",
-    "football", "eerste divisie", "super division", "mls", "youth league",
-    "j2 league", "j3 league", "pro league", "a-league"
-  ];
-  /* Dicek lebih dulu supaya "College Football"/"NFL" tidak ikut lolos. */
-  var FOOTBALL_NOT = [
-    "basketball", "basketbol", "basket", "nba", "nhl", "nfl",
-    "college football", "canadian football", "wrestling", "vtb united",
-    "adriatic basketball", "ncaa", "national collegiate", "fiba",
-    "novo basquete", "basquete", "baloncesto", "korean basketball",
-    "philippine basketball", "women's national basketball", "ncaa"
-  ];
+     Catatan: sebelumnya sumbernya oneball.to/list.json (jam dinding
+     Beijing UTC+8). Domain itu sekarang mati total, jadi cadangannya
+     tidak perlu dipertahankan.
+     ------------------------------------------------------------ */
+  var FEED_URL = "/schedule";
+  var FEED_TTL = 90 * 1000;            // cache 90 detik
+  var MATCH_WINDOW_AFTER = 3 * 60;     // menit: masih dianggap live 3 jam setelah kickoff
+  var LIVE_FOOTBALL_SLUG = "football/football";
 
   var feedState = { at: 0, promise: null, matches: null, error: null };
 
@@ -345,27 +330,117 @@
   /* ------------------------------------------------------------
      LIVE FEED — ambil, saring, dan ubah ke bentuk channel
      ------------------------------------------------------------ */
-  function isFootball(league) {
-    var n = String(league || "").toLowerCase();
-    for (var i = 0; i < FOOTBALL_NOT.length; i++) {
-      if (n.indexOf(FOOTBALL_NOT[i]) !== -1) return false;
+  /* ------------------------------------------------------------
+     JADWAL sportsonline
+     Satu baris: "17:45   AEK Athens x Real Madrid | https://…hd5.php"
+     Satu laga diulang untuk tiap kanal, jadi baris dikelompokkan per
+     (jam + nama laga) dan semua URL-nya jadi daftar channel.
+
+     Tanggal tidak ditulis di sumber, jadi diturunkan dari jamnya:
+     jam yang lebih kecil dari jam baris sebelumnya = sudah lewat
+     tengah malam (daftar berurutan 10:00 → 02:30 → 10:00 lagi).
+     ------------------------------------------------------------ */
+  /* Baris diakhiri markup <br />, jadi URL ditangkap sampai spasi/<br>. */
+  var SCHEDULE_LINE = /^\s*(\d{1,2}):(\d{2})\s+(.+?)\s*\|\s*(https?:\/\/[^\s<]+)\s*(?:<br\s*\/?>)?\s*$/;
+  var SPORT_PREFIX = /^[A-Za-z][A-Za-z .&/'-]{1,20}:\s+/;   /* "NBA: ", "Tennis: " */
+
+  /* "AEK Athens x Real Madrid" -> home/away. Tim yang mengandung " x "
+     (mis. "Botafogo x …") tetap aman karena dipisah pada " x " pertama
+     yang diapit spasi. Tanpa pemisah, seluruh teks jadi nama laga. */
+  function splitTeams(title) {
+    var t = String(title || "").replace(/\s+/g, " ").trim();
+    var i = t.indexOf(" x ");
+    if (i > 0 && i < t.length - 3) {
+      return { home: t.slice(0, i).trim(), away: t.slice(i + 3).trim() };
     }
-    for (var j = 0; j < FOOTBALL_OK.length; j++) {
-      if (n.indexOf(FOOTBALL_OK[j]) !== -1) return true;
-    }
-    return false;
+    return { home: t, away: "" };
   }
 
-  /* "2026-11-02 19:30:00" dari feed adalah jam dinding Beijing (UTC+8),
-     bukan UTC dan bukan WIB. Ditandai +08:00 supaya konversi ke WIB
-     di clockText()/dayText() menghasilkan jam yang benar (mundur 1 jam). */
-  function parseMatchTime(value) {
-    var m = /^(\d{4})-(\d{2})-(\d{2})[ T](\d{2}):(\d{2})(?::(\d{2}))?/.exec(String(value || ""));
+  function scheduleTitle(title) {
+    var raw = String(title || "").trim();
+    var m = SPORT_PREFIX.exec(raw);
+    if (!m) return { league: "", title: raw };
+    return { league: raw.slice(0, m[0].length - 2).trim(), title: raw.slice(m[0].length).trim() };
+  }
+
+  /* "04-11-26" (LAST UPDATE di halaman sumber) -> Date tengah malam UTC. */
+  function parseLastUpdate(html) {
+    var m = /LAST UPDATE:?\s*(\d{1,2})-(\d{1,2})-(\d{2,4})/i.exec(String(html || ""));
     if (!m) return null;
-    var iso = m[1] + "-" + m[2] + "-" + m[3] + "T" + m[4] + ":" + m[5] + ":" + (m[6] || "00") +
-      "+0" + FEED_UTC_OFFSET_HOURS + ":00";
-    var d = new Date(iso);
+    var y = Number(m[3]);
+    if (y < 100) y += 2000;
+    var d = new Date(Date.UTC(y, Number(m[2]) - 1, Number(m[1])));
     return isNaN(d.getTime()) ? null : d;
+  }
+
+  function buildSchedule(html, now) {
+    now = now || new Date();
+    var updateDay = parseLastUpdate(html);
+
+    /* Kalau halaman menyebut "LAST UPDATE", jangkar tanggalnya di situ;
+       kalau tidak, pakai tanggal WIB hari ini. */
+    var day;
+    if (updateDay) {
+      day = updateDay;
+    } else {
+      var wib = new Date(now.getTime() + 7 * 3600000);
+      day = new Date(Date.UTC(wib.getUTCFullYear(), wib.getUTCMonth(), wib.getUTCDate()));
+    }
+
+    var order = [];
+    var groups = {};
+    var prevMin = -1;
+    var lines = String(html || "").split("\n");
+
+    for (var i = 0; i < lines.length; i++) {
+      var m = SCHEDULE_LINE.exec(lines[i]);
+      if (!m) continue;
+
+      var hh = Number(m[1]), mm = Number(m[2]);
+      if (hh > 23 || mm > 59) continue;
+      var mins = hh * 60 + mm;
+
+      /* Jam mundur -> daftar sudah masuk hari berikutnya. */
+      if (mins < prevMin) day = new Date(day.getTime() + 86400000);
+      prevMin = mins;
+
+      var url = m[4];
+      var key = mins + "|" + m[3].toLowerCase();
+
+      if (!groups[key]) {
+        var meta = scheduleTitle(m[3]);
+        var teams = splitTeams(meta.title);
+        groups[key] = {
+          id: key.replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "") + "-" + mins,
+          league: meta.league,
+          home: teams.home,
+          away: teams.away,
+          title: meta.title,
+          rawTime: pad2(hh) + ":" + pad2(mm) + " UTC",
+          start: new Date(day.getTime() + mins * 60000),
+          channels: []
+        };
+        order.push(key);
+      }
+
+      var chans = groups[key].channels;
+      var label = channelLabel(url);
+      var dup = false;
+      for (var c = 0; c < chans.length; c++) {
+        if (chans[c].url === url) { dup = true; break; }
+      }
+      if (!dup) chans.push({ label: label, url: url });
+    }
+
+    return order.map(function (k) { return groups[k]; });
+  }
+
+  function pad2(n) { return String(n).padStart(2, "0"); }
+
+  /* "…/channels/hd/hd5.php" -> "HD5"; "…/channels/bra/br2.php" -> "BR2" */
+  function channelLabel(url) {
+    var m = /\/([a-z0-9_-]+)\.php(?:$|\?)/i.exec(String(url || ""));
+    return m ? m[1].toUpperCase() : "CH";
   }
 
   function matchStatus(match, now) {
@@ -452,31 +527,13 @@
     feedState.promise = fetch(FEED_URL, { cache: "no-store" })
       .then(function (res) {
         if (!res.ok) throw new Error("HTTP " + res.status);
-        return res.json();
+        return res.text();
       })
-      .then(function (rows) {
-        if (!Array.isArray(rows)) throw new Error("Format feed tidak dikenal");
-        var matches = [];
-        rows.forEach(function (row) {
-          if (!row || !isFootball(row.league_name)) return;
-          var signals = Array.isArray(row.signals) ? row.signals : [];
-          if (!signals.length) return;               /* belum ada stream */
-          var urls = signals
-            .filter(function (s) { return s && s.url; })
-            .map(function (s, i) {
-              return { label: s.label || ("CH " + (i + 1)), url: s.url };
-            });
-          if (!urls.length) return;
-          matches.push({
-            id: String(row.nami_id || ""),
-            league: String(row.league_name || ""),
-            home: String(row.home_team || ""),
-            away: String(row.away_team || ""),
-            rawTime: String(row.match_time || ""),
-            start: parseMatchTime(row.match_time),
-            channels: urls
-          });
-        });
+      .then(function (html) {
+        if (!html || html.indexOf("SPORTSONLINE") === -1) {
+          throw new Error("Format jadwal tidak dikenal");
+        }
+        var matches = buildSchedule(html, new Date());
         matches.sort(function (a, b) {
           return (a.start ? a.start.getTime() : 0) - (b.start ? b.start.getTime() : 0);
         });
@@ -503,13 +560,20 @@
     return "/" + LIVE_FOOTBALL_SLUG + "?m=" + encodeURIComponent(match.id);
   }
 
-  /* Satu pertandingan -> daftar channel (satu channel per signal). */
+  /* Kanal jadwal berupa halaman pemutar (.php), bukan file m3u8, jadi
+     dimuat apa adanya di iframe. /hls.html hanya untuk playlist HLS. */
+  function channelPlayUrl(url) {
+    if (/\.m3u8(\?|$)/i.test(url)) return "/hls.html?url=" + encodeURIComponent(url);
+    return url;
+  }
+
+  /* Satu pertandingan -> daftar channel (satu channel per kanal). */
   function channelsFromMatch(match, now) {
     var status = matchStatus(match, now || new Date());
     return match.channels.map(function (signal, i) {
       return {
         label: signal.label,
-        url: "/hls.html?url=" + encodeURIComponent(signal.url),
+        url: channelPlayUrl(signal.url),
         match: match,
         signalIndex: i,
         status: status,
@@ -523,7 +587,7 @@
     var list = [];
     matches.forEach(function (match) {
       channelsFromMatch(match, now).forEach(function (channel, i) {
-        channel.label = match.home + " vs " + match.away +
+        channel.label = matchTitle(match) +
           (i === 0 ? "" : " · " + channel.label);
         list.push(channel);
       });
@@ -568,9 +632,6 @@
     { key: "tomorrow", label: "Besok" },
     { key: "all", label: "Semua jadwal" }
   ];
-
-  /* Chip liga mengikuti isi feed; liga langka tetap tampil lewat scroll. */
-  var LEAGUE_CHIP_MAX = 40;
 
   function renderHome() {
     renderHomeBoard();
@@ -679,17 +740,32 @@
       return "Belum ada pertandingan dengan link streaming.";
     }
 
-    /* Chip liga dibuat dari isi feed (liga terbanyak lebih dulu). */
+    /* Chip liga dibuat dari isi feed (liga terbanyak lebih dulu).
+       Laga tanpa keterangan liga (sumber tidak menyebut cabangnya) tidak
+       dijadikan chip — kelompok itu bukan liga, jadi tidak menyaring apa pun,
+       dan badge liganya juga tidak dirender di kartu.
+       Kalau tidak ada satu pun liga sungguhan, bar chip disembunyikan. */
     function paintLeagues(all, now) {
       if (!leagueBar) return;
       var byLeague = {};
       var order = [];
       all.forEach(function (m) {
-        var name = m.league || "Lainnya";
+        var name = m.league;
+        if (!name) return;
         if (!byLeague[name]) { byLeague[name] = { total: 0, live: 0 }; order.push(name); }
         byLeague[name].total++;
         if (matchStatus(m, now).state === "live") byLeague[name].live++;
       });
+
+      if (!order.length) {
+        league = "";
+        leagueSig = "";
+        leagueBar.innerHTML = "";
+        leagueBar.hidden = true;
+        return;
+      }
+      leagueBar.hidden = false;
+
       order.sort(function (a, b) {
         if (byLeague[a].live !== byLeague[b].live) return byLeague[b].live - byLeague[a].live;
         if (byLeague[a].total !== byLeague[b].total) return byLeague[b].total - byLeague[a].total;
@@ -699,10 +775,9 @@
       /* Liga pilihan hilang dari feed (rotasi stream) -> kembalikan ke semua liga. */
       if (league && !byLeague[league]) league = "";
 
-      var names = order.slice(0, LEAGUE_CHIP_MAX);
+      var names = order;
       /* Liga yang sedang dipilih tetap tampil walau di luar batas. */
       if (league && names.indexOf(league) === -1) names.unshift(league);
-
       var sig = names.join("|") + "#" +
         names.map(function (n) { return byLeague[n].live + "/" + byLeague[n].total; }).join("|");
 
@@ -978,7 +1053,7 @@
   }
 
   /* ------------------------------------------------------------
-     LIVE CATEGORY (feed oneball)
+     LIVE CATEGORY (feed sportsonline)
      ------------------------------------------------------------ */
   function mountLiveCategory(cat, listEl, loader, categoryName) {
     var statusEl = $("#feedStatus");
@@ -1023,10 +1098,10 @@
       var countSide = $("#chCountSide");
       if (countSide) countSide.textContent = channels.length + " ch";
 
-      var titleText = focused ? focused.home + " vs " + focused.away : categoryName;
+      var titleText = focused ? matchTitle(focused) : categoryName;
       $$("[data-category-name]").forEach(function (el) { el.textContent = titleText; });
       if (focused) {
-        document.title = focused.home + " vs " + focused.away + " — Live Streaming | TipiStream";
+        document.title = matchTitle(focused) + " — Live Streaming | TipiStream";
       }
 
       if (panelTitle) {
@@ -1056,13 +1131,13 @@
       if (!channels.length) {
         listEl.innerHTML = focused
           ? '<div class="ch-list--empty">Laga ini belum punya link streaming.</div>'
-          : '<div class="ch-list--empty">Belum ada pertandingan football yang punya link streaming.</div>';
+          : '<div class="ch-list--empty">Belum ada pertandingan yang punya link streaming.</div>';
         if (loader) loader.classList.add("is-hidden");
         return;
       }
 
       wirePlayer(cat.slug, channels, {
-        categoryName: focused ? focused.home + " vs " + focused.away : categoryName,
+        categoryName: focused ? matchTitle(focused) : categoryName,
         matchId: focused ? focused.id : ""
       });
     }
@@ -1103,7 +1178,7 @@
       return;
     }
     if (!matches.length) {
-      boardEl.innerHTML = '<div class="empty-state empty-state--sm">Belum ada pertandingan football dengan link streaming.</div>';
+      boardEl.innerHTML = '<div class="empty-state empty-state--sm">Belum ada pertandingan dengan link streaming.</div>';
       return;
     }
 
@@ -1118,6 +1193,20 @@
       "</div>";
   }
 
+  /* Nama laga untuk tampilan: "A vs B", atau judul apa adanya kalau
+     sumbernya tidak memisahkan tim (mis. acara tenis). */
+  function matchTitle(match) {
+    if (!match) return "";
+    if (!match.home) return match.title || "";
+    if (!match.away) return match.home;
+    return match.home + " vs " + match.away;
+  }
+
+  function teamsHtml(match, vsClass) {
+    if (!match.away) return esc(match.home || match.title || "");
+    return esc(match.home) + '<span class="' + vsClass + '">vs</span>' + esc(match.away);
+  }
+
   /* Satu kartu pertandingan — dipakai Home dan halaman Football Live. */
   function matchCardHtml(match, now) {
     var status = matchStatus(match, now);
@@ -1125,11 +1214,10 @@
     var cta = status.state === "ended" ? "Tonton ulang" : "Tonton";
     return '<a class="match-card is-' + status.state + '" href="' + matchHref(match) + '">' +
       '<span class="match-card__top">' +
-        '<span class="match-card__league">' + esc(match.league) + "</span>" +
+        (match.league ? '<span class="match-card__league">' + esc(match.league) + "</span>" : "") +
         '<span class="match-status is-' + status.state + '">' + esc(status.label) + "</span>" +
       "</span>" +
-      '<span class="match-card__teams">' + esc(match.home) +
-        '<span class="match-card__vs">vs</span>' + esc(match.away) + "</span>" +
+      '<span class="match-card__teams">' + teamsHtml(match, "match-card__vs") + "</span>" +
       '<span class="match-card__foot">' +
         "<span>" + esc(when) + " WIB</span>" +
         '<span class="match-card__cta">' + playIcon() + " " + cta + "</span>" +
@@ -1141,9 +1229,8 @@
   function matchHeaderHtml(match, now) {
     var status = matchStatus(match, now);
     var when = match.start ? dayText(match.start, now) + " · " + clockText(match.start) + " WIB" : "Jadwal menyusul";
-    return '<div class="ch-match__league">' + esc(match.league) + "</div>" +
-      '<div class="ch-match__teams">' + esc(match.home) +
-        '<span class="ch-match__vs">vs</span>' + esc(match.away) + "</div>" +
+    return (match.league ? '<div class="ch-match__league">' + esc(match.league) + "</div>" : "") +
+      '<div class="ch-match__teams">' + teamsHtml(match, "ch-match__vs") + "</div>" +
       '<div class="ch-match__foot">' +
         '<span class="match-status is-' + status.state + '">' + esc(status.label) + "</span>" +
         "<span>" + esc(when) + "</span>" +
